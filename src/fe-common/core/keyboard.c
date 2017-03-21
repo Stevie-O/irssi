@@ -65,7 +65,7 @@ KEYBOARD_REC *keyboard_create(void *data)
 	rec->timer_tag = 0;
 
 	signal_emit("keyboard created", 1, rec);
-        return rec;
+	return rec;
 }
 
 /* Destroys a keyboard */
@@ -78,8 +78,8 @@ void keyboard_destroy(KEYBOARD_REC *keyboard)
 
 	signal_emit("keyboard destroyed", 1, keyboard);
 
-        g_free_not_null(keyboard->key_state);
-        g_free(keyboard);
+	g_free_not_null(keyboard->key_state);
+	g_free(keyboard);
 }
 
 static void key_destroy(KEY_REC *rec, GHashTable *hash)
@@ -93,7 +93,7 @@ static void key_destroy(KEY_REC *rec, GHashTable *hash)
 
 static void key_default_add(const char *id, const char *key, const char *data)
 {
-        KEYINFO_REC *info;
+	KEYINFO_REC *info;
 	KEY_REC *rec;
 
 	info = key_info_find(id);
@@ -112,14 +112,14 @@ static void key_default_add(const char *id, const char *key, const char *data)
 	rec->key = g_strdup(key);
 	rec->info = info;
 	rec->data = g_strdup(data);
-        info->default_keys = g_slist_append(info->default_keys, rec);
+	info->default_keys = g_slist_append(info->default_keys, rec);
 	g_hash_table_insert(default_keys, rec->key, rec);
 }
 
 static CONFIG_NODE *key_config_find(const char *key)
 {
 	CONFIG_NODE *node;
-        GSList *tmp;
+	GSList *tmp;
 
 	/* remove old keyboard settings */
 	node = iconfig_node_traverse("(keyboard", TRUE);
@@ -129,10 +129,10 @@ static CONFIG_NODE *key_config_find(const char *key)
 		node = tmp->data;
 
 		if (g_strcmp0(config_node_get_str(node, "key", ""), key) == 0)
-                        return node;
+			return node;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 static void keyconfig_save(const char *id, const char *key, const char *data)
@@ -187,22 +187,22 @@ static int expand_key(const char *key, GSList **out, int *limit);
 	{ \
 	  GSList *tmp; \
 	  for (tmp = out; tmp != NULL; tmp = tmp->next) \
-            g_string_append_c(tmp->data, c); \
+	g_string_append_c(tmp->data, c); \
 	}
 
 #define expand_out_free(out) \
 	{ \
 	  GSList *tmp; \
 	  for (tmp = out; tmp != NULL; tmp = tmp->next) \
-            g_string_free(tmp->data, TRUE); \
+	g_string_free(tmp->data, TRUE); \
 	  g_slist_free(out); out = NULL; \
 	}
 
 static int expand_combo(const char *start, const char *end, GSList **out, int *limit)
 {
-        KEY_REC *rec;
+	KEY_REC *rec;
 	KEYINFO_REC *info;
-        GSList *tmp, *tmp2, *list, *copy, *newout;
+	GSList *tmp, *tmp2, *list, *copy, *newout;
 	char *str, *p;
 
 	if ((*limit)-- < 0) {
@@ -212,21 +212,21 @@ static int expand_combo(const char *start, const char *end, GSList **out, int *l
 	if (start == end) {
 		/* single key */
 		expand_out_char(*out, *start);
-                return TRUE;
+		return TRUE;
 	}
 
 	info = key_info_find("key");
 	if (info == NULL)
 		return FALSE;
 
-        /* get list of all key combos that generate the named combo.. */
-        list = NULL;
+	/* get list of all key combos that generate the named combo.. */
+	list = NULL;
 	str = g_strndup(start, (int) (end-start)+1);
 	for (tmp = info->keys; tmp != NULL; tmp = tmp->next) {
 		KEY_REC *rec = tmp->data;
 
 		if (g_strcmp0(rec->data, str) == 0)
-                        list = g_slist_append(list, rec);
+			list = g_slist_append(list, rec);
 	}
 
 	if (list == NULL) {
@@ -240,22 +240,22 @@ static int expand_combo(const char *start, const char *end, GSList **out, int *l
 	g_free(str);
 
 	if (list->next == NULL) {
-                /* only one way to generate the combo, good */
-                rec = list->data;
+		/* only one way to generate the combo, good */
+		rec = list->data;
 		g_slist_free(list);
 		return expand_key(rec->key, out, limit);
 	}
 
 	/* multiple ways to generate the combo -
 	   we'll need to include all of them in output */
-        newout = NULL;
+	newout = NULL;
 	for (tmp = list->next; tmp != NULL; tmp = tmp->next) {
 		KEY_REC *rec = tmp->data;
 
 		copy = NULL;
 		for (tmp2 = *out; tmp2 != NULL; tmp2 = tmp2->next) {
 			GString *str = tmp2->data;
-                        copy = g_slist_append(copy, g_string_new(str->str));
+			copy = g_slist_append(copy, g_string_new(str->str));
 		}
 
 		if (!expand_key(rec->key, &copy, limit)) {
@@ -264,13 +264,13 @@ static int expand_combo(const char *start, const char *end, GSList **out, int *l
 			}
 
 			/* illegal key combo, remove from list */
-                        expand_out_free(copy);
+			expand_out_free(copy);
 		} else {
-                        newout = g_slist_concat(newout, copy);
+			newout = g_slist_concat(newout, copy);
 		}
 	}
 
-        rec = list->data;
+	rec = list->data;
 	g_slist_free(list);
 	if (!expand_key(rec->key, out, limit)) {
 		if (*limit < 0) {
@@ -282,7 +282,7 @@ static int expand_combo(const char *start, const char *end, GSList **out, int *l
 	}
 
 	*out = g_slist_concat(*out, newout);
-        return *out != NULL;
+	return *out != NULL;
 }
 
 /* Expand key code - returns TRUE if successful. */
@@ -297,30 +297,30 @@ static int expand_key(const char *key, GSList **out, int *limit)
 	}
 
 	/* meta-^W^Gf -> ^[-^W-^G-f */
-        start = NULL; last_hyphen = TRUE;
+	start = NULL; last_hyphen = TRUE;
 	for (; *key != '\0'; key++) {
 		if (start != NULL) {
 			if (i_isalnum(*key) || *key == '_') {
-                                /* key combo continues */
+				/* key combo continues */
 				continue;
 			}
 
 			if (!expand_combo(start, key-1, out, limit))
-                                return FALSE;
+				return FALSE;
 			expand_out_char(*out, '-');
-                        start = NULL;
+			start = NULL;
 		}
 
 		if (*key == '-') {
 			if (last_hyphen) {
-                                expand_out_char(*out, '-');
-                                expand_out_char(*out, '-');
+				expand_out_char(*out, '-');
+				expand_out_char(*out, '-');
 			}
 			last_hyphen = !last_hyphen;
 		} else if (*key == '^') {
 			expand_out_char(*out, '^');
 
-                        /* ctrl-code */
+			/* ctrl-code */
 			if (key[1] != '\0' && key[1] != '-') {
 				key++;
 				expand_out_char(*out, *key);
@@ -331,11 +331,11 @@ static int expand_key(const char *key, GSList **out, int *limit)
 			}
 
 			expand_out_char(*out, '-');
-                        last_hyphen = FALSE; /* optional */
+			last_hyphen = FALSE; /* optional */
 		} else if (last_hyphen && i_isalpha(*key)) {
-                        /* possibly beginning of keycombo */
+			/* possibly beginning of keycombo */
 			start = key;
-                        last_hyphen = FALSE;
+			last_hyphen = FALSE;
 		} else if (g_utf8_validate(key, -1, NULL)) {
 			/* Assume we are looking at the start of a
 			 * multibyte sequence we will receive as-is,
@@ -353,7 +353,7 @@ static int expand_key(const char *key, GSList **out, int *limit)
 		} else {
 			expand_out_char(*out, *key);
 			expand_out_char(*out, '-');
-                        last_hyphen = FALSE; /* optional */
+			last_hyphen = FALSE; /* optional */
 		}
 	}
 
@@ -366,7 +366,7 @@ static int expand_key(const char *key, GSList **out, int *limit)
 		g_string_truncate(str, str->len-1);
 	}
 
-        return TRUE;
+	return TRUE;
 }
 
 static void key_states_scan_key(const char *key, KEY_REC *rec)
@@ -377,7 +377,7 @@ static void key_states_scan_key(const char *key, KEY_REC *rec)
 	if (g_strcmp0(rec->info->id, "key") == 0)
 		return;
 
-        out = g_slist_append(NULL, g_string_new(NULL));
+	out = g_slist_append(NULL, g_string_new(NULL));
 	if (expand_key(key, &out, &limit)) {
 		for (tmp = out; tmp != NULL; tmp = tmp->next) {
 			GString *str = tmp->data;
@@ -395,7 +395,7 @@ static void key_states_scan_key(const char *key, KEY_REC *rec)
 static int key_state_destroy(char *key)
 {
 	g_free(key);
-        return FALSE;
+	return FALSE;
 }
 
 /* Rescan all the key combos and figure out which characters are supposed
@@ -412,19 +412,19 @@ static void key_states_rescan(void)
 	g_tree_destroy(key_states);
 	key_states = g_tree_new((GCompareFunc) g_strcmp0);
 
-        temp = g_string_new(NULL);
+	temp = g_string_new(NULL);
 	g_hash_table_foreach(keys, (GHFunc) key_states_scan_key, temp);
-        g_string_free(temp, TRUE);
+	g_string_free(temp, TRUE);
 }
 
 void key_configure_freeze(void)
 {
-        key_config_frozen++;
+	key_config_frozen++;
 }
 
 void key_configure_thaw(void)
 {
-        g_return_if_fail(key_config_frozen > 0);
+	g_return_if_fail(key_config_frozen > 0);
 
 	if (--key_config_frozen == 0)
 		key_states_rescan();
@@ -440,7 +440,7 @@ static void key_configure_destroy(KEY_REC *rec)
 	signal_emit("key destroyed", 1, rec);
 
 	if (!key_config_frozen)
-                key_states_rescan();
+		key_states_rescan();
 
 	g_free_not_null(rec->data);
 	g_free(rec->key);
@@ -475,7 +475,7 @@ static void key_configure_create(const char *id, const char *key,
 	signal_emit("key created", 1, rec);
 
 	if (!key_config_frozen)
-                key_states_rescan();
+		key_states_rescan();
 }
 
 /* Bind a key for function */
@@ -508,7 +508,7 @@ void key_bind(const char *id, const char *description,
 	}
 
 	if (key_default != NULL && *key_default != '\0') {
-                key_default_add(id, key_default, data);
+		key_default_add(id, key_default, data);
 		key_configure_create(id, key_default, data);
 	}
 }
@@ -521,8 +521,8 @@ static void keyinfo_remove(KEYINFO_REC *info)
 	signal_emit("keyinfo destroyed", 1, info);
 
 	/* destroy all keys */
-        g_slist_foreach(info->keys, (GFunc) key_destroy, keys);
-        g_slist_foreach(info->default_keys, (GFunc) key_destroy, default_keys);
+	g_slist_foreach(info->keys, (GFunc) key_destroy, keys);
+	g_slist_foreach(info->default_keys, (GFunc) key_destroy, default_keys);
 
 	/* destroy key info */
 	g_slist_free(info->keys);
@@ -572,20 +572,20 @@ void key_configure_remove(const char *key)
 	rec = g_hash_table_lookup(keys, key);
 	if (rec == NULL) return;
 
-        keyconfig_clear(key);
+	keyconfig_clear(key);
 	key_configure_destroy(rec);
 }
 
 static int key_emit_signal(KEYBOARD_REC *keyboard, KEY_REC *key)
 {
 	int consumed;
-        char *str;
+	char *str;
 
 	str = g_strconcat("key ", key->info->id, NULL);
 	consumed = signal_emit(str, 3, key->data, keyboard->gui_data, key->info);
 	g_free(str);
 
-        return consumed;
+	return consumed;
 }
 
 static int key_states_search(const unsigned char *combo,
@@ -594,10 +594,10 @@ static int key_states_search(const unsigned char *combo,
 	while (*search != '\0') {
 		if (*combo != *search)
 			return *search - *combo;
-                search++; combo++;
+		search++; combo++;
 	}
 
-        return 0;
+	return 0;
 }
 
 static gboolean key_timeout_expired(KEYBOARD_REC *keyboard)
@@ -622,8 +622,8 @@ static gboolean key_timeout_expired(KEYBOARD_REC *keyboard)
 int key_pressed(KEYBOARD_REC *keyboard, const char *key)
 {
 	KEY_REC *rec;
-        char *combo;
-        int first_key, consumed;
+	char *combo;
+	int first_key, consumed;
 
 	g_return_val_if_fail(keyboard != NULL, FALSE);
 	g_return_val_if_fail(key != NULL && *key != '\0', FALSE);
@@ -639,9 +639,9 @@ int key_pressed(KEYBOARD_REC *keyboard, const char *key)
 		return -1;
 	}
 
-        first_key = keyboard->key_state == NULL;
+	first_key = keyboard->key_state == NULL;
 	combo = keyboard->key_state == NULL ? g_strdup(key) :
-                g_strconcat(keyboard->key_state, "-", key, NULL);
+		g_strconcat(keyboard->key_state, "-", key, NULL);
 	g_free_and_null(keyboard->key_state);
 
 	rec = g_tree_search(key_states,
@@ -650,7 +650,7 @@ int key_pressed(KEYBOARD_REC *keyboard, const char *key)
 	if (rec == NULL) {
 		/* unknown key combo, eat the invalid key
 		   unless it was the first key pressed */
-                g_free(combo);
+		g_free(combo);
 		return first_key ? -1 : 1;
 	}
 
@@ -664,11 +664,11 @@ int key_pressed(KEYBOARD_REC *keyboard, const char *key)
 					      (GSourceFunc) key_timeout_expired,
 					      keyboard);
 		}
-                return 0;
+		return 0;
 	}
 
-        /* finished key combo, execute */
-        g_free(combo);
+	/* finished key combo, execute */
+	g_free(combo);
 	consumed = key_emit_signal(keyboard, rec);
 
 	/* never consume non-control characters */
@@ -698,12 +698,12 @@ static void sig_command(const char *data)
 
 static void sig_key(const char *data)
 {
-        /* we should never get here */
+	/* we should never get here */
 }
 
 static void sig_multi(const char *data, void *gui_data)
 {
-        KEYINFO_REC *info;
+	KEYINFO_REC *info;
 	char **list, **tmp, *p, *str;
 
 	list = g_strsplit(data, ";", -1);
@@ -718,7 +718,7 @@ static void sig_multi(const char *data, void *gui_data)
 			g_free(str);
 		}
 	}
-        g_strfreev(list);
+	g_strfreev(list);
 }
 
 static void sig_nothing(const char *data)
@@ -728,7 +728,7 @@ static void sig_nothing(const char *data)
 static void cmd_show_keys(const char *searchkey, int full)
 {
 	GSList *info, *key;
-        int len;
+	int len;
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_BIND_HEADER);
 
@@ -776,7 +776,7 @@ static void cmd_bind(const char *data)
 	}
 
 	if (*key != '\0' && g_hash_table_lookup(optlist, "delete")) {
-                /* delete key */
+		/* delete key */
 		key_configure_remove(key);
 		cmd_params_free(free_arg);
 		return;
@@ -804,7 +804,7 @@ static void cmd_bind(const char *data)
 	}
 
 	if (command_id) g_free(keydata);
-        cmd_params_free(free_arg);
+	cmd_params_free(free_arg);
 }
 
 static GList *completion_get_keyinfos(const char *info)
@@ -818,7 +818,7 @@ static GList *completion_get_keyinfos(const char *info)
 		KEYINFO_REC *rec = tmp->data;
 
 		if (g_ascii_strncasecmp(rec->id, info, len) == 0)
-                        list = g_list_append(list, g_strdup(rec->id));
+			list = g_list_append(list, g_strdup(rec->id));
 	}
 
 	return list;
@@ -846,14 +846,14 @@ static int key_destroy_hash(const char *key, KEY_REC *rec)
 	g_free_not_null(rec->data);
 	g_free(rec->key);
 	g_free(rec);
-        return TRUE;
+	return TRUE;
 }
 
 static void key_copy_default(const char *key, KEY_REC *orig)
 {
 	KEY_REC *rec;
 
-        rec = g_new0(KEY_REC, 1);
+	rec = g_new0(KEY_REC, 1);
 	rec->key = g_strdup(orig->key);
 	rec->info = orig->info;
 	rec->data = g_strdup(orig->data);
@@ -865,7 +865,7 @@ static void key_copy_default(const char *key, KEY_REC *orig)
 static void keyboard_reset_defaults(void)
 {
 	g_hash_table_foreach_remove(keys, (GHRFunc) key_destroy_hash, NULL);
-        g_hash_table_foreach(default_keys, (GHFunc) key_copy_default, NULL);
+	g_hash_table_foreach(default_keys, (GHFunc) key_copy_default, NULL);
 }
 
 static void key_config_read(CONFIG_NODE *node)
@@ -887,7 +887,7 @@ static void read_keyboard_config(void)
 	CONFIG_NODE *node;
 	GSList *tmp;
 
-        key_configure_freeze();
+	key_configure_freeze();
 
 	keyboard_reset_defaults();
 
@@ -899,7 +899,7 @@ static void read_keyboard_config(void)
 
 	/* FIXME: backward "compatibility" - remove after irssi .99 */
 	if (node->type != NODE_TYPE_LIST) {
-                iconfig_node_remove(NULL, node);
+		iconfig_node_remove(NULL, node);
 		key_configure_thaw();
 		return;
 	}
@@ -908,7 +908,7 @@ static void read_keyboard_config(void)
 	for (; tmp != NULL; tmp = config_node_next(tmp))
 		key_config_read(tmp->data);
 
-        key_configure_thaw();
+	key_configure_thaw();
 
 	/* any positive value other than 0 enables the timeout (in ms). */
 	key_timeout = settings_get_int("key_timeout");
@@ -922,7 +922,7 @@ void keyboard_init(void)
 					(GCompareFunc) g_str_equal);
 	keyinfos = NULL;
 	key_states = g_tree_new((GCompareFunc) g_strcmp0);
-        key_config_frozen = 0;
+	key_config_frozen = 0;
 	memset(used_keys, 0, sizeof(used_keys));
 
 	settings_add_int("misc", "key_timeout", 0);
@@ -958,7 +958,7 @@ void keyboard_deinit(void)
 	g_tree_destroy(key_states);
 
 	signal_remove("irssi init read settings", (SIGNAL_FUNC) read_keyboard_config);
-        signal_remove("setup reread", (SIGNAL_FUNC) read_keyboard_config);
+	signal_remove("setup reread", (SIGNAL_FUNC) read_keyboard_config);
 	signal_remove("complete command bind", (SIGNAL_FUNC) sig_complete_bind);
 	command_unbind("bind", (SIGNAL_FUNC) cmd_bind);
 }

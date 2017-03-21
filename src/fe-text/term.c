@@ -56,27 +56,27 @@ int term_get_size(int *width, int *height)
 		return FALSE;
 
 	*width = ws.ws_col;
-        *height = ws.ws_row;
+	*height = ws.ws_row;
 
 	if (*width < MIN_SCREEN_WIDTH)
 		*width = MIN_SCREEN_WIDTH;
 	if (*height < 1)
-                *height = 1;
+		*height = 1;
 	return TRUE;
 #else
-        return FALSE;
+	return FALSE;
 #endif
 }
 
 /* Resize the terminal if needed */
 void term_resize_dirty(void)
 {
-        int width, height;
+	int width, height;
 
 	if (!resize_dirty)
 		return;
 
-        resize_dirty = FALSE;
+	resize_dirty = FALSE;
 
 	if (!term_get_size(&width, &height))
 		width = height = -1;
@@ -91,15 +91,15 @@ void term_resize_dirty(void)
 #ifdef SIGWINCH
 static void sig_winch(int p)
 {
-        irssi_set_dirty();
-        resize_dirty = TRUE;
+	irssi_set_dirty();
+	resize_dirty = TRUE;
 }
 #endif
 
 static void cmd_resize(void)
 {
 	resize_dirty = TRUE;
-        term_resize_dirty();
+	term_resize_dirty();
 }
 
 static void cmd_redraw(void)
@@ -126,12 +126,12 @@ int term_color256map[] = {
 
 static void read_settings(void)
 {
-        const char *str;
+	const char *str;
 	int old_colors = term_use_colors;
 	int old_colors24 = term_use_colors24;
-        int old_type = term_type;
+	int old_type = term_type;
 
-        /* set terminal type */
+	/* set terminal type */
 	str = settings_get_str("term_charset");
 	if (g_ascii_strcasecmp(str, "utf-8") == 0)
 		term_type = TERM_TYPE_UTF8;
@@ -141,9 +141,9 @@ static void read_settings(void)
 		term_type = TERM_TYPE_8BIT;
 
 	if (old_type != term_type)
-                term_set_input_type(term_type);
+		term_set_input_type(term_type);
 
-        /* change color stuff */
+	/* change color stuff */
 	if (force_colors != settings_get_bool("term_force_colors")) {
 		force_colors = settings_get_bool("term_force_colors");
 		term_force_colors(force_colors);
@@ -171,7 +171,7 @@ void term_common_init(void)
 #endif
 	settings_add_bool("lookandfeel", "colors", TRUE);
 	settings_add_bool("lookandfeel", "term_force_colors", FALSE);
-        settings_add_bool("lookandfeel", "mirc_blink_fix", FALSE);
+	settings_add_bool("lookandfeel", "mirc_blink_fix", FALSE);
 
 	force_colors = FALSE;
 	term_use_colors = term_has_colors() && settings_get_bool("colors");
@@ -181,7 +181,7 @@ void term_common_init(void)
 #else
 	term_use_colors24 = FALSE;
 #endif
-        read_settings();
+	read_settings();
 
 	if (g_get_charset(&dummy)) {
 		term_type = TERM_TYPE_UTF8;

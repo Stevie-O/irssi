@@ -88,7 +88,7 @@ static void irc_channels_join(IRC_SERVER_REC *server, const char *data,
 		*space = '\0';
 	}
 
-        chanlist = g_strsplit(channels, ",", -1);
+	chanlist = g_strsplit(channels, ",", -1);
 	keylist = g_strsplit(keys, ",", -1);
 
 	outchans = g_string_new(NULL);
@@ -108,10 +108,10 @@ static void irc_channels_join(IRC_SERVER_REC *server, const char *data,
 
 				g_string_append_printf(outchans, "%s,", channel);
 				if (*tmpkey != NULL && **tmpkey != '\0')
-                        		key = *tmpkey;
+					key = *tmpkey;
 	                        else if (schannel != NULL && schannel->password != NULL) {
 					/* get password from setup record */
-                	                use_keys = TRUE;
+			                use_keys = TRUE;
 					key = schannel->password;
 				} else key = NULL;
 
@@ -125,7 +125,7 @@ static void irc_channels_join(IRC_SERVER_REC *server, const char *data,
 			g_free(channel);
 
 			if (*tmpkey != NULL)
-                	        tmpkey++;
+			        tmpkey++;
 
 			tmpstr = tmp;
 			tmpstr++;
@@ -186,7 +186,7 @@ static CHANNEL_REC *irc_channel_find_server(SERVER_REC *server,
 		CHANNEL_REC *rec = tmp->data;
 
 		if (rec->chat_type != server->chat_type)
-                        continue;
+			continue;
 
 		/* check both !ABCDEchannel and !channel */
 		if (IRC_SERVER(server)->nick_comp_func(fmt_channel, rec->name) == 0) {
@@ -220,19 +220,19 @@ static char *irc_get_join_data(CHANNEL_REC *channel)
 	IRC_CHANNEL_REC *irc_channel = (IRC_CHANNEL_REC *) channel;
 
 	return irc_channel->key == NULL ? g_strdup(irc_channel->name) :
-                g_strconcat(irc_channel->name, " ", irc_channel->key, NULL);
+		g_strconcat(irc_channel->name, " ", irc_channel->key, NULL);
 }
 
 static void sig_channel_created(IRC_CHANNEL_REC *channel)
 {
 	if (IS_IRC_CHANNEL(channel))
-                channel->get_join_data = irc_get_join_data;
+		channel->get_join_data = irc_get_join_data;
 }
 
 static void sig_channel_destroyed(IRC_CHANNEL_REC *channel)
 {
 	if (!IS_IRC_CHANNEL(channel))
-                return;
+		return;
 
 	if (!channel->server->disconnected && !channel->left && !channel->kicked) {
 		/* destroying channel record without actually
@@ -249,11 +249,11 @@ void irc_channels_init(void)
 
 	channel_events_init();
 	channel_rejoin_init(); /* after channel_events_init() */
-        channels_query_init();
+	channels_query_init();
 	irc_channels_setup_init();
 
 	bans_init();
-        modes_init();
+	modes_init();
 	mode_lists_init();
 	massjoin_init();
 	irc_nicklist_init();
@@ -267,11 +267,11 @@ void irc_channels_deinit(void)
 
 	channel_events_deinit();
 	channel_rejoin_deinit();
-        channels_query_deinit();
-        irc_channels_setup_deinit();
+	channels_query_deinit();
+	irc_channels_setup_deinit();
 
 	bans_deinit();
-        modes_deinit();
+	modes_deinit();
 	mode_lists_deinit();
 	massjoin_deinit();
 	irc_nicklist_deinit();

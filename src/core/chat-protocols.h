@@ -11,17 +11,17 @@ struct _CHAT_PROTOCOL_REC {
 	char *fullname;
 	char *chatnet;
 
-        CHATNET_REC *(*create_chatnet) (void);
+	CHATNET_REC *(*create_chatnet) (void);
 	SERVER_SETUP_REC *(*create_server_setup) (void);
-        CHANNEL_SETUP_REC *(*create_channel_setup) (void);
+	CHANNEL_SETUP_REC *(*create_channel_setup) (void);
 	SERVER_CONNECT_REC *(*create_server_connect) (void);
-        void (*destroy_server_connect) (SERVER_CONNECT_REC *);
+	void (*destroy_server_connect) (SERVER_CONNECT_REC *);
 
-        SERVER_REC *(*server_init_connect) (SERVER_CONNECT_REC *);
-        void (*server_connect) (SERVER_REC *);
+	SERVER_REC *(*server_init_connect) (SERVER_CONNECT_REC *);
+	void (*server_connect) (SERVER_REC *);
 	CHANNEL_REC *(*channel_create) (SERVER_REC *, const char *,
 					const char *, int);
-        QUERY_REC *(*query_create) (const char *, const char *, int);
+	QUERY_REC *(*query_create) (const char *, const char *, int);
 };
 
 extern GSList *chat_protocols;

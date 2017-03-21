@@ -72,11 +72,11 @@ static int module_list_sub(MODULE_REC *module, int mark_type,
 			   GString *submodules)
 {
 	GSList *tmp;
-        int all_dynamic, dynamic;
+	int all_dynamic, dynamic;
 
 	g_string_truncate(submodules, 0);
 
-        all_dynamic = -1;
+	all_dynamic = -1;
 	for (tmp = module->files; tmp != NULL; tmp = tmp->next) {
 		MODULE_FILE_REC *file = tmp->data;
 
@@ -100,23 +100,23 @@ static int module_list_sub(MODULE_REC *module, int mark_type,
 		}
 	}
 
-        return all_dynamic;
+	return all_dynamic;
 }
 
 static void cmd_load_list(void)
 {
 	GSList *tmp;
 	GString *submodules;
-        const char *type;
-        int dynamic;
+	const char *type;
+	int dynamic;
 
-        submodules = g_string_new(NULL);
+	submodules = g_string_new(NULL);
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_MODULE_HEADER);
 	for (tmp = modules; tmp != NULL; tmp = tmp->next) {
 		MODULE_REC *rec = tmp->data;
 
-                dynamic = module_list_sub(rec, FALSE, submodules);
+		dynamic = module_list_sub(rec, FALSE, submodules);
 		type = dynamic == -1 ? "mixed" :
 			dynamic ? "dynamic" : "static";
 
@@ -130,9 +130,9 @@ static void cmd_load_list(void)
 
 static char **module_prefixes_get(void)
 {
-        GSList *tmp;
-        char **list, *name;
-        int count;
+	GSList *tmp;
+	char **list, *name;
+	int count;
 
 	list = g_new(char *, 3 + 3*g_slist_length(chat_protocols));
 	list[0] = "fe";
@@ -145,12 +145,12 @@ static char **module_prefixes_get(void)
 		name = g_ascii_strdown(rec->name, -1);
 
 		list[count++] = name;
-                list[count++] = g_strconcat("fe_", name, NULL);
-                list[count++] = g_strconcat("fe_common_", name, NULL);
+		list[count++] = g_strconcat("fe_", name, NULL);
+		list[count++] = g_strconcat("fe_common_", name, NULL);
 	}
 	list[count] = NULL;
 
-        return list;
+	return list;
 }
 
 static void module_prefixes_free(char **list)
@@ -158,16 +158,16 @@ static void module_prefixes_free(char **list)
 	char **pos = list+2;
 
 	while (*pos != NULL) {
-                g_free(*pos);
-                pos++;
+		g_free(*pos);
+		pos++;
 	}
-        g_free(list);
+	g_free(list);
 }
 
 /* SYNTAX: LOAD <module> [<submodule>] */
 static void cmd_load(const char *data)
 {
-        char *rootmodule, *submodule;
+	char *rootmodule, *submodule;
 	char **module_prefixes;
 	void *free_arg;
 
@@ -186,7 +186,7 @@ static void cmd_load(const char *data)
 			module_load_sub(rootmodule, submodule,
 					module_prefixes);
 		}
-                module_prefixes_free(module_prefixes);
+		module_prefixes_free(module_prefixes);
 	}
 
 	cmd_params_free(free_arg);
@@ -196,8 +196,8 @@ static void cmd_load(const char *data)
 static void cmd_unload(const char *data)
 {
 	MODULE_REC *module;
-        MODULE_FILE_REC *file;
-        char *rootmodule, *submodule;
+	MODULE_FILE_REC *file;
+	char *rootmodule, *submodule;
 	void *free_arg;
 	GSList *tmp;
 	int all_dynamic;
@@ -230,7 +230,7 @@ static void cmd_unload(const char *data)
 
 	if (module == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
-                            TXT_MODULE_NOT_LOADED, rootmodule, submodule);
+			TXT_MODULE_NOT_LOADED, rootmodule, submodule);
 	}
 
 	cmd_params_free(free_arg);

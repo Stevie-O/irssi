@@ -45,7 +45,7 @@ static int dcc_send_one_file(int queue, const char *target, const char *fname,
 static void dcc_queue_send_next(int queue)
 {
 	IRC_SERVER_REC *server;
-        DCC_QUEUE_REC *qrec;
+	DCC_QUEUE_REC *qrec;
 	int send_started = FALSE;
 
 	while ((qrec = dcc_queue_get_next(queue)) != NULL && !send_started) {
@@ -62,7 +62,7 @@ static void dcc_queue_send_next(int queue)
 							 qrec->chat,
 							 qrec->passive);
 		}
-                dcc_queue_remove_head(queue);
+		dcc_queue_remove_head(queue);
 	}
 
 	if (!send_started) {
@@ -86,7 +86,7 @@ static char *dcc_send_get_file(const char *fname)
 		g_free(path);
 	}
 
-        return str;
+	return str;
 }
 
 static void dcc_send_add(const char *servertag, CHAT_DCC_REC *chat,
@@ -99,7 +99,7 @@ static void dcc_send_add(const char *servertag, CHAT_DCC_REC *chat,
 	int i, ret, files, flags, queue, start_new_transfer;
 
 	memset(&globbuf, 0, sizeof(globbuf));
-        flags = GLOB_NOCHECK | GLOB_TILDE;
+	flags = GLOB_NOCHECK | GLOB_TILDE;
 
 	/* this loop parses all <file> parameters and adds them to glubbuf */
 	for (;;) {
@@ -162,7 +162,7 @@ static void dcc_send_add(const char *servertag, CHAT_DCC_REC *chat,
 }
 
 /* DCC SEND [-append | -prepend | -flush | -rmtail | -rmhead | -passive]
-            <nick> <file> [<file> ...] */
+	<nick> <file> [<file> ...] */
 static void cmd_dcc_send(const char *data, IRC_SERVER_REC *server,
 			 WI_ITEM_REC *item)
 {
@@ -174,7 +174,7 @@ static void cmd_dcc_send(const char *data, IRC_SERVER_REC *server,
 	int queue, mode, passive;
 
 	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTIONS |
-			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS, 
+			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 			    "dcc send", &optlist, &nick, &fileargs))
 		return;
 
@@ -237,7 +237,7 @@ static SEND_DCC_REC *dcc_send_create(IRC_SERVER_REC *server,
 	dcc->queue = -1;
 
 	dcc_init_rec(DCC(dcc), server, chat, nick, arg);
-        return dcc;
+	return dcc;
 }
 
 static void sig_dcc_destroyed(SEND_DCC_REC *dcc)
@@ -253,7 +253,7 @@ static void sig_dcc_destroyed(SEND_DCC_REC *dcc)
 /* input function: DCC SEND - we're ready to send more data */
 static void dcc_send_data(SEND_DCC_REC *dcc)
 {
-        char buffer[512];
+	char buffer[512];
 	int ret;
 
 	ret = read(dcc->fhandle, buffer, sizeof(buffer));
@@ -307,7 +307,7 @@ static void dcc_send_read_size(SEND_DCC_REC *dcc)
 /* input function: DCC SEND - someone tried to connect to our socket */
 static void dcc_send_connected(SEND_DCC_REC *dcc)
 {
-        GIOChannel *handle;
+	GIOChannel *handle;
 	IPADDR addr;
 	int port;
 
@@ -322,7 +322,7 @@ static void dcc_send_connected(SEND_DCC_REC *dcc)
 
 	net_disconnect(dcc->handle);
 	g_source_remove(dcc->tagconn);
-        dcc->tagconn = -1;
+	dcc->tagconn = -1;
 
 	dcc->starttime = time(NULL);
 	dcc->handle = handle;
@@ -368,7 +368,7 @@ static int dcc_send_one_file(int queue, const char *target, const char *fname,
 	char *str;
 	char host[MAX_IP_LEN];
 	int hfile, port = 0;
-        SEND_DCC_REC *dcc;
+	SEND_DCC_REC *dcc;
 	IPADDR own_ip;
 	GIOChannel *handle;
 
@@ -423,7 +423,7 @@ static int dcc_send_one_file(int queue, const char *target, const char *fname,
 	dcc->size = st.st_size;
 	dcc->fhandle = hfile;
 	dcc->queue = queue;
-        dcc->file_quoted = strchr(fname, ' ') != NULL;
+	dcc->file_quoted = strchr(fname, ' ') != NULL;
 	if (!passive) {
 		dcc->tagconn = g_input_add(handle, G_INPUT_READ,
 					   (GInputFunction) dcc_send_connected,
@@ -459,7 +459,7 @@ static int dcc_send_one_file(int queue, const char *target, const char *fname,
 
 void dcc_send_init(void)
 {
-        dcc_register_type("SEND");
+	dcc_register_type("SEND");
 	settings_add_str("dcc", "dcc_upload_path", "~");
 	settings_add_bool("dcc", "dcc_send_replace_space_with_underscore", FALSE);
 	signal_add("dcc destroyed", (SIGNAL_FUNC) sig_dcc_destroyed);
@@ -474,7 +474,7 @@ void dcc_send_deinit(void)
 {
 	dcc_queue_deinit();
 
-        dcc_unregister_type("SEND");
+	dcc_unregister_type("SEND");
 	signal_remove("dcc destroyed", (SIGNAL_FUNC) sig_dcc_destroyed);
 	signal_remove("dcc reply send pasv", (SIGNAL_FUNC) dcc_send_connect);
 	command_unbind("dcc send", (SIGNAL_FUNC) cmd_dcc_send);

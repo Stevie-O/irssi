@@ -77,14 +77,14 @@ static void event_no_such_channel(IRC_SERVER_REC *server, const char *data)
 		channel_find(SERVER(server), channel) : NULL;
 
 	if (chanrec != NULL) {
-                /* !channel didn't exist, so join failed */
+		/* !channel didn't exist, so join failed */
 		setup = channel_setup_find(chanrec->name,
 					   chanrec->server->connrec->chatnet);
 		if (setup != NULL && setup->autojoin) {
 			/* it's autojoin channel though, so create it */
 			irc_send_cmdv(server, "JOIN !%s", chanrec->name);
 			g_free(params);
-                        return;
+			return;
 		}
 	}
 
@@ -271,7 +271,7 @@ static void event_join(IRC_SERVER_REC *server, const char *data, const char *nic
 
 	chanrec->joined = TRUE;
 	if (g_strcmp0(chanrec->name, channel) != 0) {
-                g_free(chanrec->name);
+		g_free(chanrec->name);
 		chanrec->name = g_strdup(channel);
 	}
 
@@ -336,7 +336,7 @@ static void event_invite(IRC_SERVER_REC *server, const char *data)
 	params = event_get_params(data, 2, NULL, &channel);
 
 	if (irc_channel_find(server, channel) == NULL) {
-                /* check if we're supposed to autojoin this channel */
+		/* check if we're supposed to autojoin this channel */
 		CHANNEL_SETUP_REC *setup;
 
 		setup = channel_setup_find(channel, server->connrec->chatnet);

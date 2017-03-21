@@ -102,19 +102,19 @@ static int display_firsttimer = FALSE;
 
 static void sig_exit(void)
 {
-        quitting = TRUE;
+	quitting = TRUE;
 }
 
 /* redraw irssi's screen.. */
 void irssi_redraw(void)
 {
 	dirty = TRUE;
-        full_redraw = TRUE;
+	full_redraw = TRUE;
 }
 
 void irssi_set_dirty(void)
 {
-        dirty = TRUE;
+	dirty = TRUE;
 }
 
 static void dirty_check(void)
@@ -122,10 +122,10 @@ static void dirty_check(void)
 	if (!dirty)
 		return;
 
-        term_resize_dirty();
+	term_resize_dirty();
 
 	if (full_redraw) {
-                full_redraw = FALSE;
+		full_redraw = FALSE;
 
 		/* first clear the screen so curses will be
 		   forced to redraw the screen */
@@ -137,10 +137,10 @@ static void dirty_check(void)
 	}
 
 	mainwindows_redraw_dirty();
-        statusbar_redraw_dirty();
+	statusbar_redraw_dirty();
 	term_refresh(NULL);
 
-        dirty = FALSE;
+	dirty = FALSE;
 }
 
 static void textui_init(void)
@@ -213,16 +213,16 @@ static void textui_deinit(void)
 {
 	signal(SIGINT, SIG_DFL);
 
-        term_refresh_freeze();
+	term_refresh_freeze();
 	while (modules != NULL)
 		module_unload(modules->data);
 
 #ifdef HAVE_STATIC_PERL
-        perl_core_deinit();
-        fe_perl_deinit();
+	perl_core_deinit();
+	fe_perl_deinit();
 #endif
 
-        dirty_check(); /* one last time to print any quit messages */
+	dirty_check(); /* one last time to print any quit messages */
 	signal_remove("gui exit", (SIGNAL_FUNC) sig_exit);
 
 	lastlog_deinit();

@@ -10,8 +10,8 @@
    reply before aborting.
 
    ... - char *start, int argpos, char *start, int argpos, ..., NULL,
-         char *stop, int argpos, char *stop, int argpos, ..., NULL,
-         char *optional, int argpos, ..., NULL
+	char *stop, int argpos, char *stop, int argpos, ..., NULL,
+	char *optional, int argpos, ..., NULL
    List of events that start and stop this redirection.
    Start event list may be just NULL, but there must be at least one
    stop event. Optional events are checked only if they are received

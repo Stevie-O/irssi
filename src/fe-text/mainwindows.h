@@ -7,13 +7,13 @@
 #define WINDOW_MIN_SIZE 2
 
 #define MAIN_WINDOW_TEXT_HEIGHT(window) \
-        ((window)->height-(window)->statusbar_lines)
+	((window)->height-(window)->statusbar_lines)
 
 typedef struct {
 	WINDOW_REC *active;
 
 	TERM_WINDOW *screen_win;
-        int sticky_windows; /* number of sticky windows */
+	int sticky_windows; /* number of sticky windows */
 
 	int first_line, last_line; /* first/last line used by this window (0..x) (includes statusbars) */
 	int width, height; /* width/height of the window (includes statusbars) */

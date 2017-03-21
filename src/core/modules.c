@@ -50,7 +50,7 @@ void *module_check_cast_module(void *object, int type_pos,
 /* return unique number across all modules for `id' */
 int module_get_uniq_id(const char *module, int id)
 {
-        GHashTable *ids;
+	GHashTable *ids;
 	gpointer origkey, uniqid, idp;
 	int ret;
 
@@ -68,10 +68,10 @@ int module_get_uniq_id(const char *module, int id)
 	if (!g_hash_table_lookup_extended(ids, idp, &origkey, &uniqid)) {
 		/* not found */
 		ret = next_uniq_id++;
-                g_hash_table_insert(ids, idp, GINT_TO_POINTER(ret));
-                g_hash_table_insert(uniqids, GINT_TO_POINTER(ret), idp);
+		g_hash_table_insert(ids, idp, GINT_TO_POINTER(ret));
+		g_hash_table_insert(uniqids, GINT_TO_POINTER(ret), idp);
 	} else {
-                ret = GPOINTER_TO_INT(uniqid);
+		ret = GPOINTER_TO_INT(uniqid);
 	}
 
 	return ret;
@@ -80,7 +80,7 @@ int module_get_uniq_id(const char *module, int id)
 /* return unique number across all modules for `id' */
 int module_get_uniq_id_str(const char *module, const char *id)
 {
-        GHashTable *ids;
+	GHashTable *ids;
 	gpointer origkey, uniqid;
 	int ret;
 
@@ -100,10 +100,10 @@ int module_get_uniq_id_str(const char *module, const char *id)
 
 		saveid = g_strdup(id);
 		ret = next_uniq_id++;
-                g_hash_table_insert(ids, saveid, GINT_TO_POINTER(ret));
-                g_hash_table_insert(uniqstrids, GINT_TO_POINTER(ret), saveid);
+		g_hash_table_insert(ids, saveid, GINT_TO_POINTER(ret));
+		g_hash_table_insert(uniqstrids, GINT_TO_POINTER(ret), saveid);
 	} else {
-                ret = GPOINTER_TO_INT(uniqid);
+		ret = GPOINTER_TO_INT(uniqid);
 	}
 
 	return ret;
@@ -163,13 +163,13 @@ const char *module_find_id_str(const char *module, int uniqid)
 
 static void uniq_destroy(gpointer key, gpointer value)
 {
-        g_hash_table_remove(uniqids, value);
+	g_hash_table_remove(uniqids, value);
 }
 
 static void uniq_destroy_str(gpointer key, gpointer value)
 {
-        g_hash_table_remove(uniqstrids, value);
-        g_free(key);
+	g_hash_table_remove(uniqstrids, value);
+	g_free(key);
 }
 
 /* Destroy unique IDs from `module'. This function is automatically called
@@ -207,14 +207,14 @@ MODULE_FILE_REC *module_register_full(const char *name, const char *submodule,
 				      const char *defined_module_name)
 {
 	MODULE_REC *module;
-        MODULE_FILE_REC *file;
+	MODULE_FILE_REC *file;
 
 	module = module_find(name);
 	if (module == NULL) {
 		module = g_new0(MODULE_REC, 1);
 		module->name = g_strdup(name);
 
-                modules = g_slist_append(modules, module);
+		modules = g_slist_append(modules, module);
 	}
 
 	file = module_file_find(module, submodule);
@@ -224,10 +224,10 @@ MODULE_FILE_REC *module_register_full(const char *name, const char *submodule,
 	file = g_new0(MODULE_FILE_REC, 1);
 	file->root = module;
 	file->name = g_strdup(submodule);
-        file->defined_module_name = g_strdup(defined_module_name);
+	file->defined_module_name = g_strdup(defined_module_name);
 
 	module->files = g_slist_append(module->files, file);
-        return file;
+	return file;
 }
 
 MODULE_REC *module_find(const char *name)
@@ -252,15 +252,15 @@ MODULE_FILE_REC *module_file_find(MODULE_REC *module, const char *name)
 		MODULE_FILE_REC *rec = tmp->data;
 
 		if (g_strcmp0(rec->name, name) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 static void uniq_get_modules(char *key, void *value, GSList **list)
 {
-        *list = g_slist_append(*list, g_strdup(key));
+	*list = g_slist_append(*list, g_strdup(key));
 }
 
 void modules_init(void)

@@ -42,7 +42,7 @@ static void net_disconnect_remove(NET_DISCONNECT_REC *rec)
 	disconnects = g_slist_remove(disconnects, rec);
 
 	g_source_remove(rec->tag);
-        net_disconnect(rec->handle);
+	net_disconnect(rec->handle);
 	g_free(rec);
 }
 
@@ -60,7 +60,7 @@ static void sig_disconnect(NET_DISCONNECT_REC *rec)
 			/* socket was closed */
 			net_disconnect_remove(rec);
 		}
-                count++;
+		count++;
 	} while (ret == sizeof(buf) && count < 10);
 }
 
@@ -135,7 +135,7 @@ void net_disconnect_deinit(void)
 			continue;
 		}
 
-                fd = g_io_channel_unix_get_fd(rec->handle);
+		fd = g_io_channel_unix_get_fd(rec->handle);
 		FD_ZERO(&set);
 		FD_SET(fd, &set);
 		tv.tv_sec = first ? 0 : max-now;

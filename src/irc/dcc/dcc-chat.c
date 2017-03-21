@@ -35,22 +35,22 @@
 
 static char *dcc_chat_get_new_id(const char *nick)
 {
-        char *id;
+	char *id;
 	int num;
 
-        g_return_val_if_fail(nick != NULL, NULL);
+	g_return_val_if_fail(nick != NULL, NULL);
 
 	if (dcc_chat_find_id(nick) == NULL) {
 		/* same as nick, good */
-                return g_strdup(nick);
+		return g_strdup(nick);
 	}
 
 	/* keep adding numbers after nick until some of them isn't found */
 	for (num = 2;; num++) {
-                id = g_strdup_printf("%s%d", nick, num);
+		id = g_strdup_printf("%s%d", nick, num);
 		if (dcc_chat_find_id(id) == NULL)
-                        return id;
-                g_free(id);
+			return id;
+		g_free(id);
 	}
 }
 
@@ -63,10 +63,10 @@ CHAT_DCC_REC *dcc_chat_create(IRC_SERVER_REC *server,
 	dcc = g_new0(CHAT_DCC_REC, 1);
 	dcc->orig_type = dcc->type = DCC_CHAT_TYPE;
 	dcc->mirc_ctcp = settings_get_bool("dcc_mirc_ctcp");
-        dcc->id = dcc_chat_get_new_id(nick);
+	dcc->id = dcc_chat_get_new_id(nick);
 
 	dcc_init_rec(DCC(dcc), server, chat, nick, arg);
-        return dcc;
+	return dcc;
 }
 
 static void dcc_remove_chat_refs(CHAT_DCC_REC *dcc)
@@ -132,7 +132,7 @@ static CHAT_DCC_REC *dcc_chat_find_nick(IRC_SERVER_REC *server,
 void dcc_chat_send(CHAT_DCC_REC *dcc, const char *data)
 {
 	g_return_if_fail(IS_DCC_CHAT(dcc));
-        g_return_if_fail(dcc->sendbuf != NULL);
+	g_return_if_fail(dcc->sendbuf != NULL);
 	g_return_if_fail(data != NULL);
 
 	net_sendbuffer_send(dcc->sendbuf, data, strlen(data));
@@ -153,7 +153,7 @@ void dcc_ctcp_message(IRC_SERVER_REC *server, const char *target,
 		str = g_strdup_printf("%s\001%s\001", chat->mirc_ctcp ? "" :
 				      notice ? "CTCP_REPLY " :
 				      "CTCP_MESSAGE ", recoded);
-                dcc_chat_send(chat, str);
+		dcc_chat_send(chat, str);
 		g_free(str);
 	} else {
 		recoded = recode_out(SERVER(server), msg, target);
@@ -179,7 +179,7 @@ CHAT_DCC_REC *item_get_dcc(WI_ITEM_REC *item)
 static void cmd_msg(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 {
 	CHAT_DCC_REC *dcc;
-        GHashTable *optlist;
+	GHashTable *optlist;
 	char *text, *target;
 	void *free_arg;
 
@@ -305,7 +305,7 @@ void dcc_chat_input(CHAT_DCC_REC *dcc)
 
 		if (ret == -1) {
 			/* connection lost */
-                        dcc->connection_lost = TRUE;
+			dcc->connection_lost = TRUE;
 			dcc_close(DCC(dcc));
 			break;
 		}
@@ -326,7 +326,7 @@ void dcc_chat_input(CHAT_DCC_REC *dcc)
 static void dcc_chat_listen(CHAT_DCC_REC *dcc)
 {
 	IPADDR ip;
-        GIOChannel *handle;
+	GIOChannel *handle;
 	int port;
 
 	g_return_if_fail(IS_DCC_CHAT(dcc));
@@ -586,13 +586,13 @@ static void cmd_whois(const char *data, SERVER_REC *server,
 
 	g_return_if_fail(data != NULL);
 
-        /* /WHOIS without target in DCC CHAT query? */
+	/* /WHOIS without target in DCC CHAT query? */
 	if (*data == '\0') {
 		dcc = item_get_dcc(item);
 		if (dcc != NULL) {
 			signal_emit("command whois", 3,
 				    dcc->nick, server, item);
-                        signal_stop();
+			signal_stop();
 		}
 	}
 }
@@ -611,12 +611,12 @@ static void ctcp_msg_dcc_chat(IRC_SERVER_REC *server, const char *data,
 			      const char *nick, const char *addr,
 			      const char *target, CHAT_DCC_REC *chat)
 {
-        CHAT_DCC_REC *dcc;
+	CHAT_DCC_REC *dcc;
 	char **params;
 	int paramcount;
-        int passive, autoallow = FALSE;
+	int passive, autoallow = FALSE;
 
-        /* CHAT <unused> <address> <port> */
+	/* CHAT <unused> <address> <port> */
 	/* CHAT <unused> <address> 0 <id> (DCC CHAT passive protocol) */
 	params = g_strsplit(data, " ", -1);
 	paramcount = g_strv_length(params);
@@ -713,7 +713,7 @@ static void dcc_chat_msg(CHAT_DCC_REC *dcc, const char *msg)
 	event = g_strconcat(reply ? "dcc reply " : "dcc ctcp ", msg+1, NULL);
 	if (event[strlen(event)-1] == 1) event[strlen(event)-1] = '\0';
 
-        cmd = event + (reply ? 10 : 9);
+	cmd = event + (reply ? 10 : 9);
 	ptr = strchr(cmd, ' ');
 	if (ptr != NULL) *ptr++ = '\0'; else ptr = "";
 
@@ -725,7 +725,7 @@ static void dcc_chat_msg(CHAT_DCC_REC *dcc, const char *msg)
 			    "default dcc ctcp", 3, dcc, cmd, ptr);
 	}
 
-        g_free(cmd);
+	g_free(cmd);
 	g_free(event);
 
 	signal_stop();
@@ -754,7 +754,7 @@ static void ctcp_reply_dcc_reject(IRC_SERVER_REC *server, const char *data,
 				  const char *nick, const char *addr,
 				  DCC_REC *chat)
 {
-        DCC_REC *dcc;
+	DCC_REC *dcc;
 
 	/* default REJECT handler checks args too -
 	   we don't care about it in DCC chats. */
@@ -769,8 +769,8 @@ static void ctcp_reply_dcc_reject(IRC_SERVER_REC *server, const char *data,
 static void event_nick(IRC_SERVER_REC *server, const char *data,
 		       const char *orignick)
 {
-        QUERY_REC *query;
-        CHAT_DCC_REC *dcc;
+	QUERY_REC *query;
+	CHAT_DCC_REC *dcc;
 	char *params, *nick, *tag;
 
 	g_return_if_fail(data != NULL);
@@ -780,7 +780,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 	if (g_ascii_strcasecmp(nick, orignick) == 0) {
 		/* shouldn't happen, but just to be sure irssi doesn't
 		   get into infinite loop */
-                g_free(params);
+		g_free(params);
 		return;
 	}
 
@@ -790,9 +790,9 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 
 		tag = g_strconcat("=", dcc->id, NULL);
 		query = irc_query_find(server, tag);
-                g_free(tag);
+		g_free(tag);
 
-                /* change the id too */
+		/* change the id too */
 		g_free(dcc->id);
 		dcc->id = NULL;
 		dcc->id = dcc_chat_get_new_id(nick);
@@ -800,7 +800,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 		if (query != NULL) {
 			tag = g_strconcat("=", dcc->id, NULL);
 			query_change_nick(query, tag);
-                        g_free(tag);
+			g_free(tag);
 		}
 	}
 
@@ -809,7 +809,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 
 void dcc_chat_init(void)
 {
-        dcc_register_type("CHAT");
+	dcc_register_type("CHAT");
 	settings_add_bool("dcc", "dcc_mirc_ctcp", FALSE);
 	settings_add_str("dcc", "dcc_autochat_masks", "");
 
@@ -833,7 +833,7 @@ void dcc_chat_init(void)
 
 void dcc_chat_deinit(void)
 {
-        dcc_unregister_type("CHAT");
+	dcc_unregister_type("CHAT");
 	command_unbind("msg", (SIGNAL_FUNC) cmd_msg);
 	command_unbind("me", (SIGNAL_FUNC) cmd_me);
 	command_unbind("action", (SIGNAL_FUNC) cmd_action);

@@ -46,7 +46,7 @@
 
 typedef struct {
 	char *stash;
-        PERL_OBJECT_FUNC fill_func;
+	PERL_OBJECT_FUNC fill_func;
 } PERL_OBJECT_REC;
 
 static GHashTable *iobject_stashes, *plain_stashes;
@@ -62,17 +62,17 @@ const char *perl_get_package(void)
 char *perl_function_get_package(const char *function)
 {
 	const char *p;
-        int pos;
+	int pos;
 
-        pos = 0;
+	pos = 0;
 	for (p = function; *p != '\0'; p++) {
 		if (*p == ':' && p[1] == ':') {
 			if (++pos == 3)
-                                return g_strndup(function, (int) (p-function));
+				return g_strndup(function, (int) (p-function));
 		}
 	}
 
-        return NULL;
+	return NULL;
 }
 
 SV *perl_func_sv_inc(SV *func, const char *package)
@@ -84,12 +84,12 @@ SV *perl_func_sv_inc(SV *func, const char *package)
 		name = g_strdup_printf("%s::%s", package,
 				       SvPV_nolen(func));
 		func = new_pv(name);
-                g_free(name);
+		g_free(name);
 	} else {
 		SvREFCNT_inc(func);
 	}
 
-        return func;
+	return func;
 }
 
 static int magic_free_object(pTHX_ SV *sv, MAGIC *mg)
@@ -119,7 +119,7 @@ static SV *create_sv_ptr(void *object)
 
 SV *irssi_bless_iobject(int type, int chat_type, void *object)
 {
-        PERL_OBJECT_REC *rec;
+	PERL_OBJECT_REC *rec;
 	HV *stash, *hv;
 
 	g_return_val_if_fail((type & ~0xffff) == 0, NULL);
@@ -128,7 +128,7 @@ SV *irssi_bless_iobject(int type, int chat_type, void *object)
 	rec = g_hash_table_lookup(iobject_stashes,
 				  GINT_TO_POINTER(type | (chat_type << 16)));
 	if (rec == NULL) {
-                /* unknown iobject */
+		/* unknown iobject */
 		return create_sv_ptr(object);
 	}
 
@@ -136,13 +136,13 @@ SV *irssi_bless_iobject(int type, int chat_type, void *object)
 
 	hv = newHV();
 	(void) hv_store(hv, "_irssi", 6, create_sv_ptr(object), 0);
-        rec->fill_func(hv, object);
+	rec->fill_func(hv, object);
 	return sv_bless(newRV_noinc((SV*)hv), stash);
 }
 
 SV *irssi_bless_plain(const char *stash, void *object)
 {
-        PERL_OBJECT_FUNC fill_func;
+	PERL_OBJECT_FUNC fill_func;
 	HV *hv;
 
 	fill_func = g_hash_table_lookup(plain_stashes, stash);
@@ -156,10 +156,10 @@ SV *irssi_bless_plain(const char *stash, void *object)
 
 int irssi_is_ref_object(SV *o)
 {
-        SV **sv;
+	SV **sv;
 	HV *hv;
 
-        hv = hvref(o);
+	hv = hvref(o);
 	if (hv != NULL) {
 		sv = hv_fetch(hv, "_irssi", 6, 0);
 		if (sv != NULL)
@@ -171,11 +171,11 @@ int irssi_is_ref_object(SV *o)
 
 void *irssi_ref_object(SV *o)
 {
-        SV **sv;
+	SV **sv;
 	HV *hv;
 	void *p;
 
-        hv = hvref(o);
+	hv = hvref(o);
 	if (hv == NULL)
 		return NULL;
 
@@ -190,12 +190,12 @@ void irssi_add_object(int type, int chat_type, const char *stash,
 		      PERL_OBJECT_FUNC func)
 {
 	PERL_OBJECT_REC *rec;
-        void *hash;
+	void *hash;
 
 	g_return_if_fail((type & ~0xffff) == 0);
 	g_return_if_fail((chat_type & ~0xffff) == 0);
 
-        hash = GINT_TO_POINTER(type | (chat_type << 16));
+	hash = GINT_TO_POINTER(type | (chat_type << 16));
 	rec = g_hash_table_lookup(iobject_stashes, hash);
 	if (rec == NULL) {
 		rec = g_new(PERL_OBJECT_REC, 1);
@@ -207,15 +207,15 @@ void irssi_add_object(int type, int chat_type, const char *stash,
 
 void irssi_add_plain(const char *stash, PERL_OBJECT_FUNC func)
 {
-        if (g_hash_table_lookup(plain_stashes, stash) == NULL)
+	if (g_hash_table_lookup(plain_stashes, stash) == NULL)
 		g_hash_table_insert(plain_stashes, g_strdup(stash), func);
 }
 
 void irssi_add_plains(PLAIN_OBJECT_INIT_REC *objects)
 {
 	while (objects->name != NULL) {
-                irssi_add_plain(objects->name, objects->fill_func);
-                objects++;
+		irssi_add_plain(objects->name, objects->fill_func);
+		objects++;
 	}
 }
 
@@ -223,8 +223,8 @@ char *perl_get_use_list(void)
 {
 	GString *str;
 	GSList *tmp;
-        char *ret;
-        const char *use_lib;
+	char *ret;
+	const char *use_lib;
 
 	str = g_string_new(NULL);
 
@@ -232,7 +232,7 @@ char *perl_get_use_list(void)
 	g_string_printf(str, "use lib qw(%s/scripts "SCRIPTDIR" %s);",
 			 get_irssi_dir(), use_lib);
 
-        g_string_append(str, "use Irssi;");
+	g_string_append(str, "use Irssi;");
 	if (irssi_gui != IRSSI_GUI_NONE)
 		g_string_append(str, "use Irssi::UI;");
 
@@ -240,8 +240,8 @@ char *perl_get_use_list(void)
 		g_string_append_printf(str, "use Irssi::%s;", (char *) tmp->data);
 
 	ret = str->str;
-        g_string_free(str, FALSE);
-        return ret;
+	g_string_free(str, FALSE);
+	return ret;
 }
 
 void irssi_callXS(void (*subaddr)(pTHX_ CV* cv), CV *cv, SV **mark)
@@ -255,8 +255,8 @@ void perl_chatnet_fill_hash(HV *hv, CHATNET_REC *chatnet)
 {
 	char *type, *chat_type;
 
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(chatnet != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(chatnet != NULL);
 
 	type = "CHATNET";
 	chat_type = (char *) chat_protocol_find_id(chatnet->chat_type)->name;
@@ -278,8 +278,8 @@ void perl_connect_fill_hash(HV *hv, SERVER_CONNECT_REC *conn)
 {
 	char *type, *chat_type;
 
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(conn != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(conn != NULL);
 
 	type = "SERVER CONNECT";
 	chat_type = (char *) chat_protocol_find_id(conn->chat_type)->name;
@@ -311,8 +311,8 @@ void perl_server_fill_hash(HV *hv, SERVER_REC *server)
 	char *type;
 	HV *stash;
 
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(server != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(server != NULL);
 
 	perl_connect_fill_hash(hv, server->connrec);
 
@@ -345,8 +345,8 @@ void perl_window_item_fill_hash(HV *hv, WI_ITEM_REC *item)
 {
 	char *type, *chat_type;
 
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(item != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(item != NULL);
 
 	type = (char *) module_find_id_str("WINDOW ITEM TYPE", item->type);
 
@@ -368,12 +368,12 @@ void perl_window_item_fill_hash(HV *hv, WI_ITEM_REC *item)
 
 void perl_channel_fill_hash(HV *hv, CHANNEL_REC *channel)
 {
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(channel != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(channel != NULL);
 
 	perl_window_item_fill_hash(hv, (WI_ITEM_REC *) channel);
 
-        if (channel->ownnick != NULL)
+	if (channel->ownnick != NULL)
 		(void) hv_store(hv, "ownnick", 7, iobject_bless(channel->ownnick), 0);
 
 	(void) hv_store(hv, "name", 4, new_pv(channel->name), 0);
@@ -398,8 +398,8 @@ void perl_channel_fill_hash(HV *hv, CHANNEL_REC *channel)
 
 void perl_query_fill_hash(HV *hv, QUERY_REC *query)
 {
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(query != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(query != NULL);
 
 	perl_window_item_fill_hash(hv, (WI_ITEM_REC *) query);
 
@@ -414,8 +414,8 @@ void perl_nick_fill_hash(HV *hv, NICK_REC *nick)
 {
 	char *type, *chat_type;
 
-        g_return_if_fail(hv != NULL);
-        g_return_if_fail(nick != NULL);
+	g_return_if_fail(hv != NULL);
+	g_return_if_fail(nick != NULL);
 
 	type = "NICK";
 	chat_type = (char *) chat_protocol_find_id(nick->chat_type)->name;
@@ -537,13 +537,13 @@ static void remove_newlines(char *str)
 
 void perl_command(const char *cmd, SERVER_REC *server, WI_ITEM_REC *item)
 {
-        const char *cmdchars;
+	const char *cmdchars;
 	char *sendcmd = (char *) cmd;
 
 	if (*cmd == '\0')
-                return;
+		return;
 
-        cmdchars = settings_get_str("cmdchars");
+	cmdchars = settings_get_str("cmdchars");
 	if (strchr(cmdchars, *cmd) == NULL) {
 		/* no command char - let's put it there.. */
 		sendcmd = g_strdup_printf("%c%s", *cmdchars, cmd);
@@ -579,7 +579,7 @@ static void perl_register_protocol(CHAT_PROTOCOL_REC *rec)
 
 	char *name, stash[100], code[100], *pcode;
 	int type, chat_type, n;
-        SV *sv;
+	SV *sv;
 
 	chat_type = chat_protocol_lookup(rec->name);
 	g_return_if_fail(chat_type >= 0);
@@ -598,13 +598,13 @@ static void perl_register_protocol(CHAT_PROTOCOL_REC *rec)
 	irssi_add_object(type, chat_type, stash,
 			 (PERL_OBJECT_FUNC) perl_query_fill_hash);
 
-        /* channel nicks */
+	/* channel nicks */
 	type = module_get_uniq_id("NICK", 0);
 	g_snprintf(stash, sizeof(stash), "Irssi::%s::Nick", name);
 	irssi_add_object(type, chat_type, stash,
 			 (PERL_OBJECT_FUNC) perl_nick_fill_hash);
 
-        /* chatnets */
+	/* chatnets */
 	type = module_get_uniq_id("CHATNET", 0);
 	g_snprintf(stash, sizeof(stash), "Irssi::%s::Chatnet", name);
 	irssi_add_object(type, chat_type, stash,
@@ -644,15 +644,15 @@ static void perl_register_protocol(CHAT_PROTOCOL_REC *rec)
 
 static void free_iobject_hash(void *key, PERL_OBJECT_REC *rec)
 {
-        g_free(rec->stash);
+	g_free(rec->stash);
 	g_free(rec);
 }
 
 static int free_iobject_proto(void *key, void *value, void *chat_type)
 {
 	if ((GPOINTER_TO_INT(key) >> 16) == GPOINTER_TO_INT(chat_type)) {
-                free_iobject_hash(key, value);
-                return TRUE;
+		free_iobject_hash(key, value);
+		return TRUE;
 	}
 
 	return FALSE;
@@ -692,9 +692,9 @@ void perl_common_start(void)
 					(GCompareFunc) g_direct_equal);
 	plain_stashes = g_hash_table_new((GHashFunc) g_str_hash,
 					 (GCompareFunc) g_str_equal);
-        irssi_add_plains(core_plains);
+	irssi_add_plains(core_plains);
 
-        use_protocols = NULL;
+	use_protocols = NULL;
 	g_slist_foreach(chat_protocols, (GFunc) perl_register_protocol, NULL);
 
 	signal_add("chat protocol created", (SIGNAL_FUNC) perl_register_protocol);
@@ -703,17 +703,17 @@ void perl_common_start(void)
 
 void perl_common_stop(void)
 {
-        g_hash_table_foreach(iobject_stashes, (GHFunc) free_iobject_hash, NULL);
+	g_hash_table_foreach(iobject_stashes, (GHFunc) free_iobject_hash, NULL);
 	g_hash_table_destroy(iobject_stashes);
-        iobject_stashes = NULL;
+	iobject_stashes = NULL;
 
 	g_hash_table_foreach(plain_stashes, (GHFunc) g_free, NULL);
 	g_hash_table_destroy(plain_stashes);
-        plain_stashes = NULL;
+	plain_stashes = NULL;
 
 	g_slist_foreach(use_protocols, (GFunc) g_free, NULL);
 	g_slist_free(use_protocols);
-        use_protocols = NULL;
+	use_protocols = NULL;
 
 	signal_remove("chat protocol created", (SIGNAL_FUNC) perl_register_protocol);
 	signal_remove("chat protocol destroyed", (SIGNAL_FUNC) perl_unregister_protocol);

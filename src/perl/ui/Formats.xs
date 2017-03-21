@@ -89,7 +89,7 @@ PREINIT:
 	int n;
 PPCODE:
 	charargs = g_new0(char *, items-5+1);
-        for (n = 5; n < items; n++) {
+	for (n = 5; n < items; n++) {
 		charargs[n-5] = SvPV_nolen(ST(n));
 	}
 

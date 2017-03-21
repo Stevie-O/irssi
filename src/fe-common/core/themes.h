@@ -15,7 +15,7 @@ typedef struct {
 
 	char *path;
 	char *name;
-        time_t last_modify;
+	time_t last_modify;
 
 	int default_color; /* default color to use with text with default
 			      background. default is -1 which means the
@@ -25,7 +25,7 @@ typedef struct {
 
 	GHashTable *modules;
 
-        int replace_keys[256]; /* index to replace_values for each char */
+	int replace_keys[256]; /* index to replace_values for each char */
 	GSList *replace_values;
 	GHashTable *abstracts;
 

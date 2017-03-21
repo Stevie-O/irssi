@@ -69,7 +69,7 @@ static void cmd_window_scroll(const char *data)
 
 	gui = WINDOW_GUI(active_win);
 	if (g_ascii_strcasecmp(data, "default") == 0) {
-                gui->use_scroll = FALSE;
+		gui->use_scroll = FALSE;
 	} else if (g_ascii_strcasecmp(data, "on") == 0) {
 		gui->use_scroll = TRUE;
 		gui->scroll = TRUE;
@@ -79,7 +79,7 @@ static void cmd_window_scroll(const char *data)
 	} else if (*data != '\0') {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
 			    TXT_WINDOW_SCROLL_UNKNOWN, data);
-                return;
+		return;
 	}
 
 	printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
@@ -173,7 +173,7 @@ static void cmd_scrollback_levelclear(const char *data)
 
 static void scrollback_goto_line(int linenum)
 {
-        TEXT_BUFFER_VIEW_REC *view;
+	TEXT_BUFFER_VIEW_REC *view;
 
 	view = WINDOW_GUI(active_win)->view;
 	if (view->buffer->lines_count == 0)
@@ -185,7 +185,7 @@ static void scrollback_goto_line(int linenum)
 
 static void scrollback_goto_time(const char *datearg, const char *timearg)
 {
-        LINE_REC *line;
+	LINE_REC *line;
 	struct tm tm;
 	time_t now, stamp;
 	int day, month;
@@ -200,24 +200,24 @@ static void scrollback_goto_time(const char *datearg, const char *timearg)
 		/* dd[.mm] */
 		memcpy(&tm, localtime(&stamp), sizeof(struct tm));
 
-                day = month = 0;
+		day = month = 0;
 		sscanf(datearg, "%d.%d", &day, &month);
 		if (day <= 0) return;
 
 		if (month <= 0) {
-                        /* month not given */
+			/* month not given */
 			if (day > tm.tm_mday) {
-                                /* last month's day */
+				/* last month's day */
 				if (tm.tm_mon > 0)
 					tm.tm_mon--;
 				else {
-                                        /* last year's day.. */
+					/* last year's day.. */
 					tm.tm_year--;
-                                        tm.tm_mon = 11;
+					tm.tm_mon = 11;
 				}
 			}
 		} else {
-                        month--;
+			month--;
 			if (month > tm.tm_mon)
 				tm.tm_year--;
 			tm.tm_mon = month;
@@ -271,13 +271,13 @@ static void cmd_scrollback_goto(const char *data)
 
 	if (*timearg == '\0' && (*datearg == '-' || *datearg == '+')) {
 		/* go forward/backward n lines */
-                lines = atoi(datearg + (*datearg == '-' ? 0 : 1));
+		lines = atoi(datearg + (*datearg == '-' ? 0 : 1));
 		gui_window_scroll(active_win, lines);
 	} else if (*timearg == '\0' && is_numeric(datearg, '\0')) {
 		/* go to n'th line. */
 		scrollback_goto_line(atoi(datearg));
 	} else {
-                /* should be timestamp */
+		/* should be timestamp */
 		scrollback_goto_time(datearg, timearg);
 	}
 
@@ -287,7 +287,7 @@ static void cmd_scrollback_goto(const char *data)
 /* SYNTAX: SCROLLBACK HOME */
 static void cmd_scrollback_home(const char *data)
 {
-        TEXT_BUFFER_REC *buffer;
+	TEXT_BUFFER_REC *buffer;
 
 	buffer = WINDOW_GUI(active_win)->view->buffer;
 	if (buffer->lines_count > 0)
@@ -297,7 +297,7 @@ static void cmd_scrollback_home(const char *data)
 /* SYNTAX: SCROLLBACK END */
 static void cmd_scrollback_end(const char *data)
 {
-        TEXT_BUFFER_VIEW_REC *view;
+	TEXT_BUFFER_VIEW_REC *view;
 
 	view = WINDOW_GUI(active_win)->view;
 	if (view->bottom_startline == NULL ||
@@ -312,10 +312,10 @@ static void cmd_scrollback_end(const char *data)
 static void cmd_scrollback_status(void)
 {
 	GSList *tmp;
-        int total_lines;
+	int total_lines;
 	size_t window_mem, total_mem;
 
-        total_lines = 0; total_mem = 0;
+	total_lines = 0; total_mem = 0;
 	for (tmp = windows; tmp != NULL; tmp = tmp->next) {
 		WINDOW_REC *window = tmp->data;
 		TEXT_BUFFER_VIEW_REC *view;
@@ -327,7 +327,7 @@ static void cmd_scrollback_status(void)
 			sizeof(TEXT_CHUNK_REC);
 		window_mem += view->buffer->lines_count * sizeof(LINE_REC);
 		total_lines += view->buffer->lines_count;
-                total_mem += window_mem;
+		total_mem += window_mem;
 		printtext(NULL, NULL, MSGLEVEL_CLIENTCRAP,
 			  "Window %d: %d lines, %dkB of data",
 			  window->refnum, view->buffer->lines_count,
@@ -349,7 +349,7 @@ static void sig_away_changed(SERVER_REC *server)
 	for (tmp = windows; tmp != NULL; tmp = tmp->next) {
 		WINDOW_REC *rec = tmp->data;
 
-                textbuffer_view_set_bookmark_bottom(WINDOW_GUI(rec)->view,
+		textbuffer_view_set_bookmark_bottom(WINDOW_GUI(rec)->view,
 						    "lastlog_last_away");
 	}
 }

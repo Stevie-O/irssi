@@ -131,17 +131,17 @@ static void event_whois_realhost(IRC_SERVER_REC *server, const char *data)
 
 	g_return_if_fail(data != NULL);
 
-        /* <yournick> real hostname <nick> <hostname> */
+	/* <yournick> real hostname <nick> <hostname> */
 	params = event_get_params(data, 5, NULL, &nick, &txt_real,
 				  &txt_hostname, &hostname);
 	if (g_strcmp0(txt_real, "real") != 0 ||
 	    g_strcmp0(txt_hostname, "hostname") != 0) {
 		/* <yournick> <nick> :... from <hostname> */
-                g_free(params);
+		g_free(params);
 		params = event_get_params(data, 3, NULL, &nick, &hostname);
 
 		hostname = strstr(hostname, "from ");
-                if (hostname != NULL) hostname += 5;
+		if (hostname != NULL) hostname += 5;
 	}
 
 	if (hostname != NULL) {
@@ -161,11 +161,11 @@ static void event_whois_usermode326(IRC_SERVER_REC *server, const char *data)
 
 	g_return_if_fail(data != NULL);
 
-        /* <yournick> <nick> :has oper privs: <mode> */
+	/* <yournick> <nick> :has oper privs: <mode> */
 	params = event_get_params(data, 3, NULL, &nick, &usermode);
 	printformat(server, nick, MSGLEVEL_CRAP,
 		    IRCTXT_WHOIS_USERMODE, nick, usermode);
-        g_free(params);
+	g_free(params);
 }
 
 static void event_whois_realhost327(IRC_SERVER_REC *server, const char *data)

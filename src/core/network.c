@@ -98,7 +98,7 @@ void sin_get_ip(const union sockaddr_union *so, IPADDR *ip)
 static void sin_set_port(union sockaddr_union *so, int port)
 {
 	if (so->sin.sin_family == AF_INET6)
-                so->sin6.sin6_port = htons((unsigned short)port);
+		so->sin6.sin6_port = htons((unsigned short)port);
 	else
 		so->sin.sin_port = htons((unsigned short)port);
 }
@@ -121,23 +121,23 @@ GIOChannel *net_connect(const char *addr, int port, IPADDR *my_ip)
 		return NULL;
 
 	if (my_ip == NULL) {
-                /* prefer IPv4 addresses */
+		/* prefer IPv4 addresses */
 		ip = ip4.family != 0 ? &ip4 : &ip6;
 	} else if (IPADDR_IS_V6(my_ip)) {
-                /* my_ip is IPv6 address, use it if possible */
+		/* my_ip is IPv6 address, use it if possible */
 		if (ip6.family != 0)
 			ip = &ip6;
 		else {
 			my_ip = NULL;
-                        ip = &ip4;
+			ip = &ip4;
 		}
 	} else {
-                /* my_ip is IPv4 address, use it if possible */
+		/* my_ip is IPv4 address, use it if possible */
 		if (ip4.family != 0)
 			ip = &ip4;
 		else {
 			my_ip = NULL;
-                        ip = &ip6;
+			ip = &ip6;
 		}
 	}
 
@@ -152,12 +152,12 @@ GIOChannel *net_connect_ip(IPADDR *ip, int port, IPADDR *my_ip)
 
 	if (my_ip != NULL && ip->family != my_ip->family) {
 		g_warning("net_connect_ip(): ip->family != my_ip->family");
-                my_ip = NULL;
+		my_ip = NULL;
 	}
 
 	/* create the socket */
 	memset(&so, 0, sizeof(so));
-        so.sin.sin_family = ip->family;
+	so.sin.sin_family = ip->family;
 	handle = socket(ip->family, SOCK_STREAM, 0);
 
 	if (handle == -1)
@@ -280,12 +280,12 @@ GIOChannel *net_listen(IPADDR *my_ip, int *port)
 
 			/* start listening */
 			if (listen(handle, 1) >= 0)
-                                return g_io_channel_new(handle);
+				return g_io_channel_new(handle);
 		}
 
 	}
 
-        /* error */
+	/* error */
 	close(handle);
 	return NULL;
 }
@@ -315,7 +315,7 @@ GIOChannel *net_accept(GIOChannel *handle, IPADDR *addr, int *port)
 /* Read data from socket, return number of bytes read, -1 = error */
 int net_receive(GIOChannel *handle, char *buf, int len)
 {
-        gsize ret;
+	gsize ret;
 	GIOStatus status;
 	GError *err = NULL;
 
@@ -336,7 +336,7 @@ int net_receive(GIOChannel *handle, char *buf, int len)
 /* Transmit data, return number of bytes sent, -1 = error */
 int net_transmit(GIOChannel *handle, const char *data, int len)
 {
-        gsize ret;
+	gsize ret;
 	GIOStatus status;
 	GError *err = NULL;
 
@@ -368,7 +368,7 @@ int net_getsockname(GIOChannel *handle, IPADDR *addr, int *port)
 			(struct sockaddr *) &so, &addrlen) == -1)
 		return -1;
 
-        sin_get_ip(&so, addr);
+	sin_get_ip(&so, addr);
 	if (port) *port = sin_get_port(&so);
 
 	return 0;
@@ -398,7 +398,7 @@ int net_gethostbyname(const char *addr, IPADDR *ip4, IPADDR *ip6)
 		return ret;
 
 	/* count IPs */
-        count_v4 = count_v6 = 0;
+	count_v4 = count_v6 = 0;
 	for (ai = ailist; ai != NULL; ai = ai->ai_next) {
 		if (ai->ai_family == AF_INET)
 			count_v4++;
@@ -420,7 +420,7 @@ int net_gethostbyname(const char *addr, IPADDR *ip4, IPADDR *ip6)
 		if (ai->ai_family == AF_INET) {
 			if (use_v4 == count_v4)
 				sin_get_ip(so, ip4);
-                        count_v4++;
+			count_v4++;
 		} else if (ai->ai_family == AF_INET6) {
 			if (use_v6 == count_v6)
 				sin_get_ip(so, ip6);
@@ -448,12 +448,12 @@ int net_gethostbyaddr(IPADDR *ip, char **name)
 	sin_set_ip(&so, ip);
 
 	/* save error to host_error for later use */
-        host_error = getnameinfo((struct sockaddr *)&so, sizeof(so),
+	host_error = getnameinfo((struct sockaddr *)&so, sizeof(so),
 				 hostname, sizeof(hostname),
 				 NULL, 0,
 				 NI_NAMEREQD);
-        if (host_error != 0)
-                return host_error;
+	if (host_error != 0)
+		return host_error;
 
 	*name = g_strdup(hostname);
 
@@ -542,7 +542,7 @@ int is_ipv4_address(const char *host)
 	while (*host != '\0') {
 		if (*host != '.' && !i_isdigit(*host))
 			return 0;
-                host++;
+		host++;
 	}
 
 	return 1;
@@ -553,7 +553,7 @@ int is_ipv6_address(const char *host)
 	while (*host != '\0') {
 		if (*host != ':' && !i_isxdigit(*host))
 			return 0;
-                host++;
+		host++;
 	}
 
 	return 1;

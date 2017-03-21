@@ -35,7 +35,7 @@ static void lag_get(IRC_SERVER_REC *server)
 
 	server_redirect_event(server, "ping", 1, NULL, FALSE,
 			      "lag ping error",
-                              "event pong", "lag pong", NULL);
+			"event pong", "lag pong", NULL);
 	irc_send_cmdv(server, "PING %s", server->real_address);
 }
 
@@ -77,7 +77,7 @@ static void sig_unknown_command(IRC_SERVER_REC *server, const char *data)
 		   servers. */
 		server->disable_lag = TRUE;
 		server->lag_sent.tv_sec = 0;
-                server->lag = 0;
+		server->lag = 0;
 	}
 	g_free(params);
 }
@@ -127,14 +127,14 @@ void lag_init(void)
 
 	timeout_tag = g_timeout_add(1000, (GSourceFunc) sig_check_lag, NULL);
 	signal_add_first("lag pong", (SIGNAL_FUNC) lag_event_pong);
-        signal_add("lag ping error", (SIGNAL_FUNC) lag_ping_error);
-        signal_add("event 421", (SIGNAL_FUNC) sig_unknown_command);
+	signal_add("lag ping error", (SIGNAL_FUNC) lag_ping_error);
+	signal_add("event 421", (SIGNAL_FUNC) sig_unknown_command);
 }
 
 void lag_deinit(void)
 {
 	g_source_remove(timeout_tag);
 	signal_remove("lag pong", (SIGNAL_FUNC) lag_event_pong);
-        signal_remove("lag ping error", (SIGNAL_FUNC) lag_ping_error);
-        signal_remove("event 421", (SIGNAL_FUNC) sig_unknown_command);
+	signal_remove("lag ping error", (SIGNAL_FUNC) lag_ping_error);
+	signal_remove("event 421", (SIGNAL_FUNC) sig_unknown_command);
 }

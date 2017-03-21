@@ -106,18 +106,18 @@ CODE:
 	perl_api_version_check("Irssi::UI");
 	initialized = TRUE;
 
-        irssi_add_plains(fe_plains);
-        /* window items: fe-exec */
-        irssi_add_object(module_get_uniq_id_str("WINDOW ITEM TYPE", "EXEC"),
+	irssi_add_plains(fe_plains);
+	/* window items: fe-exec */
+	irssi_add_object(module_get_uniq_id_str("WINDOW ITEM TYPE", "EXEC"),
 			 0, "Irssi::UI::Exec",
-                         (PERL_OBJECT_FUNC) perl_exec_fill_hash);
-        perl_themes_init();
+			(PERL_OBJECT_FUNC) perl_exec_fill_hash);
+	perl_themes_init();
 
 void
 deinit()
 CODE:
 	if (!initialized) return;
-        perl_themes_deinit();
+	perl_themes_deinit();
 	initialized = FALSE;
 
 BOOT:

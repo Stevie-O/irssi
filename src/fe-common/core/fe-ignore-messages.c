@@ -65,7 +65,7 @@ static void sig_message_kick(SERVER_REC *server, const char *channel,
 			     const char *nick, const char *kicker,
 			     const char *address, const char *reason)
 {
-        /* never ignore if you were kicked */
+	/* never ignore if you were kicked */
 	if (g_ascii_strcasecmp(nick, server->nick) != 0 &&
 	    ignore_check(server, kicker, address,
 			 channel, reason, MSGLEVEL_KICKS))

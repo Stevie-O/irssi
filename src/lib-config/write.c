@@ -225,7 +225,7 @@ static int config_node_get_length(CONFIG_REC *rec, CONFIG_NODE *node)
 		len += config_block_get_length(rec, node);
 		break;
 	default:
-                /* comments always split the line */
+		/* comments always split the line */
 		len = 1000;
 		break;
 	}
@@ -244,7 +244,7 @@ static int config_block_get_length(CONFIG_REC *rec, CONFIG_NODE *node)
 	for (tmp = node->value; tmp != NULL; tmp = tmp->next) {
 		CONFIG_NODE *subnode = tmp->data;
 
-                len += config_node_get_length(rec, subnode);
+		len += config_node_get_length(rec, subnode);
 		if (len > MAX_CHARS_IN_LINE) return len;
 	}
 
@@ -303,8 +303,8 @@ int config_write(CONFIG_REC *rec, const char *fname, int create_mode)
 	int fd;
 
 	g_return_val_if_fail(rec != NULL, -1);
-        g_return_val_if_fail(fname != NULL || rec->fname != NULL, -1);
-        g_return_val_if_fail(create_mode != -1 || rec->create_mode != -1, -1);
+	g_return_val_if_fail(fname != NULL || rec->fname != NULL, -1);
+	g_return_val_if_fail(create_mode != -1 || rec->create_mode != -1, -1);
 
 	fd = open(fname != NULL ? fname : rec->fname,
 			   O_WRONLY | O_TRUNC | O_CREAT,
@@ -317,7 +317,7 @@ int config_write(CONFIG_REC *rec, const char *fname, int create_mode)
 	g_io_channel_set_close_on_unref(rec->handle, TRUE);
 	rec->tmp_indent_level = 0;
 	rec->tmp_last_lf = TRUE;
-        ret = config_write_block(rec, rec->mainnode, FALSE, TRUE);
+	ret = config_write_block(rec, rec->mainnode, FALSE, TRUE);
 	if (ret == -1) {
 		/* write error */
 		config_error(rec, errno == 0 ? "bug" : g_strerror(errno));

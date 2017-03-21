@@ -9,7 +9,7 @@
 #define tput(s) tputs(s, 0, term_putchar)
 inline static int term_putchar(int c)
 {
-        return fputc(c, current_term->out);
+	return fputc(c, current_term->out);
 }
 
 /* Don't bother including curses.h because of these -
@@ -30,7 +30,7 @@ int tigetflag();
 #define CAP_TYPE_STR	2
 
 typedef struct {
-        const char *ti_name; /* terminfo name */
+	const char *ti_name; /* terminfo name */
 	const char *tc_name; /* termcap name */
 	int type;
 	unsigned int offset;
@@ -122,30 +122,30 @@ static void _move_relative(TERM_REC *term, int oldx, int oldy, int x, int y)
 		/* move to beginning of next line -
 		   hope this works everywhere */
 		tput("\r\n");
-                return;
+		return;
 	}
 
 	if (oldx > 0 && y == oldy) {
-                /* move cursor left/right */
+		/* move cursor left/right */
 		if (x == oldx-1 && term->TI_cub1) {
 			tput(tparm(term->TI_cub1));
-                        return;
+			return;
 		}
 		if (x == oldx+1 && y == oldy && term->TI_cuf1) {
 			tput(tparm(term->TI_cuf1));
-                        return;
+			return;
 		}
 	}
 
-        /* fallback to absolute positioning */
+	/* fallback to absolute positioning */
 	if (term->TI_cup) {
 		tput(tparm(term->TI_cup, y, x));
-                return;
+		return;
 	}
 
 	if (oldy != y)
 		tput(tparm(term->TI_vpa, y));
-        if (oldx != x)
+	if (oldx != x)
 		tput(tparm(term->TI_hpa, x));
 }
 
@@ -164,8 +164,8 @@ static void _set_cursor_visible(TERM_REC *term, int set)
 /* Scroll (change_scroll_region+parm_rindex+parm_index / csr+rin+indn) */
 static void _scroll_region(TERM_REC *term, int y1, int y2, int count)
 {
-        /* setup the scrolling region to wanted area */
-        scroll_region_setup(term, y1, y2);
+	/* setup the scrolling region to wanted area */
+	scroll_region_setup(term, y1, y2);
 
 	term->move(term, 0, y1);
 	if (count > 0) {
@@ -176,8 +176,8 @@ static void _scroll_region(TERM_REC *term, int y1, int y2, int count)
 		tput(tparm(term->TI_rin, -count, -count));
 	}
 
-        /* reset the scrolling region to full screen */
-        scroll_region_setup(term, 0, term->height-1);
+	/* reset the scrolling region to full screen */
+	scroll_region_setup(term, 0, term->height-1);
 }
 
 /* Scroll (change_scroll_region+scroll_reverse+scroll_forward / csr+ri+ind) */
@@ -185,8 +185,8 @@ static void _scroll_region_1(TERM_REC *term, int y1, int y2, int count)
 {
 	int i;
 
-        /* setup the scrolling region to wanted area */
-        scroll_region_setup(term, y1, y2);
+	/* setup the scrolling region to wanted area */
+	scroll_region_setup(term, y1, y2);
 
 	if (count > 0) {
 		term->move(term, 0, y2);
@@ -198,8 +198,8 @@ static void _scroll_region_1(TERM_REC *term, int y1, int y2, int count)
 			tput(tparm(term->TI_ri));
 	}
 
-        /* reset the scrolling region to full screen */
-        scroll_region_setup(term, 0, term->height-1);
+	/* reset the scrolling region to full screen */
+	scroll_region_setup(term, 0, term->height-1);
 }
 
 /* Scroll (parm_insert_line+parm_delete_line / il+dl) */
@@ -208,7 +208,7 @@ static void _scroll_line(TERM_REC *term, int y1, int y2, int count)
 	/* setup the scrolling region to wanted area -
 	   this might not necessarily work with il/dl, but at least it
 	   looks better if it does */
-        scroll_region_setup(term, y1, y2);
+	scroll_region_setup(term, y1, y2);
 
 	if (count > 0) {
 		term->move(term, 0, y1);
@@ -222,8 +222,8 @@ static void _scroll_line(TERM_REC *term, int y1, int y2, int count)
 		tput(tparm(term->TI_il, -count, -count));
 	}
 
-        /* reset the scrolling region to full screen */
-        scroll_region_setup(term, 0, term->height-1);
+	/* reset the scrolling region to full screen */
+	scroll_region_setup(term, 0, term->height-1);
 }
 
 /* Scroll (insert_line+delete_line / il1+dl1) */
@@ -233,10 +233,10 @@ static void _scroll_line_1(TERM_REC *term, int y1, int y2, int count)
 
 	if (count > 0) {
 		term->move(term, 0, y1);
-                for (i = 0; i < count; i++)
+		for (i = 0; i < count; i++)
 			tput(tparm(term->TI_dl1));
 		term->move(term, 0, y2-count+1);
-                for (i = 0; i < count; i++)
+		for (i = 0; i < count; i++)
 			tput(tparm(term->TI_il1));
 	} else if (count < 0) {
 		term->move(term, 0, y2+count+1);
@@ -257,14 +257,14 @@ static void _clear_screen(TERM_REC *term)
 /* Clear screen (clr_eos / ed) */
 static void _clear_eos(TERM_REC *term)
 {
-        term->move(term, 0, 0);
+	term->move(term, 0, 0);
 	tput(tparm(term->TI_ed));
 }
 
 /* Clear screen (parm_delete_line / dl) */
 static void _clear_del(TERM_REC *term)
 {
-        term->move(term, 0, 0);
+	term->move(term, 0, 0);
 	tput(tparm(term->TI_dl, term->height, term->height));
 }
 
@@ -274,7 +274,7 @@ static void _clear_del_1(TERM_REC *term)
 	int i;
 
 	term->move(term, 0, 0);
-        for (i = 0; i < term->height; i++)
+	for (i = 0; i < term->height; i++)
 		tput(tparm(term->TI_dl1));
 }
 
@@ -403,7 +403,7 @@ static void term_fill_capabilities(TERM_REC *term)
 {
 	int i, ival;
 	char *sval;
-        void *ptr;
+	void *ptr;
 
 	for (i = 0; i < sizeof(tcaps)/sizeof(tcaps[0]); i++) {
 		ptr = G_STRUCT_MEMBER_P(term, tcaps[i].offset);
@@ -411,19 +411,19 @@ static void term_fill_capabilities(TERM_REC *term)
 		switch (tcaps[i].type) {
 		case CAP_TYPE_FLAG:
 			ival = term_getflag(tcaps[i]);
-                        *(int *)ptr = ival;
-                        break;
+			*(int *)ptr = ival;
+			break;
 		case CAP_TYPE_INT:
 			ival = term_getnum(tcaps[i]);
-                        *(int *)ptr = ival;
-                        break;
+			*(int *)ptr = ival;
+			break;
 		case CAP_TYPE_STR:
 			sval = term_getstr(tcaps[i], tptr);
 			if (sval == (char *) -1)
 				*(char **)ptr = NULL;
 			else
 				*(char **)ptr = sval;
-                        break;
+			break;
 		}
 	}
 }
@@ -477,10 +477,10 @@ void terminfo_setup_colors(TERM_REC *term, int force)
 		}
 	} else if (term->TI_setf) {
 		for (i = 0; i < term->TI_colors; i++)
-                        term->TI_fg[i] = g_strdup(tparm(term->TI_setf, i, 0));
+			term->TI_fg[i] = g_strdup(tparm(term->TI_setf, i, 0));
 	} else if (force) {
 		for (i = 0; i < 8; i++)
-                        term->TI_fg[i] = g_strdup_printf("\033[%dm", 30+ansitab[i]);
+			term->TI_fg[i] = g_strdup_printf("\033[%dm", 30+ansitab[i]);
 	}
 
 	if (term->TI_setab) {
@@ -490,10 +490,10 @@ void terminfo_setup_colors(TERM_REC *term, int force)
 		}
 	} else if (term->TI_setb) {
 		for (i = 0; i < term->TI_colors; i++)
-                        term->TI_bg[i] = g_strdup(tparm(term->TI_setb, i, 0));
+			term->TI_bg[i] = g_strdup(tparm(term->TI_setb, i, 0));
 	} else if (force) {
 		for (i = 0; i < 8; i++)
-                        term->TI_bg[i] = g_strdup_printf("\033[%dm", 40+ansitab[i]);
+			term->TI_bg[i] = g_strdup_printf("\033[%dm", 40+ansitab[i]);
 	}
 }
 
@@ -503,13 +503,13 @@ static void terminfo_input_init0(TERM_REC *term)
 	memcpy(&term->tio, &term->old_tio, sizeof(term->tio));
 
 	term->tio.c_lflag &= ~(ICANON | ECHO); /* CBREAK, no ECHO */
-        /* Disable the ICRNL flag to disambiguate ^J and Enter, also disable the
-         * software flow control to leave ^Q and ^S ready to be bound */
-	term->tio.c_iflag &= ~(ICRNL | IXON | IXOFF); 
+	/* Disable the ICRNL flag to disambiguate ^J and Enter, also disable the
+	* software flow control to leave ^Q and ^S ready to be bound */
+	term->tio.c_iflag &= ~(ICRNL | IXON | IXOFF);
 	term->tio.c_cc[VMIN] = 1; /* read() is satisfied after 1 char */
 	term->tio.c_cc[VTIME] = 0; /* No timer */
 
-        /* Disable INTR, QUIT, VDSUSP and SUSP keys */
+	/* Disable INTR, QUIT, VDSUSP and SUSP keys */
 	term->tio.c_cc[VINTR] = _POSIX_VDISABLE;
 	term->tio.c_cc[VQUIT] = _POSIX_VDISABLE;
 #ifdef VDSUSP
@@ -523,12 +523,12 @@ static void terminfo_input_init0(TERM_REC *term)
 
 static void terminfo_input_init(TERM_REC *term)
 {
-        tcsetattr(fileno(term->in), TCSADRAIN, &term->tio);
+	tcsetattr(fileno(term->in), TCSADRAIN, &term->tio);
 }
 
 static void terminfo_input_deinit(TERM_REC *term)
 {
-        tcsetattr(fileno(term->in), TCSADRAIN, &term->old_tio);
+	tcsetattr(fileno(term->in), TCSADRAIN, &term->old_tio);
 }
 
 void terminfo_cont(TERM_REC *term)
@@ -542,14 +542,14 @@ void terminfo_cont(TERM_REC *term)
 	if (term->bracketed_paste_enabled)
 		term_dec_set_bracketed_paste_mode(TRUE);
 
-        terminfo_input_init(term);
+	terminfo_input_init(term);
 }
 
 void terminfo_stop(TERM_REC *term)
 {
-        /* reset colors */
+	/* reset colors */
 	terminfo_set_normal();
-        /* move cursor to bottom of the screen */
+	/* move cursor to bottom of the screen */
 	terminfo_move(0, term->height-1);
 
 	if (term->bracketed_paste_enabled)
@@ -562,21 +562,21 @@ void terminfo_stop(TERM_REC *term)
 	if (term->appkey_enabled)
 		terminfo_set_appkey_mode(term, FALSE);
 
-        /* reset input settings */
+	/* reset input settings */
 	terminfo_input_deinit(term);
-        fflush(term->out);
+	fflush(term->out);
 }
 
 static int term_setup(TERM_REC *term)
 {
 	GString *str;
 	int err;
-        char *term_env;
+	char *term_env;
 
 	term_env = getenv("TERM");
 	if (term_env == NULL) {
 		fprintf(stderr, "TERM environment not set\n");
-                return 0;
+		return 0;
 	}
 
 	if (setupterm(term_env, 1, &err) != 0) {
@@ -584,7 +584,7 @@ static int term_setup(TERM_REC *term)
 		return 0;
 	}
 
-        term_fill_capabilities(term);
+	term_fill_capabilities(term);
 
 	/* Cursor movement */
 	if (term->TI_cup)
@@ -592,14 +592,14 @@ static int term_setup(TERM_REC *term)
 	else if (term->TI_hpa && term->TI_vpa)
 		term->move = _move_pa;
 	else {
-                fprintf(stderr, "Terminal doesn't support cursor movement\n");
+		fprintf(stderr, "Terminal doesn't support cursor movement\n");
 		return 0;
 	}
 	term->move_relative = _move_relative;
 	term->set_cursor_visible = term->TI_civis && term->TI_cnorm ?
 		_set_cursor_visible : _ignore_parm;
 
-        /* Scrolling */
+	/* Scrolling */
 	if ((term->TI_csr || term->TI_wind) && term->TI_rin && term->TI_indn)
 		term->scroll = _scroll_region;
 	else if (term->TI_il && term->TI_dl)
@@ -609,7 +609,7 @@ static int term_setup(TERM_REC *term)
 	else if (term->scroll == NULL && (term->TI_il1 && term->TI_dl1))
 		term->scroll = _scroll_line_1;
 	else if (term->scroll == NULL) {
-                fprintf(stderr, "Terminal doesn't support scrolling\n");
+		fprintf(stderr, "Terminal doesn't support scrolling\n");
 		return 0;
 	}
 
@@ -626,7 +626,7 @@ static int term_setup(TERM_REC *term)
 		/* we could do this by line inserts as well, but don't
 		   bother - if some terminal has insert line it most probably
 		   has delete line as well, if not a regular clear screen */
-                fprintf(stderr, "Terminal doesn't support clearing screen\n");
+		fprintf(stderr, "Terminal doesn't support clearing screen\n");
 		return 0;
 	}
 
@@ -634,7 +634,7 @@ static int term_setup(TERM_REC *term)
 	if (term->TI_el)
 		term->clrtoeol = _clrtoeol;
 	else {
-                fprintf(stderr, "Terminal doesn't support clearing to end of line\n");
+		fprintf(stderr, "Terminal doesn't support clearing to end of line\n");
 		return 0;
 	}
 
@@ -656,8 +656,8 @@ static int term_setup(TERM_REC *term)
 	term->set_italic = term->TI_sitm && term->TI_ritm ?
 		_set_italic : _ignore_parm;
 
-        /* Create a string to set all attributes off */
-        str = g_string_new(NULL);
+	/* Create a string to set all attributes off */
+	str = g_string_new(NULL);
 	if (term->TI_sgr0)
 		g_string_append(str, term->TI_sgr0);
 	if (term->TI_rmul && (term->TI_sgr0 == NULL || g_strcmp0(term->TI_rmul, term->TI_sgr0) != 0))
@@ -666,16 +666,16 @@ static int term_setup(TERM_REC *term)
 		g_string_append(str, term->TI_rmso);
 	if (term->TI_ritm && (term->TI_sgr0 == NULL || g_strcmp0(term->TI_ritm, term->TI_sgr0) != 0))
 		g_string_append(str, term->TI_ritm);
-        term->TI_normal = str->str;
+	term->TI_normal = str->str;
 	g_string_free(str, FALSE);
-        term->set_normal = _set_normal;
+	term->set_normal = _set_normal;
 
 	term->beep = term->TI_bel ? _beep : _ignore;
 
 	terminfo_setup_colors(term, FALSE);
 	terminfo_input_init0(term);
-        terminfo_cont(term);
-        return 1;
+	terminfo_cont(term);
+	return 1;
 }
 
 void term_set_appkey_mode(int enable)
@@ -700,7 +700,7 @@ TERM_REC *terminfo_core_init(FILE *in, FILE *out)
 {
 	TERM_REC *old_term, *term;
 
-        old_term = current_term;
+	old_term = current_term;
 	current_term = term = g_new0(TERM_REC, 1);
 
 	term->in = in;
@@ -708,11 +708,11 @@ TERM_REC *terminfo_core_init(FILE *in, FILE *out)
 
 	if (!term_setup(term)) {
 		g_free(term);
-                term = NULL;
+		term = NULL;
 	}
 
 	current_term = old_term;
-        return term;
+	return term;
 }
 
 void terminfo_core_deinit(TERM_REC *term)
@@ -720,14 +720,14 @@ void terminfo_core_deinit(TERM_REC *term)
 	TERM_REC *old_term;
 
 	old_term = current_term;
-        current_term = term;
+	current_term = term;
 	term->set_normal(term);
-        current_term = old_term;
+	current_term = old_term;
 
-        terminfo_stop(term);
+	terminfo_stop(term);
 
 	g_free(term->TI_normal);
 	terminfo_colors_deinit(term);
 
-        g_free(term);
+	g_free(term);
 }

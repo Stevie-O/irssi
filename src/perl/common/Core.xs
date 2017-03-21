@@ -11,25 +11,25 @@
 static void perl_signal_add_hash(int priority, SV *sv)
 {
 	HV *hv;
-        HE *he;
+	HE *he;
 	I32 len;
 
 	if (!is_hvref(sv))
 		croak("Usage: Irssi::signal_add(hash)");
 
-        hv = hvref(sv);
+	hv = hvref(sv);
 	hv_iterinit(hv);
 	while ((he = hv_iternext(hv)) != NULL)
-                perl_signal_add_full(hv_iterkey(he, &len), HeVAL(he), priority);
+		perl_signal_add_full(hv_iterkey(he, &len), HeVAL(he), priority);
 }
 
 static void perl_command_bind_add_hash(int priority, SV *sv, char *category)
 {
 	HV *hv;
-        HE *he;
+	HE *he;
 	I32 len;
 
-        hv = hvref(sv);
+	hv = hvref(sv);
 	hv_iterinit(hv);
 	while ((he = hv_iternext(hv)) != NULL)
 		perl_command_bind_to(hv_iterkey(he, &len), category, HeVAL(he), priority);
@@ -158,14 +158,14 @@ void
 signal_register(...)
 PREINIT:
 	HV *hv;
-        HE *he;
+	HE *he;
 	I32 len, pos;
 	const char *arr[7];
 CODE:
 	if (items != 1 || !is_hvref(ST(0)))
 		croak("Usage: Irssi::signal_register(hash)");
 
-        hv = hvref(ST(0));
+	hv = hvref(ST(0));
 	hv_iterinit(hv);
 	while ((he = hv_iternext(hv)) != NULL) {
 		const char *key = hv_iterkey(he, &len);
@@ -179,7 +179,7 @@ CODE:
 		len = av_len(av)+1;
 		if (len > 6) len = 6;
 		for (pos = 0; pos < len; pos++) {
-                	SV **val = av_fetch(av, pos, 0);
+			SV **val = av_fetch(av, pos, 0);
 			arr[pos] = SvPV_nolen(*val);
 		}
 		arr[pos] = NULL;
@@ -590,7 +590,7 @@ void
 pidwait_add(pid)
 	int pid
 
-void 
+void
 pidwait_remove(pid)
 	int pid
 
@@ -636,7 +636,7 @@ CODE:
 		   IRSSI_VERSION_DATE, IRSSI_VERSION_TIME);
 	RETVAL = version;
 OUTPUT:
-        RETVAL
+	RETVAL
 
 int
 get_gui()

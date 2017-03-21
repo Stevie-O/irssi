@@ -13,7 +13,7 @@ typedef int (*INDENT_FUNC) (TEXT_BUFFER_VIEW_REC *view,
 typedef struct {
 	const unsigned char *start;
 	int indent;
-        INDENT_FUNC indent_func;
+	INDENT_FUNC indent_func;
 	int color;
 #ifdef TERM_TRUECOLOR
 	unsigned int fg24, bg24;
@@ -43,7 +43,7 @@ typedef struct {
 	/* should contain the same value for each cache that uses the
 	   same buffer */
 	unsigned char update_counter;
-        /* number of real lines used by the last line in buffer */
+	/* number of real lines used by the last line in buffer */
 	int last_linecount;
 } TEXT_BUFFER_CACHE_REC;
 
@@ -51,11 +51,11 @@ struct _TEXT_BUFFER_VIEW_REC {
 	TEXT_BUFFER_REC *buffer;
 	GSList *siblings; /* other views that use the same buffer */
 
-        TERM_WINDOW *window;
+	TERM_WINDOW *window;
 	int width, height;
 
 	int default_indent;
-        INDENT_FUNC default_indent_func;
+	INDENT_FUNC default_indent_func;
 	unsigned int longword_noindent:1;
 	unsigned int scroll:1; /* scroll down automatically when at bottom */
 	unsigned int utf8:1; /* use UTF8 in this view */
@@ -67,23 +67,23 @@ struct _TEXT_BUFFER_VIEW_REC {
 	LINE_REC *startline; /* line at the top of the screen */
 	int subline; /* number of "real lines" to skip from `startline' */
 
-        /* marks the bottom of the text buffer */
+	/* marks the bottom of the text buffer */
 	LINE_REC *bottom_startline;
 	int bottom_subline;
 
 	/* how many empty lines are in screen. a screenful when started
 	   or used /CLEAR */
 	int empty_linecount;
-        /* window is at the bottom of the text buffer */
+	/* window is at the bottom of the text buffer */
 	unsigned int bottom:1;
-        /* if !bottom - new text has been printed since we were at bottom */
+	/* if !bottom - new text has been printed since we were at bottom */
 	unsigned int more_text:1;
-        /* Window needs a redraw */
+	/* Window needs a redraw */
 	unsigned int dirty:1;
 
 	/* Bookmarks to the lines in the buffer - removed automatically
 	   when the line gets removed from buffer */
-        GHashTable *bookmarks;
+	GHashTable *bookmarks;
 };
 
 /* Create new view. */
@@ -110,7 +110,7 @@ void textbuffer_view_resize(TEXT_BUFFER_VIEW_REC *view, int width, int height);
 void textbuffer_view_clear(TEXT_BUFFER_VIEW_REC *view);
 
 #define textbuffer_view_get_lines(view) \
-        ((view)->buffer->first_line)
+	((view)->buffer->first_line)
 
 /* Scroll the view up/down */
 void textbuffer_view_scroll(TEXT_BUFFER_VIEW_REC *view, int lines);

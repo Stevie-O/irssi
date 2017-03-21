@@ -37,7 +37,7 @@
 static SERVER_CONNECT_REC *get_server_connect(const char *data, int *plus_addr,
 					      char **rawlog_file)
 {
-        CHAT_PROTOCOL_REC *proto;
+	CHAT_PROTOCOL_REC *proto;
 	SERVER_CONNECT_REC *conn;
 	GHashTable *optlist;
 	char *addr, *portstr, *password, *nick, *chatnet, *host, *tmp;
@@ -61,7 +61,7 @@ static SERVER_CONNECT_REC *get_server_connect(const char *data, int *plus_addr,
 	if (g_strcmp0(password, "-") == 0)
 		*password = '\0';
 
-        /* check if -<chatnet> option is used to specify chat protocol */
+	/* check if -<chatnet> option is used to specify chat protocol */
 	proto = chat_protocol_find_net(optlist);
 
 	/* connect to server */
@@ -87,7 +87,7 @@ static SERVER_CONNECT_REC *get_server_connect(const char *data, int *plus_addr,
 		/* trying to use protocol that isn't yet initialized */
 		signal_emit("chat protocol unknown", 1, proto->name);
 		server_connect_unref(conn);
-                cmd_params_free(free_arg);
+		cmd_params_free(free_arg);
 		return NULL;
 	}
 
@@ -132,27 +132,27 @@ static SERVER_CONNECT_REC *get_server_connect(const char *data, int *plus_addr,
 		conn->no_autosendcmd = TRUE;
 
 	if (g_hash_table_lookup(optlist, "noproxy") != NULL)
-                g_free_and_null(conn->proxy);
+		g_free_and_null(conn->proxy);
 
 
 	*rawlog_file = g_strdup(g_hash_table_lookup(optlist, "rawlog"));
 
-        host = g_hash_table_lookup(optlist, "host");
+	host = g_hash_table_lookup(optlist, "host");
 	if (host != NULL && *host != '\0') {
 		IPADDR ip4, ip6;
 
 		if (net_gethostbyname(host, &ip4, &ip6) == 0)
-                        server_connect_own_ip_save(conn, &ip4, &ip6);
+			server_connect_own_ip_save(conn, &ip4, &ip6);
 	}
 
 	cmd_params_free(free_arg);
-        return conn;
+	return conn;
 }
 
 /* SYNTAX: CONNECT [-4 | -6] [-ssl] [-ssl_cert <cert>] [-ssl_pkey <pkey>] [-ssl_pass <password>]
-                   [-ssl_verify] [-ssl_cafile <cafile>] [-ssl_capath <capath>]
-                   [-ssl_ciphers <list>]
-                   [-!] [-noautosendcmd]
+		[-ssl_verify] [-ssl_cafile <cafile>] [-ssl_capath <capath>]
+		[-ssl_ciphers <list>]
+		[-!] [-noautosendcmd]
 		   [-noproxy] [-network <network>] [-host <hostname>]
 		   [-rawlog <file>]
 		   <address>|<chatnet> [<port> [<password> [<nick>]]] */
@@ -161,12 +161,12 @@ static void cmd_connect(const char *data)
 {
 	SERVER_CONNECT_REC *conn;
 	SERVER_REC *server;
-        char *rawlog_file;
+	char *rawlog_file;
 
 	conn = get_server_connect(data, NULL, &rawlog_file);
 	if (conn != NULL) {
 		server = server_connect(conn);
-                server_connect_unref(conn);
+		server_connect_unref(conn);
 
 		if (server != NULL && rawlog_file != NULL)
 			rawlog_open(server->rawlog, rawlog_file);
@@ -180,13 +180,13 @@ static RECONNECT_REC *find_reconnect_server(int chat_type,
 {
 	RECONNECT_REC *match, *last_proto_match;
 	GSList *tmp;
-        int count;
+	int count;
 
 	g_return_val_if_fail(addr != NULL, NULL);
 
 	/* check if there's a reconnection to the same host and maybe even
 	   the same port */
-        match = last_proto_match = NULL; count = 0;
+	match = last_proto_match = NULL; count = 0;
 	for (tmp = reconnects; tmp != NULL; tmp = tmp->next) {
 		RECONNECT_REC *rec = tmp->data;
 
@@ -203,7 +203,7 @@ static RECONNECT_REC *find_reconnect_server(int chat_type,
 	if (count == 1) {
 		/* only one reconnection with wanted protocol,
 		   we probably want to use it */
-                return last_proto_match;
+		return last_proto_match;
 	}
 
 	return match;
@@ -216,8 +216,8 @@ static void update_reconnection(SERVER_CONNECT_REC *conn, SERVER_REC *server)
 
 	if (server != NULL) {
 		oldconn = server->connrec;
-                server_connect_ref(oldconn);
-                reconnect_save_status(conn, server);
+		server_connect_ref(oldconn);
+		reconnect_save_status(conn, server);
 	} else {
 		/* maybe we can reconnect some server from
 		   reconnection queue */
@@ -226,7 +226,7 @@ static void update_reconnection(SERVER_CONNECT_REC *conn, SERVER_REC *server)
 		if (recon == NULL) return;
 
 		oldconn = recon->conn;
-                server_connect_ref(oldconn);
+		server_connect_ref(oldconn);
 		server_reconnect_destroy(recon);
 
 		conn->away_reason = g_strdup(oldconn->away_reason);
@@ -250,8 +250,8 @@ static void cmd_server(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 	command_runsub("server", data, server, item);
 }
 
-/* SYNTAX: SERVER CONNECT [-4 | -6] [-ssl] [-ssl_cert <cert>] [-ssl_pkey <pkey>] 
-		  [-ssl_pass <password>] [-ssl_verify] [-ssl_cafile <cafile>] 
+/* SYNTAX: SERVER CONNECT [-4 | -6] [-ssl] [-ssl_cert <cert>] [-ssl_pkey <pkey>]
+		  [-ssl_pass <password>] [-ssl_verify] [-ssl_cafile <cafile>]
 		  [-ssl_capath <capath>]
 		  [-ssl_ciphers <list>]
 		  [-!] [-noautosendcmd]
@@ -262,12 +262,12 @@ static void cmd_server(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 static void cmd_server_connect(const char *data, SERVER_REC *server)
 {
 	SERVER_CONNECT_REC *conn;
-        char *rawlog_file;
+	char *rawlog_file;
 	int plus_addr;
 
 	g_return_if_fail(data != NULL);
 
-        /* create connection record */
+	/* create connection record */
 	conn = get_server_connect(data, &plus_addr, &rawlog_file);
 	if (conn != NULL) {
 		if (!plus_addr)
@@ -351,7 +351,7 @@ static void cmd_msg(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 	if (server == NULL || !server->connected)
 		cmd_param_error(CMDERR_NOT_CONNECTED);
 
-        origtarget = target;
+	origtarget = target;
 	free_ret = FALSE;
 	if (g_strcmp0(target, ",") == 0 || g_strcmp0(target, ".") == 0) {
 		target = parse_special(&target, server, item,
@@ -366,7 +366,7 @@ static void cmd_msg(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 
 	if (target != NULL) {
 		if (g_strcmp0(target, "*") == 0) {
-                        /* send to active channel/query */
+			/* send to active channel/query */
 			if (item == NULL)
 				cmd_param_error(CMDERR_NOT_JOINED);
 
@@ -374,7 +374,7 @@ static void cmd_msg(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 				SEND_TARGET_CHANNEL : SEND_TARGET_NICK;
 			target = (char *) window_item_get_target(item);
 		} else if (g_hash_table_lookup(optlist, "channel") != NULL)
-                        target_type = SEND_TARGET_CHANNEL;
+			target_type = SEND_TARGET_CHANNEL;
 		else if (g_hash_table_lookup(optlist, "nick") != NULL)
 			target_type = SEND_TARGET_NICK;
 		else {

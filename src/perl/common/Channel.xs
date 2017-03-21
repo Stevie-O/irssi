@@ -51,7 +51,7 @@ channel_find(server, name)
 void
 nicks_get_same(server, nick)
 	Irssi::Server server
-        char *nick
+	char *nick
 PREINIT:
 	GSList *list, *tmp;
 PPCODE:

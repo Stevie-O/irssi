@@ -36,7 +36,7 @@
 
 static void dcc_connected(SEND_DCC_REC *dcc)
 {
-        if (!IS_DCC_SEND(dcc)) return;
+	if (!IS_DCC_SEND(dcc)) return;
 
 	printformat(dcc->server, NULL, MSGLEVEL_DCC,
 		    IRCTXT_DCC_SEND_CONNECTED,
@@ -49,7 +49,7 @@ static void dcc_closed(SEND_DCC_REC *dcc)
 	double kbs;
 	time_t secs;
 
-        if (!IS_DCC_SEND(dcc)) return;
+	if (!IS_DCC_SEND(dcc)) return;
 
 	secs = dcc->starttime == 0 ? -1 : time(NULL)-dcc->starttime;
 	kbs = (double) (dcc->transfd-dcc->skipped) /
@@ -129,7 +129,7 @@ static void sig_dcc_send_complete(GList **list, WINDOW_REC *window,
 	/* completing filename parameter for /DCC SEND */
 	path = convert_home(settings_get_str("dcc_upload_path"));
 	if (*path == '\0') {
-                /* use the default path */
+		/* use the default path */
 		g_free_and_null(path);
 	}
 
@@ -170,7 +170,7 @@ void fe_dcc_send_init(void)
 	signal_add("dcc error send no route", (SIGNAL_FUNC) dcc_error_send_no_route);
 	signal_add("dcc error close not found", (SIGNAL_FUNC) dcc_error_close_not_found);
 	signal_add("complete command dcc send", (SIGNAL_FUNC) sig_dcc_send_complete);
-        signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 }
 
 void fe_dcc_send_deinit(void)
@@ -182,5 +182,5 @@ void fe_dcc_send_deinit(void)
 	signal_remove("dcc error send no route", (SIGNAL_FUNC) dcc_error_send_no_route);
 	signal_remove("dcc error close not found", (SIGNAL_FUNC) dcc_error_close_not_found);
 	signal_remove("complete command dcc send", (SIGNAL_FUNC) sig_dcc_send_complete);
-        signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 }

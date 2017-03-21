@@ -135,7 +135,7 @@ static char *expando_cumode_space(SERVER_REC *server, void *item, int *free_ret)
 	char *ret;
 
 	if (!IS_IRC_SERVER(server))
-                return "";
+		return "";
 
 	ret = expando_cumode(server, item, free_ret);
 	return *ret == '\0' ? " " : ret;
@@ -184,7 +184,7 @@ void irc_expandos_init(void)
 		       "nick mode changed", EXPANDO_ARG_WINDOW_ITEM,
 		       "channel joined", EXPANDO_ARG_WINDOW_ITEM, NULL);
 
-        expando_add_signal("I", "event invite", EXPANDO_ARG_SERVER);
+	expando_add_signal("I", "event invite", EXPANDO_ARG_SERVER);
 
 	signal_add("event join", (SIGNAL_FUNC) event_join);
 }

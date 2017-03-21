@@ -35,10 +35,10 @@ static char *module_get_name(const char *path, int *start, int *end)
 	const char *name;
 	char *module_name, *ptr;
 
-        name = NULL;
+	name = NULL;
 	if (*path == '~' || g_path_is_absolute(path)) {
 		name = strrchr(path, G_DIR_SEPARATOR);
-                if (name != NULL) name++;
+		if (name != NULL) name++;
 	}
 
 	if (name == NULL)
@@ -77,11 +77,11 @@ static char *module_get_root(const char *name, char **prefixes)
 	}
 
 	/* skip the _core part */
-        len = strlen(name);
+	len = strlen(name);
 	if (len > 5 && g_strcmp0(name+len-5, "_core") == 0)
 		return g_strndup(name, len-5);
 
-        return g_strdup(name);
+	return g_strdup(name);
 }
 
 /* Returns the sub module name for given submodule (eg. perl_core -> core) */
@@ -89,19 +89,19 @@ static char *module_get_sub(const char *name, const char *root)
 {
 	int rootlen, namelen;
 
-        namelen = strlen(name);
+	namelen = strlen(name);
 	rootlen = strlen(root);
-        g_return_val_if_fail(namelen >= rootlen, g_strdup(name));
+	g_return_val_if_fail(namelen >= rootlen, g_strdup(name));
 
 	if (strncmp(name, root, rootlen) == 0 &&
 	    g_strcmp0(name+rootlen, "_core") == 0)
-                return g_strdup("core");
+		return g_strdup("core");
 
 	if (namelen > rootlen && name[namelen-rootlen-1] == '_' &&
 	    g_strcmp0(name+namelen-rootlen, root) == 0)
-                return g_strndup(name, namelen-rootlen-1);
+		return g_strndup(name, namelen-rootlen-1);
 
-        return g_strdup(name);
+	return g_strdup(name);
 }
 
 static GModule *module_open(const char *name, int *found)
@@ -162,13 +162,13 @@ static int module_load_name(const char *path, const char *rootmodule,
 	void (*module_deinit) (void);
 	void (*module_version) (int *);
 	GModule *gmodule;
-        MODULE_REC *module;
+	MODULE_REC *module;
 	MODULE_FILE_REC *rec;
 	gpointer value_version = NULL;
 	gpointer value1, value2 = NULL;
 	char *versionfunc, *initfunc, *deinitfunc;
 	int module_abi_version = 0;
-        int found;
+	int found;
 
 	gmodule = module_open(path, &found);
 	if (gmodule == NULL) {
@@ -224,7 +224,7 @@ static int module_load_name(const char *path, const char *rootmodule,
 
 	module = module_find(rootmodule);
 	rec = module == NULL ? NULL :
-                g_strcmp0(rootmodule, submodule) == 0 ?
+		g_strcmp0(rootmodule, submodule) == 0 ?
 		module_file_find(module, "core") :
 		module_file_find(module, submodule);
 	if (rec == NULL) {
@@ -234,12 +234,12 @@ static int module_load_name(const char *path, const char *rootmodule,
 
 		module_error(MODULE_ERROR_INVALID, NULL,
 			     rootmodule, submodule);
-                return 0;
+		return 0;
 	}
 
-        rec->module_deinit = module_deinit;
+	rec->module_deinit = module_deinit;
 	rec->gmodule = gmodule;
-        rec->initialized = TRUE;
+	rec->initialized = TRUE;
 
 	settings_check_module(rec->defined_module_name);
 
@@ -250,23 +250,23 @@ static int module_load_name(const char *path, const char *rootmodule,
 static int module_load_prefixes(const char *path, const char *module,
 				int start, int end, char **prefixes)
 {
-        GString *realpath;
-        int status, ok;
+	GString *realpath;
+	int status, ok;
 
-        /* load module_core */
+	/* load module_core */
 	realpath = g_string_new(path);
 	g_string_insert(realpath, end, "_core");
 
 	/* Don't print the error message the first time, since the module
 	   may not have the core part at all. */
 	status = module_load_name(realpath->str, module, "core", TRUE);
-        ok = status > 0;
+	ok = status > 0;
 
 	if (prefixes != NULL) {
 		/* load all the "prefix modules", like the fe-common, irc,
 		   etc. part of the module */
 		while (*prefixes != NULL) {
-                        g_string_assign(realpath, path);
+			g_string_assign(realpath, path);
 			g_string_insert_c(realpath, start, '_');
 			g_string_insert(realpath, start, *prefixes);
 
@@ -275,19 +275,19 @@ static int module_load_prefixes(const char *path, const char *module,
 			if (status > 0)
 				ok = TRUE;
 
-                        prefixes++;
+			prefixes++;
 		}
 	}
 
 	if (!ok) {
-                /* error loading module, print the error message */
+		/* error loading module, print the error message */
 		g_string_assign(realpath, path);
 		g_string_insert(realpath, end, "_core");
 		module_load_name(realpath->str, module, "core", FALSE);
 	}
 
 	g_string_free(realpath, TRUE);
-        return ok;
+	return ok;
 }
 
 static int module_load_full(const char *path, const char *rootmodule,
@@ -295,7 +295,7 @@ static int module_load_full(const char *path, const char *rootmodule,
 			    char **prefixes)
 {
 	MODULE_REC *module;
-        int status, try_prefixes;
+	int status, try_prefixes;
 
 	if (!g_module_supported())
 		return FALSE;
@@ -303,10 +303,10 @@ static int module_load_full(const char *path, const char *rootmodule,
 	module = module_find(rootmodule);
 	if (module != NULL && (g_strcmp0(submodule, rootmodule) == 0 ||
 			       module_file_find(module, submodule) != NULL)) {
-                /* module is already loaded */
+		/* module is already loaded */
 		module_error(MODULE_ERROR_ALREADY_LOADED, NULL,
 			     rootmodule, submodule);
-                return FALSE;
+		return FALSE;
 	}
 
 	/* check if the given module exists.. */
@@ -327,7 +327,7 @@ static int module_load_full(const char *path, const char *rootmodule,
 int module_load(const char *path, char **prefixes)
 {
 	char *exppath, *name, *submodule, *rootmodule;
-        int start, end, ret;
+	int start, end, ret;
 
 	g_return_val_if_fail(path != NULL, FALSE);
 
@@ -343,27 +343,27 @@ int module_load(const char *path, char **prefixes)
 
 	g_free(rootmodule);
 	g_free(submodule);
-        g_free(exppath);
-        return ret;
+	g_free(exppath);
+	return ret;
 }
 
 /* Load a sub module. */
 int module_load_sub(const char *path, const char *submodule, char **prefixes)
 {
-        GString *full_path;
+	GString *full_path;
 	char *exppath, *name, *rootmodule;
-        int start, end, ret;
+	int start, end, ret;
 
 	g_return_val_if_fail(path != NULL, FALSE);
 	g_return_val_if_fail(submodule != NULL, FALSE);
 
-        exppath = convert_home(path);
+	exppath = convert_home(path);
 
 	name = module_get_name(exppath, &start, &end);
 	rootmodule = module_get_root(name, prefixes);
 	g_free(name);
 
-        full_path = g_string_new(exppath);
+	full_path = g_string_new(exppath);
 	if (g_strcmp0(submodule, "core") == 0)
 		g_string_insert(full_path, end, "_core");
 	else {
@@ -377,13 +377,13 @@ int module_load_sub(const char *path, const char *submodule, char **prefixes)
 	g_string_free(full_path, TRUE);
 	g_free(rootmodule);
 	g_free(exppath);
-        return ret;
+	return ret;
 }
 
 static void module_file_deinit_gmodule(MODULE_FILE_REC *file)
 {
 	/* call the module's deinit() function */
-        if (file->module_deinit != NULL)
+	if (file->module_deinit != NULL)
 		file->module_deinit();
 
 	if (file->defined_module_name != NULL) {
@@ -399,7 +399,7 @@ static void module_file_deinit_gmodule(MODULE_FILE_REC *file)
 
 int module_load(const char *path, char **prefixes)
 {
-        return FALSE;
+	return FALSE;
 }
 
 #endif
@@ -408,15 +408,15 @@ void module_file_unload(MODULE_FILE_REC *file)
 {
 	MODULE_REC *root;
 
-        root = file->root;
+	root = file->root;
 	root->files = g_slist_remove(root->files, file);
 
-        if (file->initialized)
+	if (file->initialized)
 		signal_emit("module unloaded", 2, file->root, file);
 
 #ifdef HAVE_GMODULE
 	if (file->gmodule != NULL)
-                module_file_deinit_gmodule(file);
+		module_file_deinit_gmodule(file);
 #endif
 
 	g_free(file->name);
@@ -424,7 +424,7 @@ void module_file_unload(MODULE_FILE_REC *file)
 	g_free(file);
 
 	if (root->files == NULL && g_slist_find(modules, root) != NULL)
-                module_unload(root);
+		module_unload(root);
 }
 
 void module_unload(MODULE_REC *module)
@@ -436,8 +436,8 @@ void module_unload(MODULE_REC *module)
 	signal_emit("module unloaded", 1, module);
 
 	while (module->files != NULL)
-                module_file_unload(module->files->data);
+		module_file_unload(module->files->data);
 
-        g_free(module->name);
+	g_free(module->name);
 	g_free(module);
 }

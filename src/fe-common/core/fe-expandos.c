@@ -28,7 +28,7 @@ static char *expando_winref(SERVER_REC *server, void *item, int *free_ret)
 	if (active_win == NULL)
 		return "";
 
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	return g_strdup_printf("%d", active_win->refnum);
 }
 

@@ -34,13 +34,13 @@
 #include "window-items.h"
 
 GSList *windows; /* first in the list is the active window,
-                    next is the last active, etc. */
+		next is the last active, etc. */
 GSequence *windows_seq;
 WINDOW_REC *active_win;
 
 static int daytag;
 static int daycheck; /* 0 = don't check, 1 = time is 00:00, check,
-                        2 = time is 00:00, already checked */
+			2 = time is 00:00, already checked */
 
 static int window_refnum_lookup(WINDOW_REC *window, void *refnum_p)
 {
@@ -199,13 +199,13 @@ void window_destroy(WINDOW_REC *window)
 	while (window->items != NULL)
 		window_item_destroy(window->items->data);
 
-        if (settings_get_bool("windows_auto_renumber"))
+	if (settings_get_bool("windows_auto_renumber"))
 		windows_pack(window->refnum);
 
 	signal_emit("window destroyed", 1, window);
 
 	while (window->bound_items != NULL)
-                window_bind_destroy(window, window->bound_items->data);
+		window_bind_destroy(window, window->bound_items->data);
 
 	g_free_not_null(window->hilight_color);
 	g_free_not_null(window->servertag);
@@ -219,7 +219,7 @@ void window_auto_destroy(WINDOW_REC *window)
 	if (settings_get_bool("autoclose_windows") && windows->next != NULL &&
 	    window->items == NULL && window->bound_items == NULL &&
 	    window->level == 0 && !window->immortal)
-                window_destroy(window);
+		window_destroy(window);
 }
 
 void window_set_active(WINDOW_REC *window)
@@ -236,7 +236,7 @@ void window_set_active(WINDOW_REC *window)
 		windows = g_slist_prepend(windows, active_win);
 	}
 
-        if (active_win != NULL)
+	if (active_win != NULL)
 		signal_emit("window changed", 2, active_win, old_window);
 }
 
@@ -331,7 +331,7 @@ void window_set_level(WINDOW_REC *window, int level)
 	g_return_if_fail(window != NULL);
 
 	window->level = level;
-        signal_emit("window level changed", 1, window);
+	signal_emit("window level changed", 1, window);
 }
 
 void window_set_immortal(WINDOW_REC *window, int immortal)
@@ -339,7 +339,7 @@ void window_set_immortal(WINDOW_REC *window, int immortal)
 	g_return_if_fail(window != NULL);
 
 	window->immortal = immortal;
-        signal_emit("window immortal changed", 1, window);
+	signal_emit("window immortal changed", 1, window);
 }
 
 /* return active item's name, or if none is active, window's name */
@@ -558,7 +558,7 @@ GSList *windows_get_sorted(void)
 	GSequenceIter *iter, *begin;
 	GSList *sorted;
 
-        sorted = NULL;
+	sorted = NULL;
 	iter = windows_seq_end();
 	begin = windows_seq_begin();
 
@@ -569,7 +569,7 @@ GSList *windows_get_sorted(void)
 		sorted = g_slist_prepend(sorted, rec);
 	}
 
-        return sorted;
+	return sorted;
 }
 
 /* Add a new bind to window - if duplicate is found it's returned */
@@ -578,8 +578,8 @@ WINDOW_BIND_REC *window_bind_add(WINDOW_REC *window, const char *servertag,
 {
 	WINDOW_BIND_REC *rec;
 
-        g_return_val_if_fail(window != NULL, NULL);
-        g_return_val_if_fail(servertag != NULL, NULL);
+	g_return_val_if_fail(window != NULL, NULL);
+	g_return_val_if_fail(servertag != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
 
 	rec = window_bind_find(window, servertag, name);
@@ -587,23 +587,23 @@ WINDOW_BIND_REC *window_bind_add(WINDOW_REC *window, const char *servertag,
 		return rec;
 
 	rec = g_new0(WINDOW_BIND_REC, 1);
-        rec->name = g_strdup(name);
-        rec->servertag = g_strdup(servertag);
+	rec->name = g_strdup(name);
+	rec->servertag = g_strdup(servertag);
 
 	window->bound_items = g_slist_append(window->bound_items, rec);
-        return rec;
+	return rec;
 }
 
 void window_bind_destroy(WINDOW_REC *window, WINDOW_BIND_REC *rec)
 {
 	g_return_if_fail(window != NULL);
-        g_return_if_fail(rec != NULL);
+	g_return_if_fail(rec != NULL);
 
 	window->bound_items = g_slist_remove(window->bound_items, rec);
 
-        g_free(rec->servertag);
-        g_free(rec->name);
-        g_free(rec);
+	g_free(rec->servertag);
+	g_free(rec->name);
+	g_free(rec);
 }
 
 WINDOW_BIND_REC *window_bind_find(WINDOW_REC *window, const char *servertag,
@@ -611,19 +611,19 @@ WINDOW_BIND_REC *window_bind_find(WINDOW_REC *window, const char *servertag,
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(window != NULL, NULL);
-        g_return_val_if_fail(servertag != NULL, NULL);
-        g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail(window != NULL, NULL);
+	g_return_val_if_fail(servertag != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
 
 	for (tmp = window->bound_items; tmp != NULL; tmp = tmp->next) {
 		WINDOW_BIND_REC *rec = tmp->data;
 
 		if (g_ascii_strcasecmp(rec->name, name) == 0 &&
 		    g_ascii_strcasecmp(rec->servertag, servertag) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 void window_bind_remove_unsticky(WINDOW_REC *window)
@@ -635,7 +635,7 @@ void window_bind_remove_unsticky(WINDOW_REC *window)
 
 		next = tmp->next;
 		if (!rec->sticky)
-                        window_bind_destroy(window, rec);
+			window_bind_destroy(window, rec);
 	}
 }
 
@@ -661,7 +661,7 @@ static void sig_server_connected(SERVER_REC *server)
 static void sig_server_disconnected(SERVER_REC *server)
 {
 	GSList *tmp;
-        SERVER_REC *new_server;
+	SERVER_REC *new_server;
 
 	g_return_if_fail(server != NULL);
 
@@ -679,8 +679,8 @@ static void sig_server_disconnected(SERVER_REC *server)
 
 static void window_print_daychange(WINDOW_REC *window, struct tm *tm)
 {
-        THEME_REC *theme;
-        TEXT_DEST_REC dest;
+	THEME_REC *theme;
+	TEXT_DEST_REC dest;
 	char *format, str[256];
 	int ret;
 

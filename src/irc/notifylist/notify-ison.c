@@ -123,7 +123,7 @@ static void notifylist_timeout_server(IRC_SERVER_REC *server)
 		NOTIFYLIST_REC *rec = tmp->data;
 
 		if (!notifylist_ircnets_match(rec, server->connrec->chatnet))
-                        continue;
+			continue;
 
 		nick = g_strdup(rec->mask);
 		ptr = strchr(nick, '!');
@@ -132,7 +132,7 @@ static void notifylist_timeout_server(IRC_SERVER_REC *server)
 		len = strlen(nick);
 
 		if (cmd->len+len+1 > 510)
-                        ison_send(server, cmd);
+			ison_send(server, cmd);
 
 		g_string_append_printf(cmd, "%s ", nick);
 		g_free(nick);
@@ -171,12 +171,12 @@ static void whois_send(IRC_SERVER_REC *server, const char *nicks,
 	/* "nick1,nick2" -> "nick1,nick2 nick1 nick2" because
 	   End of WHOIS give nick1,nick2 while other whois events give
 	   nick1 or nick2 */
-        str = g_strconcat(nicks, " ", nicks, NULL);
+	str = g_strconcat(nicks, " ", nicks, NULL);
 	for (p = str+strlen(nicks)+1; *p != '\0'; p++)
 		if (*p == ',') *p = ' ';
 
 	server_redirect_event(server, "whois", 1, str, TRUE,
-                              "notifylist event whois end",
+			"notifylist event whois end",
 			      "event 318", "notifylist event whois end",
 			      "event 311", "notifylist event whois",
 			      "event 301", "notifylist event whois away",
@@ -201,7 +201,7 @@ static void whois_list_send(IRC_SERVER_REC *server, GSList *nicks)
 	GSList *tmp;
 	GString *str;
 	char *nick;
-        int count;
+	int count;
 
 	str = g_string_new(NULL);
 	count = 0;
@@ -216,7 +216,7 @@ static void whois_list_send(IRC_SERVER_REC *server, GSList *nicks)
 			g_string_truncate(str, str->len-1);
 			whois_send(server, str->str, str->str);
 			g_string_truncate(str, 0);
-                        count = 0;
+			count = 0;
 		}
 	}
 
@@ -260,7 +260,7 @@ static void ison_check_joins(IRC_SERVER_REC *server)
 		if (send_whois) {
 			/* we need away message -
 			   send the WHOIS reply to the nick's server */
-                        rec->last_whois = now;
+			rec->last_whois = now;
 			whois_send_server(server, nick);
 		}
 	}
@@ -282,7 +282,7 @@ static void ison_check_parts(IRC_SERVER_REC *server)
 		if (gslist_find_icase_string(mserver->ison_tempusers, rec->nick) != NULL)
 			continue;
 
-                notifylist_left(server, rec);
+		notifylist_left(server, rec);
 	}
 }
 
@@ -302,11 +302,11 @@ static void event_ison(IRC_SERVER_REC *server, const char *data)
 	if (--mserver->ison_count > 0) {
 		/* wait for the rest of the /ISON replies */
 		g_free(params);
-                return;
+		return;
 	}
 
-        ison_check_joins(server);
-        ison_check_parts(server);
+	ison_check_joins(server);
+	ison_check_parts(server);
 
 	/* free memory used by temp list */
 	g_slist_foreach(mserver->ison_tempusers, (GFunc) g_free, NULL);

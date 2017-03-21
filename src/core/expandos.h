@@ -5,9 +5,9 @@
 
 /* first argument of signal must match to active .. */
 typedef enum {
-        EXPANDO_ARG_NONE = 1,
-        EXPANDO_ARG_SERVER,
-        EXPANDO_ARG_WINDOW,
+	EXPANDO_ARG_NONE = 1,
+	EXPANDO_ARG_SERVER,
+	EXPANDO_ARG_WINDOW,
 	EXPANDO_ARG_WINDOW_ITEM,
 
 	EXPANDO_NEVER /* special: expando never changes */

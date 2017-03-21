@@ -41,7 +41,7 @@ void fe_dcc_chat_messages_deinit(void);
 
 static void dcc_request(CHAT_DCC_REC *dcc)
 {
-        if (!IS_DCC_CHAT(dcc)) return;
+	if (!IS_DCC_CHAT(dcc)) return;
 
 	printformat(dcc->server, NULL, MSGLEVEL_DCC,
 		    server_ischannel(SERVER(dcc->server), dcc->target) ? IRCTXT_DCC_CHAT_CHANNEL :
@@ -53,7 +53,7 @@ static void dcc_connected(CHAT_DCC_REC *dcc)
 {
 	char *sender;
 
-        if (!IS_DCC_CHAT(dcc)) return;
+	if (!IS_DCC_CHAT(dcc)) return;
 
 	sender = g_strconcat("=", dcc->id, NULL);
 	printformat(dcc->server, NULL, MSGLEVEL_DCC,
@@ -76,7 +76,7 @@ static void dcc_closed(CHAT_DCC_REC *dcc)
 {
 	char *sender;
 
-        if (!IS_DCC_CHAT(dcc)) return;
+	if (!IS_DCC_CHAT(dcc)) return;
 
 	sender = g_strconcat("=", dcc->id, NULL);
 	printformat(dcc->server, NULL, MSGLEVEL_DCC,
@@ -86,18 +86,18 @@ static void dcc_closed(CHAT_DCC_REC *dcc)
 
 static void dcc_chat_msg(CHAT_DCC_REC *dcc, const char *msg)
 {
-        QUERY_REC *query;
+	QUERY_REC *query;
 	char *sender, *freemsg;
 
 	g_return_if_fail(IS_DCC_CHAT(dcc));
 	g_return_if_fail(msg != NULL);
 
 	sender = g_strconcat("=", dcc->id, NULL);
-        query = query_find(NULL, sender);
+	query = query_find(NULL, sender);
 
 	if (settings_get_bool("emphasis"))
 		msg = freemsg = expand_emphasis((WI_ITEM_REC *) query, msg);
-        else
+	else
 		freemsg = NULL;
 
 	if (query == NULL)
@@ -131,11 +131,11 @@ static void dcc_chat_ctcp(CHAT_DCC_REC *dcc, const char *cmd, const char *data)
 }
 
 static void dcc_error_ctcp(const char *type, const char *data,
-                           const char *nick, const char *addr,
+			const char *nick, const char *addr,
 			   const char *target)
 {
 	printformat(NULL, NULL, MSGLEVEL_DCC,
-                    IRCTXT_DCC_INVALID_CTCP, type, nick, addr, target);
+		IRCTXT_DCC_INVALID_CTCP, type, nick, addr, target);
 }
 
 static void dcc_unknown_ctcp(IRC_SERVER_REC *server, const char *data,
@@ -180,7 +180,7 @@ static void sig_dcc_destroyed(CHAT_DCC_REC *dcc)
 
 	if (!IS_DCC_CHAT(dcc)) return;
 
-        nick = g_strconcat("=", dcc->id, NULL);
+	nick = g_strconcat("=", dcc->id, NULL);
 	query = query_find(NULL, nick);
 	if (query != NULL) {
 		/* DCC chat closed, close the query with it. */
@@ -231,7 +231,7 @@ static void sig_dcc_list_print(CHAT_DCC_REC *dcc)
 static void cmd_msg(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 {
 	CHAT_DCC_REC *dcc;
-        GHashTable *optlist;
+	GHashTable *optlist;
 	char *text, *target;
 	void *free_arg;
 
@@ -353,7 +353,7 @@ void fe_dcc_chat_init(void)
 	signal_add("default ctcp reply dcc", (SIGNAL_FUNC) dcc_unknown_reply);
 	signal_add("dcc destroyed", (SIGNAL_FUNC) sig_dcc_destroyed);
 	signal_add("query destroyed", (SIGNAL_FUNC) sig_query_destroyed);
-        signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 	command_bind("msg", NULL, (SIGNAL_FUNC) cmd_msg);
 	command_bind("me", NULL, (SIGNAL_FUNC) cmd_me);
 	command_bind("action", NULL, (SIGNAL_FUNC) cmd_action);
@@ -376,7 +376,7 @@ void fe_dcc_chat_deinit(void)
 	signal_remove("default ctcp reply dcc", (SIGNAL_FUNC) dcc_unknown_reply);
 	signal_remove("dcc destroyed", (SIGNAL_FUNC) sig_dcc_destroyed);
 	signal_remove("query destroyed", (SIGNAL_FUNC) sig_query_destroyed);
-        signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 	command_unbind("msg", (SIGNAL_FUNC) cmd_msg);
 	command_unbind("me", (SIGNAL_FUNC) cmd_me);
 	command_unbind("action", (SIGNAL_FUNC) cmd_action);

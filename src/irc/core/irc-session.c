@@ -34,23 +34,23 @@ struct _isupport_data { CONFIG_REC *config; CONFIG_NODE *node; };
 
 static void session_isupport_foreach(char *key, char *value, struct _isupport_data *data)
 {
-        config_node_set_str(data->config, data->node, key, value);
+	config_node_set_str(data->config, data->node, key, value);
 }
 
 static void sig_session_save_server(IRC_SERVER_REC *server, CONFIG_REC *config,
 				    CONFIG_NODE *node)
 {
-        GSList *tmp;
+	GSList *tmp;
 	CONFIG_NODE *isupport;
 	struct _isupport_data isupport_data;
 
 	if (!IS_IRC_SERVER(server))
 		return;
 
-        /* send all non-redirected commands to server immediately */
+	/* send all non-redirected commands to server immediately */
 	for (tmp = server->cmdqueue; tmp != NULL; tmp = tmp->next->next) {
 		const char *cmd = tmp->data;
-                void *redirect = tmp->next->data;
+		void *redirect = tmp->next->data;
 
 		if (redirect == NULL) {
 			if (net_sendbuffer_send(server->handle, cmd,
@@ -58,7 +58,7 @@ static void sig_session_save_server(IRC_SERVER_REC *server, CONFIG_REC *config,
 				break;
 		}
 	}
-        net_sendbuffer_flush(server->handle);
+	net_sendbuffer_flush(server->handle);
 
 	config_node_set_str(config, node, "real_address", server->real_address);
 	config_node_set_str(config, node, "userhost", server->userhost);
@@ -73,10 +73,10 @@ static void sig_session_save_server(IRC_SERVER_REC *server, CONFIG_REC *config,
 
 	config_node_set_bool(config, node, "isupport_sent", server->isupport_sent);
 	isupport = config_node_section(config, node, "isupport", NODE_TYPE_BLOCK);
-        isupport_data.config = config;
-        isupport_data.node = isupport;
+	isupport_data.config = config;
+	isupport_data.node = isupport;
 
-        g_hash_table_foreach(server->isupport, (GHFunc) session_isupport_foreach, &isupport_data);
+	g_hash_table_foreach(server->isupport, (GHFunc) session_isupport_foreach, &isupport_data);
 }
 
 static void sig_session_restore_server(IRC_SERVER_REC *server,
@@ -87,7 +87,7 @@ static void sig_session_restore_server(IRC_SERVER_REC *server,
 	if (!IS_IRC_SERVER(server))
 		return;
 
-        if (server->real_address == NULL)
+	if (server->real_address == NULL)
 		server->real_address = g_strdup(config_node_get_str(node, "real_address", NULL));
 	server->userhost = g_strdup(config_node_get_str(node, "userhost", NULL));
 	server->usermode = g_strdup(config_node_get_str(node, "usermode", NULL));
@@ -129,7 +129,7 @@ static void sig_session_restore_nick(IRC_CHANNEL_REC *channel,
 				     CONFIG_NODE *node)
 {
 	const char *nick, *prefixes;
-        int op, halfop, voice;
+	int op, halfop, voice;
 	char newprefixes[MAX_USER_PREFIXES + 1];
 	int i;
 
@@ -138,11 +138,11 @@ static void sig_session_restore_nick(IRC_CHANNEL_REC *channel,
 
 	nick = config_node_get_str(node, "nick", NULL);
 	if (nick == NULL)
-                return;
+		return;
 
 	op = config_node_get_bool(node, "op", FALSE);
-        voice = config_node_get_bool(node, "voice", FALSE);
-        halfop = config_node_get_bool(node, "halfop", FALSE);
+	voice = config_node_get_bool(node, "voice", FALSE);
+	halfop = config_node_get_bool(node, "halfop", FALSE);
 	prefixes = config_node_get_str(node, "prefixes", NULL);
 	if (prefixes == NULL || *prefixes == '\0') {
 		/* upgrading from old irssi or from an in-between
@@ -177,7 +177,7 @@ static void session_restore_channel(IRC_CHANNEL_REC *channel)
 static void sig_connected(IRC_SERVER_REC *server)
 {
 	GSList *tmp;
-        char *str, *addr;
+	char *str, *addr;
 
 	if (!IS_IRC_SERVER(server) || !server->session_reconnect)
 		return;
@@ -189,14 +189,14 @@ static void sig_connected(IRC_SERVER_REC *server)
 	   given origin again */
 	addr = g_strdup(server->real_address);
 	signal_emit("event 001", 3, server, str, addr);
-        g_free(addr);
-        g_free(str);
+	g_free(addr);
+	g_free(str);
 
 	for (tmp = server->channels; tmp != NULL; tmp = tmp->next) {
 		IRC_CHANNEL_REC *rec = tmp->data;
 
 		if (rec->session_rejoin)
-                        session_restore_channel(rec);
+			session_restore_channel(rec);
 	}
 }
 

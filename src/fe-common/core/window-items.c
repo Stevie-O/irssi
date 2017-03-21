@@ -38,7 +38,7 @@ static void window_item_add_signal(WINDOW_REC *window, WI_ITEM_REC *item, int au
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->window == NULL);
 
-        item->window = window;
+	item->window = window;
 
 	if (window->items == NULL) {
 		window->active = item;
@@ -57,7 +57,7 @@ static void window_item_add_signal(WINDOW_REC *window, WI_ITEM_REC *item, int au
 
 	if (g_slist_length(window->items) == 1 ||
 	    (!automatic && settings_get_bool("autofocus_new_items"))) {
-                window->active = NULL;
+		window->active = NULL;
 		window_item_set_active(window, item);
 	}
 }
@@ -78,7 +78,7 @@ static void window_item_remove_signal(WI_ITEM_REC *item, int emit_signal)
 	if (window == NULL)
 		return;
 
-        item->window = NULL;
+	item->window = NULL;
 	window->items = g_slist_remove(window->items, item);
 
 	if (window->active == item) {
@@ -97,8 +97,8 @@ void window_item_remove(WI_ITEM_REC *item)
 
 void window_item_destroy(WI_ITEM_REC *item)
 {
-        window_item_remove(item);
-        item->destroy(item);
+	window_item_remove(item);
+	item->destroy(item);
 }
 
 void window_item_change_server(WI_ITEM_REC *item, void *server)
@@ -110,7 +110,7 @@ void window_item_change_server(WI_ITEM_REC *item, void *server)
 	window = window_item_window(item);
 	item->server = server;
 
-        signal_emit("window item server changed", 2, window, item);
+	signal_emit("window item server changed", 2, window, item);
 	if (window->active == item) window_change_server(window, item->server);
 }
 
@@ -118,17 +118,17 @@ void window_item_set_active(WINDOW_REC *window, WI_ITEM_REC *item)
 {
 		WINDOW_REC *old_window;
 
-        g_return_if_fail(window != NULL);
+	g_return_if_fail(window != NULL);
 
-        if (item != NULL) {
-            old_window = window_item_window(item);
-        	if (old_window != window) {
-                /* move item to different window */
-                window_item_remove_signal(item, FALSE);
-                window_item_add_signal(window, item, FALSE, FALSE);
-                signal_emit("window item moved", 3, window, item, old_window);
-        	}
-        }
+	if (item != NULL) {
+	old_window = window_item_window(item);
+		if (old_window != window) {
+		/* move item to different window */
+		window_item_remove_signal(item, FALSE);
+		window_item_add_signal(window, item, FALSE, FALSE);
+		signal_emit("window item moved", 3, window, item, old_window);
+		}
+	}
 
 	if (window->active != item) {
 		window->active = item;
@@ -175,7 +175,7 @@ void window_item_prev(WINDOW_REC *window)
 	}
 
 	if (last != NULL)
-                window_item_set_active(window, last);
+		window_item_set_active(window, last);
 }
 
 void window_item_next(WINDOW_REC *window)
@@ -205,11 +205,11 @@ void window_item_next(WINDOW_REC *window)
 	}
 
 	if (next != NULL)
-                window_item_set_active(window, next);
+		window_item_set_active(window, next);
 }
 
 WI_ITEM_REC *window_item_find_window(WINDOW_REC *window,
-                                     void *server, const char *name)
+				void *server, const char *name)
 {
 	GSList *tmp;
 
@@ -250,16 +250,16 @@ static int window_bind_has_sticky(WINDOW_REC *window)
 		WINDOW_BIND_REC *rec = tmp->data;
 
 		if (rec->sticky)
-                        return TRUE;
+			return TRUE;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 void window_item_create(WI_ITEM_REC *item, int automatic)
 {
 	WINDOW_REC *window;
-        WINDOW_BIND_REC *bind;
+	WINDOW_BIND_REC *bind;
 	GSList *tmp, *sorted;
 	int clear_waiting, reuse_unused_windows;
 
@@ -269,16 +269,16 @@ void window_item_create(WI_ITEM_REC *item, int automatic)
 
 	clear_waiting = TRUE;
 	window = NULL;
-        sorted = windows_get_sorted();
+	sorted = windows_get_sorted();
 	for (tmp = sorted; tmp != NULL; tmp = tmp->next) {
 		WINDOW_REC *rec = tmp->data;
 
-                /* is item bound to this window? */
+		/* is item bound to this window? */
 		if (item->server != NULL) {
 			bind = window_bind_find(rec, item->server->tag,
 						item->visible_name);
 			if (bind != NULL) {
-                                if (!bind->sticky)
+				if (!bind->sticky)
 					window_bind_destroy(rec, bind);
 				window = rec;
 				clear_waiting = FALSE;
@@ -293,8 +293,8 @@ void window_item_create(WI_ITEM_REC *item, int automatic)
 		     - window has no sticky binds (/LAYOUT SAVEd)
 		     - we already haven't found "good enough" window,
 		       except if
-                         - this is the active window
-                         - old window had some temporary bounds and this
+			- this is the active window
+			- old window had some temporary bounds and this
 			   one doesn't
 		     */
 		if (reuse_unused_windows && rec->items == NULL &&
@@ -303,12 +303,12 @@ void window_item_create(WI_ITEM_REC *item, int automatic)
 		     window->bound_items != NULL))
 			window = rec;
 	}
-        g_slist_free(sorted);
+	g_slist_free(sorted);
 
-        if (window == NULL && !settings_get_bool("autocreate_windows")) {
-                /* never create new windows automatically */
-                window = active_win;
-        }
+	if (window == NULL && !settings_get_bool("autocreate_windows")) {
+		/* never create new windows automatically */
+		window = active_win;
+	}
 
 	if (window == NULL) {
 		/* create new window to use */
@@ -323,7 +323,7 @@ void window_item_create(WI_ITEM_REC *item, int automatic)
 	}
 
 	if (clear_waiting)
-                window_bind_remove_unsticky(window);
+		window_bind_remove_unsticky(window);
 }
 
 static void signal_window_item_changed(WINDOW_REC *window, WI_ITEM_REC *item)

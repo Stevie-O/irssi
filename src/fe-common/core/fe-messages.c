@@ -54,7 +54,7 @@ char *expand_emphasis(WI_ITEM_REC *item, const char *text)
 	int pos;
 	int emphasis_italics;
 
-        g_return_val_if_fail(text != NULL, NULL);
+	g_return_val_if_fail(text != NULL, NULL);
 
 	emphasis_italics = settings_get_bool("emphasis_italics");
 
@@ -91,13 +91,13 @@ char *expand_emphasis(WI_ITEM_REC *item, const char *text)
 			/* check that this isn't a _nick_, we don't want to
 			   use emphasis on them. */
 			int found;
-                        char c;
+			char c;
 			char *end2;
 
 			/* check if _foo_ is a nick */
 			c = end[1];
-                        end[1] = '\0';
-                        found = nicklist_find(CHANNEL(item), bgn) != NULL;
+			end[1] = '\0';
+			found = nicklist_find(CHANNEL(item), bgn) != NULL;
 			end[1] = c;
 			if (found) continue;
 
@@ -125,10 +125,10 @@ char *expand_emphasis(WI_ITEM_REC *item, const char *text)
 
 		if (settings_get_bool("emphasis_replace")) {
 			*bgn = *end = type;
-                        pos += (end-bgn);
+			pos += (end-bgn);
 		} else {
 			g_string_insert_c(str, pos, type);
-                        pos += (end - bgn) + 2;
+			pos += (end - bgn) + 2;
 			g_string_insert_c(str, pos++, type);
 		}
 	}
@@ -140,13 +140,13 @@ char *expand_emphasis(WI_ITEM_REC *item, const char *text)
 
 static char *channel_get_nickmode_rec(NICK_REC *nickrec)
 {
-        char *emptystr;
+	char *emptystr;
 	char *nickmode;
 
 	if (!settings_get_bool("show_nickmode"))
-                return g_strdup("");
+		return g_strdup("");
 
-        emptystr = settings_get_bool("show_nickmode_empty") ? " " : "";
+	emptystr = settings_get_bool("show_nickmode_empty") ? " " : "";
 
 	if (nickrec == NULL || nickrec->prefixes[0] == '\0')
 		nickmode = g_strdup(emptystr);
@@ -162,7 +162,7 @@ char *channel_get_nickmode(CHANNEL_REC *channel, const char *nick)
 {
 	g_return_val_if_fail(nick != NULL, NULL);
 
-        return channel_get_nickmode_rec(channel == NULL ? NULL :
+	return channel_get_nickmode_rec(channel == NULL ? NULL :
 					nicklist_find(channel, nick));
 }
 
@@ -181,7 +181,7 @@ static void sig_message_public(SERVER_REC *server, const char *msg,
 	   /WINDOW CLOSE and server still sends the few last messages */
 	chanrec = channel_find(server, target);
 	if (nickrec == NULL && chanrec != NULL)
-                nickrec = nicklist_find(chanrec, nick);
+		nickrec = nicklist_find(chanrec, nick);
 
 	for_me = !settings_get_bool("hilight_nick_matches") ? FALSE :
 		!settings_get_bool("hilight_nick_matches_everywhere") ?
@@ -249,7 +249,7 @@ static void sig_message_private(SERVER_REC *server, const char *msg,
 				const char *nick, const char *address, const char *target)
 {
 	QUERY_REC *query;
-        char *freemsg = NULL;
+	char *freemsg = NULL;
 	int level = MSGLEVEL_MSGS;
 
 	/* own message returned by bouncer? */
@@ -282,7 +282,7 @@ static void sig_message_own_public(SERVER_REC *server, const char *msg,
 	WINDOW_REC *window;
 	CHANNEL_REC *channel;
 	char *nickmode;
-        char *freemsg = NULL;
+	char *freemsg = NULL;
 	int print_channel;
 	channel = channel_find(server, target);
 	if (channel != NULL)
@@ -319,7 +319,7 @@ static void sig_message_own_private(SERVER_REC *server, const char *msg,
 				    const char *target, const char *origtarget)
 {
 	QUERY_REC *query;
-        char *freemsg = NULL;
+	char *freemsg = NULL;
 
 	g_return_if_fail(server != NULL);
 	g_return_if_fail(msg != NULL);
@@ -477,7 +477,7 @@ static void print_nick_change_channel(SERVER_REC *server, const char *channel,
 		return;
 
 	level = MSGLEVEL_NICKS;
-        if (ownnick) level |= MSGLEVEL_NO_ACT;
+	if (ownnick) level |= MSGLEVEL_NO_ACT;
 
 	if (!(level & MSGLEVEL_NO_ACT) && ignore_check(server, oldnick, address, channel, newnick, level | MSGLEVEL_NO_ACT))
 		level |= MSGLEVEL_NO_ACT;
@@ -532,7 +532,7 @@ static void sig_message_nick(SERVER_REC *server, const char *newnick,
 static void sig_message_own_nick(SERVER_REC *server, const char *newnick,
 				 const char *oldnick, const char *address)
 {
-        if (!settings_get_bool("show_own_nickchange_once"))
+	if (!settings_get_bool("show_own_nickchange_once"))
 		print_nick_change(server, newnick, oldnick, address, TRUE);
 	else {
 		printformat(server, NULL, MSGLEVEL_NICKS,
@@ -581,14 +581,14 @@ static int printnick_exists(NICK_REC *first, NICK_REC *ignore,
 		first = first->next;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 static NICK_REC *printnick_find_original(NICK_REC *nick)
 {
 	while (nick != NULL) {
 		if (g_hash_table_lookup(printnicks, nick) == NULL)
-                        return nick;
+			return nick;
 
 		nick = nick->next;
 	}
@@ -612,11 +612,11 @@ static void sig_nicklist_new(CHANNEL_REC *channel, NICK_REC *nick)
 		   someone else having the original nick already in use.. */
 		nick = printnick_find_original(firstnick->next);
 		if (nick == NULL)
-                        return; /* nope, we have it */
+			return; /* nope, we have it */
 	}
 
 	if (nick->host == NULL)
-                return;
+		return;
 
 	/* identical nick already exists, have to change it somehow.. */
 	p = strchr(nick->host, '@');
@@ -627,21 +627,21 @@ static void sig_nicklist_new(CHANNEL_REC *channel, NICK_REC *nick)
 	if (p != NULL) *p = '\0';
 
 	if (!printnick_exists(firstnick, nick, nickhost)) {
-                /* use nick@host */
+		/* use nick@host */
 		g_hash_table_insert(printnicks, nick, nickhost);
-                return;
+		return;
 	}
 
 	newnick = g_string_new(NULL);
-        n = 2;
+	n = 2;
 	do {
 		g_string_printf(newnick, "%s%d", nickhost, n);
-                n++;
+		n++;
 	} while (printnick_exists(firstnick, nick, newnick->str));
 
 	g_hash_table_insert(printnicks, nick, newnick->str);
 	g_string_free(newnick, FALSE);
-        g_free(nickhost);
+	g_free(nickhost);
 }
 
 static void sig_nicklist_remove(CHANNEL_REC *channel, NICK_REC *nick)
@@ -650,47 +650,47 @@ static void sig_nicklist_remove(CHANNEL_REC *channel, NICK_REC *nick)
 
 	nickname = g_hash_table_lookup(printnicks, nick);
 	if (nickname != NULL) {
-                g_free(nickname);
+		g_free(nickname);
 		g_hash_table_remove(printnicks, nick);
 	}
 }
 
 static void sig_nicklist_changed(CHANNEL_REC *channel, NICK_REC *nick)
 {
-        sig_nicklist_remove(channel, nick);
-        sig_nicklist_new(channel, nick);
+	sig_nicklist_remove(channel, nick);
+	sig_nicklist_new(channel, nick);
 }
 
 static void sig_channel_joined(CHANNEL_REC *channel)
 {
-        NICK_REC *nick;
+	NICK_REC *nick;
 	char *nickname;
 
 	/* channel->ownnick is set at this point - check if our own nick
 	   has been changed, if it was set it back to the original nick and
 	   change the previous original to something else */
 
-        nickname = g_hash_table_lookup(printnicks, channel->ownnick);
+	nickname = g_hash_table_lookup(printnicks, channel->ownnick);
 	if (nickname == NULL)
 		return;
 
-        g_free(nickname);
+	g_free(nickname);
 	g_hash_table_remove(printnicks, channel->ownnick);
 
-        /* our own nick is guaranteed to be the first in list */
-        nick = channel->ownnick->next;
+	/* our own nick is guaranteed to be the first in list */
+	nick = channel->ownnick->next;
 	while (nick != NULL) {
 		if (g_hash_table_lookup(printnicks, nick) == NULL) {
 			sig_nicklist_new(channel, nick);
-                        break;
+			break;
 		}
-                nick = nick->next;
+		nick = nick->next;
 	}
 }
 
 static void g_hash_free_value(void *key, void *value)
 {
-        g_free(value);
+	g_free(value);
 }
 
 void fe_messages_init(void)
@@ -732,7 +732,7 @@ void fe_messages_init(void)
 
 void fe_messages_deinit(void)
 {
-        g_hash_table_foreach(printnicks, (GHFunc) g_hash_free_value, NULL);
+	g_hash_table_foreach(printnicks, (GHFunc) g_hash_free_value, NULL);
 	g_hash_table_destroy(printnicks);
 
 	signal_remove("message public", (SIGNAL_FUNC) sig_message_public);

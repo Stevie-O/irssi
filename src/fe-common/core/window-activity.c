@@ -44,7 +44,7 @@ void window_activity(WINDOW_REC *window, int data_level,
 	old_data_level = window->data_level;
 	if (data_level == 0 || window->data_level < data_level) {
 		window->data_level = data_level;
-                g_free_not_null(window->hilight_color);
+		g_free_not_null(window->hilight_color);
 		window->hilight_color = g_strdup(hilight_color);
 		signal_emit("window hilight", 1, window);
 	}
@@ -61,7 +61,7 @@ void window_item_activity(WI_ITEM_REC *item, int data_level,
 	old_data_level = item->data_level;
 	if (data_level == 0 || item->data_level < data_level) {
 		item->data_level = data_level;
-                g_free_not_null(item->hilight_color);
+		g_free_not_null(item->hilight_color);
 		item->hilight_color = g_strdup(hilight_color);
 		signal_emit("window item hilight", 1, item);
 	}
@@ -103,7 +103,7 @@ static void sig_hilight_text(TEXT_DEST_REC *dest, const char *msg)
 
 static void sig_dehilight_window(WINDOW_REC *window)
 {
-        GSList *tmp;
+	GSList *tmp;
 
 	g_return_if_fail(window != NULL);
 
@@ -121,7 +121,7 @@ static void read_settings(void)
 	if (hide_targets != NULL)
 		g_strfreev(hide_targets);
 
-        targets = settings_get_str("activity_hide_targets");
+	targets = settings_get_str("activity_hide_targets");
 	hide_targets = *targets == '\0' ? NULL :
 		g_strsplit(targets, " ", -1);
 

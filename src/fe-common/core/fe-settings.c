@@ -121,7 +121,7 @@ static void set_choice(const char *key, const char *value)
 /* SYNTAX: SET [-clear | -default] [<key> [<value>]] */
 static void cmd_set(char *data)
 {
-        GHashTable *optlist;
+	GHashTable *optlist;
 	char *key, *value;
 	void *free_arg;
 	int clear, set_default;
@@ -303,7 +303,7 @@ static void cmd_alias(const char *data)
 		iconfig_set_str("aliases", alias, value);
 		signal_emit("alias added", 2, alias, value);
 	}
-        cmd_params_free(free_arg);
+	cmd_params_free(free_arg);
 }
 
 /* SYNTAX: UNALIAS <alias> */
@@ -319,7 +319,7 @@ static void cmd_unalias(const char *data)
 	if (*alias == '\0') cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
 
 	alias_remove(alias);
-        cmd_params_free(free_arg);
+	cmd_params_free(free_arg);
 }
 
 /* SYNTAX: RELOAD [<file>] */
@@ -353,9 +353,9 @@ static void settings_save_confirm(const char *line, char *fname)
 /* SYNTAX: SAVE [<file>] */
 static void cmd_save(const char *data)
 {
-        GHashTable *optlist;
+	GHashTable *optlist;
 	char *format, *fname;
-        void *free_arg;
+	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS,
 			    "save", &optlist, &fname))
@@ -367,7 +367,7 @@ static void cmd_save(const char *data)
 	if (!irssi_config_is_changed(fname))
 		settings_save_fe(fname);
 	else {
-                /* config file modified outside irssi */
+		/* config file modified outside irssi */
 		printformat(NULL, NULL, MSGLEVEL_CLIENTNOTICE,
 			    TXT_CONFIG_MODIFIED, fname);
 
@@ -384,12 +384,12 @@ static void cmd_save(const char *data)
 static void settings_clean_confirm(const char *line)
 {
 	if (i_toupper(line[0]) == 'Y')
-                settings_clean_invalid();
+		settings_clean_invalid();
 }
 
 static void sig_settings_errors(const char *msg)
 {
-        printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, "%s", msg);
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, "%s", msg);
 	keyboard_entry_redirect((SIGNAL_FUNC) settings_clean_confirm,
 				"Remove unknown settings from config file (Y/n)?",
 				0, NULL);
@@ -405,7 +405,7 @@ void fe_settings_init(void)
 	command_bind("save", NULL, (SIGNAL_FUNC) cmd_save);
 	command_set_options("set", "clear default");
 
-        signal_add("settings errors", (SIGNAL_FUNC) sig_settings_errors);
+	signal_add("settings errors", (SIGNAL_FUNC) sig_settings_errors);
 }
 
 void fe_settings_deinit(void)

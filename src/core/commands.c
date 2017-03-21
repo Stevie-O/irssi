@@ -106,7 +106,7 @@ int command_have_sub(const char *command)
 	g_return_val_if_fail(command != NULL, FALSE);
 
 	/* find "command "s */
-        len = strlen(command);
+	len = strlen(command);
 	for (tmp = commands; tmp != NULL; tmp = tmp->next) {
 		COMMAND_REC *rec = tmp->data;
 
@@ -121,7 +121,7 @@ int command_have_sub(const char *command)
 static COMMAND_MODULE_REC *
 command_module_get(COMMAND_REC *rec, const char *module, int protocol)
 {
-        COMMAND_MODULE_REC *modrec;
+	COMMAND_MODULE_REC *modrec;
 
 	g_return_val_if_fail(rec != NULL, NULL);
 
@@ -129,14 +129,14 @@ command_module_get(COMMAND_REC *rec, const char *module, int protocol)
 	if (modrec == NULL) {
 		modrec = g_new0(COMMAND_MODULE_REC, 1);
 		modrec->name = g_strdup(module);
-                modrec->protocol = -1;
+		modrec->protocol = -1;
 		rec->modules = g_slist_append(rec->modules, modrec);
 	}
 
-        if (protocol != -1)
+	if (protocol != -1)
 		modrec->protocol = protocol;
 
-        return modrec;
+	return modrec;
 }
 
 void command_bind_full(const char *module, int priority, const char *cmd,
@@ -145,7 +145,7 @@ void command_bind_full(const char *module, int priority, const char *cmd,
 {
 	COMMAND_REC *rec;
 	COMMAND_MODULE_REC *modrec;
-        COMMAND_CALLBACK_REC *cb;
+	COMMAND_CALLBACK_REC *cb;
 	char *str;
 
 	g_return_if_fail(module != NULL);
@@ -158,7 +158,7 @@ void command_bind_full(const char *module, int priority, const char *cmd,
 		rec->category = category == NULL ? NULL : g_strdup(category);
 		commands = g_slist_append(commands, rec);
 	}
-        modrec = command_module_get(rec, module, protocol);
+	modrec = command_module_get(rec, module, protocol);
 
 	cb = g_new0(COMMAND_CALLBACK_REC, 1);
 	cb->func = func;
@@ -191,9 +191,9 @@ static void command_module_free(COMMAND_MODULE_REC *modrec, COMMAND_REC *rec)
 
 	g_slist_foreach(modrec->callbacks, (GFunc) g_free, NULL);
 	g_slist_free(modrec->callbacks);
-        g_free(modrec->name);
-        g_free_not_null(modrec->options);
-        g_free(modrec);
+	g_free(modrec->name);
+	g_free_not_null(modrec->options);
+	g_free(modrec);
 }
 
 static void command_module_destroy(COMMAND_REC *rec,
@@ -201,20 +201,20 @@ static void command_module_destroy(COMMAND_REC *rec,
 {
 	GSList *tmp, *freelist;
 
-        command_module_free(modrec, rec);
+	command_module_free(modrec, rec);
 
 	/* command_set_options() might have added module declaration of it's
 	   own without any signals .. check if they're the only ones left
 	   and if so, destroy them. */
-        freelist = NULL;
+	freelist = NULL;
 	for (tmp = rec->modules; tmp != NULL; tmp = tmp->next) {
 		COMMAND_MODULE_REC *rec = tmp->data;
 
 		if (rec->callbacks == NULL)
 			freelist = g_slist_append(freelist, rec);
 		else {
-                        g_slist_free(freelist);
-                        freelist = NULL;
+			g_slist_free(freelist);
+			freelist = NULL;
 			break;
 		}
 	}
@@ -301,10 +301,10 @@ void command_runsub(const char *cmd, const char *data,
 
 	g_return_if_fail(data != NULL);
 
-        while (*data == ' ') data++;
+	while (*data == ' ') data++;
 
 	if (*data == '\0') {
-                /* no subcommand given - list the subcommands */
+		/* no subcommand given - list the subcommands */
 		signal_emit("list subcommands", 2, cmd);
 		return;
 	}
@@ -318,7 +318,7 @@ void command_runsub(const char *cmd, const char *data,
 	/* check if this command can be expanded */
 	newcmd = command_expand(subcmd+8);
 	if (newcmd == NULL) {
-                /* ambiguous command */
+		/* ambiguous command */
 		g_free(orig);
 		return;
 	}
@@ -332,7 +332,7 @@ void command_runsub(const char *cmd, const char *data,
 			signal_emit("error command", 2,
 				    GINT_TO_POINTER(CMDERR_UNKNOWN), subcmd+8);
 		}
-                g_free(defcmd);
+		g_free(defcmd);
 	}
 
 	g_free(subcmd);
@@ -362,7 +362,7 @@ int command_have_option(const char *cmd, const char *option)
 	g_return_val_if_fail(cmd != NULL, FALSE);
 	g_return_val_if_fail(option != NULL, FALSE);
 
-        rec = command_find(cmd);
+	rec = command_find(cmd);
 	g_return_val_if_fail(rec != NULL, FALSE);
 
 	if (rec->options == NULL)
@@ -386,7 +386,7 @@ static void command_calc_options(COMMAND_REC *rec, const char *options)
 	optlist = g_strsplit(options, " ", -1);
 
 	if (rec->options == NULL) {
-                /* first call - use specified args directly */
+		/* first call - use specified args directly */
 		rec->options = optlist;
 		return;
 	}
@@ -394,7 +394,7 @@ static void command_calc_options(COMMAND_REC *rec, const char *options)
 	/* save old options to linked list */
 	list = NULL;
 	for (tmp = rec->options; *tmp != NULL; tmp++)
-                list = g_slist_append(list, g_strdup(*tmp));
+		list = g_slist_append(list, g_strdup(*tmp));
 	g_strfreev(rec->options);
 
 	/* merge the options */
@@ -403,12 +403,12 @@ static void command_calc_options(COMMAND_REC *rec, const char *options)
 
 		oldopt = optlist_find(list, name);
 		if (oldopt != NULL) {
-                        /* already specified - overwrite old definition */
+			/* already specified - overwrite old definition */
 			g_free(oldopt->data);
 			oldopt->data = g_strdup(*tmp);
 		} else {
 			/* new option, append to list */
-                        list = g_slist_append(list, g_strdup(*tmp));
+			list = g_slist_append(list, g_strdup(*tmp));
 		}
 	}
 	g_strfreev(optlist);
@@ -416,9 +416,9 @@ static void command_calc_options(COMMAND_REC *rec, const char *options)
 	/* linked list -> string[] */
 	str = gslist_to_string(list, " ");
 	rec->options = g_strsplit(str, " ", -1);
-        g_free(str);
+	g_free(str);
 
-        g_slist_foreach(list, (GFunc) g_free, NULL);
+	g_slist_foreach(list, (GFunc) g_free, NULL);
 	g_slist_free(list);
 }
 
@@ -443,18 +443,18 @@ void command_set_options_module(const char *module,
 {
 	COMMAND_REC *rec;
 	COMMAND_MODULE_REC *modrec;
-        int reload;
+	int reload;
 
 	g_return_if_fail(module != NULL);
 	g_return_if_fail(cmd != NULL);
 	g_return_if_fail(options != NULL);
 
-        rec = command_find(cmd);
+	rec = command_find(cmd);
 	g_return_if_fail(rec != NULL);
-        modrec = command_module_get(rec, module, -1);
+	modrec = command_module_get(rec, module, -1);
 
 	reload = modrec->options != NULL;
-        if (reload) {
+	if (reload) {
 		/* options already set for the module ..
 		   we need to recalculate everything */
 		g_free(modrec->options);
@@ -462,9 +462,9 @@ void command_set_options_module(const char *module,
 
 	modrec->options = g_strdup(options);
 
-        if (reload)
+	if (reload)
 		command_update_options(rec);
-        else
+	else
 		command_calc_options(rec, options);
 }
 
@@ -501,7 +501,7 @@ char *cmd_get_quoted_param(char **data)
 	while (**data != '\0' && (**data != quote ||
 				  ((*data)[1] != ' ' && (*data)[1] != '\0'))) {
 		if (**data == '\\' && (*data)[1] != '\0')
-                        g_memmove(*data, (*data)+1, strlen(*data));
+			g_memmove(*data, (*data)+1, strlen(*data));
 		(*data)++;
 	}
 
@@ -570,7 +570,7 @@ static int get_cmd_options(char **data, int ignore_unknown,
 		if (**data == '\0' || **data == '-') {
 			if (option != NULL && *optlist[pos] == '+') {
 				/* required argument missing! */
-                                *data = optlist[pos] + 1;
+				*data = optlist[pos] + 1;
 				return CMDERR_OPTION_ARG_MISSING;
 			}
 		}
@@ -604,17 +604,17 @@ static int get_cmd_options(char **data, int ignore_unknown,
 				if (pos != -1) {
 					g_hash_table_insert(options, "#",
 							    option);
-                                        pos = -3;
+					pos = -3;
 				}
 			}
 
 			if (pos == -1 && !ignore_unknown) {
 				/* unknown option! */
-                                *data = option;
+				*data = option;
 				return CMDERR_OPTION_UNKNOWN;
 			}
 			if (pos == -2 && !ignore_unknown) {
-                                /* multiple matches */
+				/* multiple matches */
 				*data = option;
 				return CMDERR_OPTION_AMBIGUOUS;
 			}
@@ -657,18 +657,18 @@ static int get_cmd_options(char **data, int ignore_unknown,
 
 typedef struct {
 	char *data;
-        GHashTable *options;
+	GHashTable *options;
 } CMD_TEMP_REC;
 
 static const char *
 get_optional_channel(WI_ITEM_REC *active_item, char **data, int require_name)
 {
-        CHANNEL_REC *chanrec;
+	CHANNEL_REC *chanrec;
 	const char *ret;
 	char *tmp, *origtmp, *channel;
 
 	if (active_item == NULL || active_item->server == NULL) {
-                /* no active channel in window, channel required */
+		/* no active channel in window, channel required */
 		return cmd_get_param(data);
 	}
 
@@ -677,29 +677,29 @@ get_optional_channel(WI_ITEM_REC *active_item, char **data, int require_name)
 
 	if (g_strcmp0(channel, "*") == 0 && IS_CHANNEL(active_item) &&
 	    !require_name) {
-                /* "*" means active channel */
+		/* "*" means active channel */
 		cmd_get_param(data);
 		ret = window_item_get_target(active_item);
 	} else if (IS_CHANNEL(active_item) &&
 		   !server_ischannel(active_item->server, channel)) {
-                /* we don't have channel parameter - use active channel */
+		/* we don't have channel parameter - use active channel */
 		ret = window_item_get_target(active_item);
 	} else {
 		/* Find the channel first and use it's name if found.
 		   This allows automatic !channel -> !XXXXXchannel replaces. */
-                channel = cmd_get_param(data);
+		channel = cmd_get_param(data);
 
 		chanrec = channel_find(active_item->server, channel);
 		ret = chanrec == NULL ? channel : chanrec->name;
 	}
 
 	g_free(origtmp);
-        return ret;
+	return ret;
 }
 
 int cmd_get_params(const char *data, gpointer *free_me, int count, ...)
 {
-        WI_ITEM_REC *item;
+	WI_ITEM_REC *item;
 	CMD_TEMP_REC *rec;
 	GHashTable **opthash;
 	char **str, *arg, *datad;
@@ -714,7 +714,7 @@ int cmd_get_params(const char *data, gpointer *free_me, int count, ...)
 	rec->data = g_strdup(data);
 	*free_me = rec;
 
-        datad = rec->data;
+	datad = rec->data;
 	error = FALSE;
 
 	item = (count & PARAM_FLAG_OPTCHAN) == 0 ? NULL:
@@ -769,10 +769,10 @@ int cmd_get_params(const char *data, gpointer *free_me, int count, ...)
 	va_end(args);
 
 	if (error) {
-                signal_emit("error command", 2, GINT_TO_POINTER(error), datad);
+		signal_emit("error command", 2, GINT_TO_POINTER(error), datad);
 		signal_stop();
 
-                cmd_params_free(rec);
+		cmd_params_free(rec);
 		*free_me = NULL;
 	}
 
@@ -816,7 +816,7 @@ void commands_remove_module(const char *module)
 	for (tmp = commands; tmp != NULL; tmp = next) {
 		COMMAND_REC *rec = tmp->data;
 
-                next = tmp->next;
+		next = tmp->next;
 		modlist = gslist_find_string(rec->modules, module);
 		if (modlist != NULL)
 			command_module_unbind_all(rec, modlist->data);
@@ -837,12 +837,12 @@ static int cmd_protocol_match(COMMAND_REC *cmd, SERVER_REC *server)
 		}
 
 		if (server != NULL && rec->protocol == server->chat_type) {
-                        /* matching protocol found */
-                        return 1;
+			/* matching protocol found */
+			return 1;
 		}
 	}
 
-        return 0;
+	return 0;
 }
 
 #define alias_runstack_push(alias) \
@@ -852,12 +852,12 @@ static int cmd_protocol_match(COMMAND_REC *cmd, SERVER_REC *server)
 	alias_runstack = g_slist_remove(alias_runstack, alias)
 
 #define alias_runstack_find(alias) \
-        (gslist_find_icase_string(alias_runstack, alias) != NULL)
+	(gslist_find_icase_string(alias_runstack, alias) != NULL)
 
 static void parse_command(const char *command, int expand_aliases,
 			  SERVER_REC *server, void *item)
 {
-        COMMAND_REC *rec;
+	COMMAND_REC *rec;
 	const char *alias, *newcmd;
 	char *cmd, *orig, *args, *oldcmd;
 
@@ -872,9 +872,9 @@ static void parse_command(const char *command, int expand_aliases,
 	alias = !expand_aliases || alias_runstack_find(cmd+8) ? NULL :
 		alias_find(cmd+8);
 	if (alias != NULL) {
-                alias_runstack_push(cmd+8);
+		alias_runstack_push(cmd+8);
 		eval_special_string(alias, args, server, item);
-                alias_runstack_pop(cmd+8);
+		alias_runstack_pop(cmd+8);
 		g_free(orig);
 		return;
 	}
@@ -882,7 +882,7 @@ static void parse_command(const char *command, int expand_aliases,
 	/* check if this command can be expanded */
 	newcmd = command_expand(cmd+8);
 	if (newcmd == NULL) {
-                /* ambiguous command */
+		/* ambiguous command */
 		g_free(orig);
 		return;
 	}
@@ -903,8 +903,8 @@ static void parse_command(const char *command, int expand_aliases,
 
 	oldcmd = current_command;
 	current_command = cmd+8;
-        if (server != NULL) server_ref(server);
-        if (!signal_emit(cmd, 3, args, server, item)) {
+	if (server != NULL) server_ref(server);
+	if (!signal_emit(cmd, 3, args, server, item)) {
 		signal_emit_id(signal_default_command, 3,
 			       command, server, item);
 	}

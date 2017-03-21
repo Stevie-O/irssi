@@ -15,14 +15,14 @@ static int check_expando_destroy(char *key, PerlExpando *rec,
 				 PERL_SCRIPT_REC *script)
 {
 	if (rec->script == script) {
-                expando_destroy(key, sig_perl_expando);
+		expando_destroy(key, sig_perl_expando);
 		SvREFCNT_dec(rec->func);
 		g_free(key);
 		g_free(rec);
 		return TRUE;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 static void script_unregister_expandos(PERL_SCRIPT_REC *script)
@@ -102,7 +102,7 @@ static char *perl_expando_event(PerlExpando *rec, SERVER_REC *server,
 
 static char *sig_perl_expando(SERVER_REC *server, void *item, int *free_ret)
 {
-        PerlExpando *rec;
+	PerlExpando *rec;
 
 	rec = g_hash_table_lookup(perl_expando_defs, current_expando);
 	if (rec != NULL)
@@ -113,7 +113,7 @@ static char *sig_perl_expando(SERVER_REC *server, void *item, int *free_ret)
 static void expando_signals_add_hash(const char *key, SV *signals)
 {
 	HV *hv;
-        HE *he;
+	HE *he;
 	I32 len;
 	const char *argstr;
 	ExpandoArg arg;
@@ -123,7 +123,7 @@ static void expando_signals_add_hash(const char *key, SV *signals)
 		return;
 	}
 
-        hv = hvref(signals);
+	hv = hvref(signals);
 	hv_iterinit(hv);
 	while ((he = hv_iternext(hv)) != NULL) {
 		SV *argsv = HeVAL(he);
@@ -156,24 +156,24 @@ expando_create(key, func, signals)
 	SV *func
 	SV *signals
 PREINIT:
-        PerlExpando *rec;
+	PerlExpando *rec;
 CODE:
 	rec = g_new0(PerlExpando, 1);
 	rec->script = perl_script_find_package(perl_get_package());
-        rec->func = perl_func_sv_inc(func, perl_get_package());
+	rec->func = perl_func_sv_inc(func, perl_get_package());
 
 	expando_create(key, sig_perl_expando, NULL);
 	g_hash_table_insert(perl_expando_defs, g_strdup(key), rec);
-        expando_signals_add_hash(key, signals);
+	expando_signals_add_hash(key, signals);
 
 void
 expando_destroy(name)
 	char *name
 PREINIT:
-        gpointer key, value;
+	gpointer key, value;
 CODE:
 	if (g_hash_table_lookup_extended(perl_expando_defs, name, &key, &value)) {
-                g_hash_table_remove(perl_expando_defs, name);
+		g_hash_table_remove(perl_expando_defs, name);
 		g_free(key);
 		SvREFCNT_dec((SV *) value);
 	}

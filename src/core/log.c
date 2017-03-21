@@ -77,7 +77,7 @@ static char *log_filename(LOG_REC *log)
 {
 	char *str, fname[1024];
 	struct tm *tm;
-        size_t ret;
+	size_t ret;
 	time_t now;
 
 	now = time(NULL);
@@ -89,7 +89,7 @@ static char *log_filename(LOG_REC *log)
 
 	if (ret <= 0) {
 		g_warning("log_filename() : strftime() failed");
-                return NULL;
+		return NULL;
 	}
 
 	return g_strdup(fname);
@@ -126,7 +126,7 @@ int log_start_logging(LOG_REC *log)
 		log->failed = TRUE;
 		return FALSE;
 	}
-        memset(&lock, 0, sizeof(lock));
+	memset(&lock, 0, sizeof(lock));
 	lock.l_type = F_WRLCK;
 	if (fcntl(log->handle, F_SETLK, &lock) == -1 && errno == EACCES) {
 		close(log->handle);
@@ -162,7 +162,7 @@ void log_stop_logging(LOG_REC *log)
 			    settings_get_str("log_close_string"),
 			    "\n", time(NULL));
 
-        memset(&lock, 0, sizeof(lock));
+	memset(&lock, 0, sizeof(lock));
 	lock.l_type = F_UNLCK;
 	fcntl(log->handle, F_SETLK, &lock);
 
@@ -193,7 +193,7 @@ static void log_rotate_check(LOG_REC *log)
 
 void log_write_rec(LOG_REC *log, const char *str, int level)
 {
-        char *colorstr;
+	char *colorstr;
 	struct tm *tm;
 	time_t now;
 	int hour, day;
@@ -213,7 +213,7 @@ void log_write_rec(LOG_REC *log, const char *str, int level)
 	day -= tm->tm_mday; /* tm breaks in log_rotate_check() .. */
 	if (tm->tm_hour != hour) {
 		/* hour changed, check if we need to rotate log file */
-                log_rotate_check(log);
+		log_rotate_check(log);
 	}
 
 	if (day != 0) {
@@ -227,10 +227,10 @@ void log_write_rec(LOG_REC *log, const char *str, int level)
 
 	if (log->colorizer == NULL)
 		colorstr = NULL;
-        else
-                str = colorstr = log->colorizer(str);
+	else
+		str = colorstr = log->colorizer(str);
 
-        if ((level & MSGLEVEL_LASTLOG) == 0)
+	if ((level & MSGLEVEL_LASTLOG) == 0)
 		log_write_timestamp(log->handle, log_timestamp, str, now);
 	else
 		write_buffer(log->handle, str, strlen(str));
@@ -238,7 +238,7 @@ void log_write_rec(LOG_REC *log, const char *str, int level)
 
 	signal_emit("log written", 2, log, str);
 
-        g_free_not_null(colorstr);
+	g_free_not_null(colorstr);
 }
 
 static int itemcmp(const char *patt, const char *item)
@@ -247,7 +247,7 @@ static int itemcmp(const char *patt, const char *item)
 
 	if (!g_strcmp0(patt, "*"))
 		return 0;
-        return item ? g_ascii_strcasecmp(patt, item) : 1;
+	return item ? g_ascii_strcasecmp(patt, item) : 1;
 }
 
 LOG_ITEM_REC *log_item_find(LOG_REC *log, int type, const char *item,
@@ -306,11 +306,11 @@ void log_file_write(const char *server_tag, const char *item, int level,
 			g_strdup(str);
 
 		for (tmp = fallbacks; tmp != NULL; tmp = tmp->next)
-                        log_write_rec(tmp->data, tmpstr, level);
+			log_write_rec(tmp->data, tmpstr, level);
 
 		g_free(tmpstr);
 	}
-        g_slist_free(fallbacks);
+	g_slist_free(fallbacks);
 }
 
 LOG_REC *log_find(const char *fname)
@@ -336,7 +336,7 @@ static void log_items_update_config(LOG_REC *log, CONFIG_NODE *parent)
 	for (tmp = log->items; tmp != NULL; tmp = tmp->next) {
 		LOG_ITEM_REC *rec = tmp->data;
 
-                node = iconfig_node_section(parent, NULL, NODE_TYPE_BLOCK);
+		node = iconfig_node_section(parent, NULL, NODE_TYPE_BLOCK);
 		iconfig_node_set_str(node, "type", log_item_types[rec->type]);
 		iconfig_node_set_str(node, "name", rec->name);
 		iconfig_node_set_str(node, "server", rec->servertag);
@@ -585,9 +585,9 @@ void log_init(void)
 			 "--- Day changed %a %b %d %Y");
 
 	read_settings();
-        signal_add("setup changed", (SIGNAL_FUNC) read_settings);
-        signal_add("setup reread", (SIGNAL_FUNC) log_read_config);
-        signal_add("irssi init finished", (SIGNAL_FUNC) log_read_config);
+	signal_add("setup changed", (SIGNAL_FUNC) read_settings);
+	signal_add("setup reread", (SIGNAL_FUNC) log_read_config);
+	signal_add("irssi init finished", (SIGNAL_FUNC) log_read_config);
 }
 
 void log_deinit(void)

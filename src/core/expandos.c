@@ -42,9 +42,9 @@
 typedef struct {
 	EXPANDO_FUNC func;
 
-        int signals;
+	int signals;
 	int signal_ids[MAX_EXPANDO_SIGNALS];
-        int signal_args[MAX_EXPANDO_SIGNALS];
+	int signal_args[MAX_EXPANDO_SIGNALS];
 } EXPANDO_REC;
 
 const char *current_expando = NULL;
@@ -67,8 +67,8 @@ static time_t last_timestamp;
 /* Create expando - overrides any existing ones. */
 void expando_create(const char *key, EXPANDO_FUNC func, ...)
 {
-        EXPANDO_REC *rec;
-        const char *signal;
+	EXPANDO_REC *rec;
+	const char *signal;
 	va_list va;
 
 	g_return_if_fail(key != NULL && *key != '\0');
@@ -85,7 +85,7 @@ void expando_create(const char *key, EXPANDO_FUNC func, ...)
 		rec->signals = 0;
 	else {
 		rec = g_new0(EXPANDO_REC, 1);
-                if (key[1] != '\0')
+		if (key[1] != '\0')
 			g_hash_table_insert(expandos, g_strdup(key), rec);
 		else
 			char_expandos[(int) (unsigned char) *key] = rec;
@@ -95,15 +95,15 @@ void expando_create(const char *key, EXPANDO_FUNC func, ...)
 
 	va_start(va, func);
 	while ((signal = (const char *) va_arg(va, const char *)) != NULL)
-               expando_add_signal(key, signal, (int) va_arg(va, int));
-        va_end(va);
+	expando_add_signal(key, signal, (int) va_arg(va, int));
+	va_end(va);
 }
 
 static EXPANDO_REC *expando_find(const char *key)
 {
 	if (key[1] != '\0')
 		return g_hash_table_lookup(expandos, key);
-        else
+	else
 		return CHAR_EXPANDO(*key);
 }
 
@@ -115,18 +115,18 @@ void expando_add_signal(const char *key, const char *signal, ExpandoArg arg)
 	g_return_if_fail(key != NULL);
 	g_return_if_fail(signal != NULL);
 
-        rec = expando_find(key);
-        g_return_if_fail(rec != NULL);
+	rec = expando_find(key);
+	g_return_if_fail(rec != NULL);
 
 	if (arg == EXPANDO_NEVER) {
-                /* expando changes never */
+		/* expando changes never */
 		rec->signals = -1;
 	} else if (rec->signals < MAX_EXPANDO_SIGNALS) {
 		g_return_if_fail(rec->signals != -1);
 
 		rec->signal_ids[rec->signals] = signal_get_uniq_id(signal);
 		rec->signal_args[rec->signals] = arg;
-                rec->signals++;
+		rec->signals++;
 	}
 }
 
@@ -134,7 +134,7 @@ void expando_add_signal(const char *key, const char *signal, ExpandoArg arg)
 void expando_destroy(const char *key, EXPANDO_FUNC func)
 {
 	gpointer origkey, value;
-        EXPANDO_REC *rec;
+	EXPANDO_REC *rec;
 
 	g_return_if_fail(key != NULL && *key != '\0');
 	g_return_if_fail(func != NULL);
@@ -161,20 +161,20 @@ void expando_bind(const char *key, int funccount, SIGNAL_FUNC *funcs)
 {
 	SIGNAL_FUNC func;
 	EXPANDO_REC *rec;
-        int n, arg;
+	int n, arg;
 
 	g_return_if_fail(key != NULL);
 	g_return_if_fail(funccount >= 1);
 	g_return_if_fail(funcs != NULL);
 	g_return_if_fail(funcs[0] != NULL);
 
-        rec = expando_find(key);
+	rec = expando_find(key);
 	g_return_if_fail(rec != NULL);
 
 	if (rec->signals == 0) {
 		/* it's unknown when this expando changes..
 		   check it once in a second */
-                signal_add("expando timer", funcs[EXPANDO_ARG_NONE]);
+		signal_add("expando timer", funcs[EXPANDO_ARG_NONE]);
 	}
 
 	for (n = 0; n < rec->signals; n++) {
@@ -191,20 +191,20 @@ void expando_unbind(const char *key, int funccount, SIGNAL_FUNC *funcs)
 {
 	SIGNAL_FUNC func;
 	EXPANDO_REC *rec;
-        int n, arg;
+	int n, arg;
 
 	g_return_if_fail(key != NULL);
 	g_return_if_fail(funccount >= 1);
 	g_return_if_fail(funcs != NULL);
 	g_return_if_fail(funcs[0] != NULL);
 
-        rec = expando_find(key);
+	rec = expando_find(key);
 	g_return_if_fail(rec != NULL);
 
 	if (rec->signals == 0) {
 		/* it's unknown when this expando changes..
 		   check it once in a second */
-                signal_remove("expando timer", funcs[EXPANDO_ARG_NONE]);
+		signal_remove("expando timer", funcs[EXPANDO_ARG_NONE]);
 	}
 
 	for (n = 0; n < rec->signals; n++) {
@@ -221,13 +221,13 @@ int *expando_get_signals(const char *key)
 {
 	EXPANDO_REC *rec;
 	int *signals;
-        int n;
+	int n;
 
 	g_return_val_if_fail(key != NULL, NULL);
 
 	rec = expando_find(key);
 	if (rec == NULL || rec->signals < 0)
-                return NULL;
+		return NULL;
 
 	if (rec->signals == 0) {
 		/* it's unknown when this expando changes..
@@ -236,16 +236,16 @@ int *expando_get_signals(const char *key)
 		signals[0] = signal_get_uniq_id("expando timer");
 		signals[1] = EXPANDO_ARG_NONE;
 		signals[2] = -1;
-                return signals;
+		return signals;
 	}
 
-        signals = g_new(int, rec->signals*2+1);
+	signals = g_new(int, rec->signals*2+1);
 	for (n = 0; n < rec->signals; n++) {
-                signals[n*2] = rec->signal_ids[n];
-                signals[n*2+1] = rec->signal_args[n];
+		signals[n*2] = rec->signal_ids[n];
+		signals[n*2+1] = rec->signal_args[n];
 	}
 	signals[rec->signals*2] = -1;
-        return signals;
+	return signals;
 }
 
 EXPANDO_FUNC expando_find_char(char chr)
@@ -306,7 +306,7 @@ static char *expando_channel(SERVER_REC *server, void *item, int *free_ret)
 /* time client was started, $time() format */
 static char *expando_clientstarted(SERVER_REC *server, void *item, int *free_ret)
 {
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	return g_strdup_printf("%ld", (long) client_start_time);
 }
 
@@ -350,7 +350,7 @@ static char *expando_chanmode(SERVER_REC *server, void *item, int *free_ret)
 	if (!IS_CHANNEL(item))
 		return NULL;
 
-        if (!settings_get_bool("chanmode_expando_strip"))
+	if (!settings_get_bool("chanmode_expando_strip"))
 		return CHANNEL(item)->mode;
 
 	*free_ret = TRUE;
@@ -403,21 +403,21 @@ static char *expando_target(SERVER_REC *server, void *item, int *free_ret)
 /* client release date (in YYYYMMDD format) */
 static char *expando_releasedate(SERVER_REC *server, void *item, int *free_ret)
 {
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	return g_strdup_printf("%d", IRSSI_VERSION_DATE);
 }
 
 /* client release time (in HHMM format) */
 static char *expando_releasetime(SERVER_REC *server, void *item, int *free_ret)
 {
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	return g_strdup_printf("%04d", IRSSI_VERSION_TIME);
 }
 
 /* client abi */
 static char *expando_abiversion(SERVER_REC *server, void *item, int *free_ret)
 {
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	return g_strdup_printf("%d", IRSSI_ABI_VERSION);
 }
 
@@ -439,16 +439,16 @@ static char *expando_time(SERVER_REC *server, void *item, int *free_ret)
 {
 	time_t now;
 	struct tm *tm;
-        char str[256];
+	char str[256];
 
-        now = time(NULL);
+	now = time(NULL);
 	tm = localtime(&now);
 
 	if (strftime(str, sizeof(str), timestamp_format, tm) == 0)
-                return "";
+		return "";
 
 	*free_ret = TRUE;
-        return g_strdup(str);
+	return g_strdup(str);
 }
 
 /* a literal '$' */
@@ -466,13 +466,13 @@ static char *expando_sysname(SERVER_REC *server, void *item, int *free_ret)
 /* system release */
 static char *expando_sysrelease(SERVER_REC *server, void *item, int *free_ret)
 {
-        return sysrelease;
+	return sysrelease;
 }
 
 /* system architecture */
 static char *expando_sysarch(SERVER_REC *server, void *item, int *free_ret)
 {
-        return sysarch;
+	return sysarch;
 }
 
 /* Topic of active channel (or address of queried nick) */
@@ -486,13 +486,13 @@ static char *expando_topic(SERVER_REC *server, void *item, int *free_ret)
 		if (query->server_tag == NULL)
 			return "";
 
-                *free_ret = TRUE;
+		*free_ret = TRUE;
 		return query->address == NULL ?
 			g_strdup_printf("(%s)", query->server_tag) :
 			g_strdup_printf("%s (%s)", query->address,
 					query->server_tag);
 	}
-        return "";
+	return "";
 }
 
 /* Server tag */
@@ -548,28 +548,28 @@ static int sig_timer(void)
 {
 	time_t now;
 	struct tm *tm;
-        int last_min;
+	int last_min;
 
-        signal_emit("expando timer", 0);
+	signal_emit("expando timer", 0);
 
-        /* check if $Z has changed */
+	/* check if $Z has changed */
 	now = time(NULL);
 	if (last_timestamp != now) {
 		if (!timestamp_seconds && last_timestamp != 0) {
-                        /* assume it changes every minute */
+			/* assume it changes every minute */
 			tm = localtime(&last_timestamp);
 			last_min = tm->tm_min;
 
 			tm = localtime(&now);
 			if (tm->tm_min == last_min)
-                                return 1;
+				return 1;
 		}
 
-                signal_emit("time changed", 0);
+		signal_emit("time changed", 0);
 		last_timestamp = now;
 	}
 
-        return 1;
+	return 1;
 }
 
 static void read_settings(void)
@@ -597,9 +597,9 @@ void expandos_init(void)
 
 	last_sent_msg = NULL; last_sent_msg_body = NULL;
 	last_privmsg_from = NULL; last_public_from = NULL;
-        last_timestamp = 0;
+	last_timestamp = 0;
 
-        sysname = sysrelease = sysarch = NULL;
+	sysname = sysrelease = sysarch = NULL;
 #ifdef HAVE_SYS_UTSNAME_H
 	if (uname(&un) >= 0) {
 		sysname = g_strdup(un.sysname);
@@ -642,7 +642,7 @@ void expandos_init(void)
 		       "window changed", EXPANDO_ARG_NONE,
 		       "window connect changed", EXPANDO_ARG_WINDOW,
 		       "window server changed", EXPANDO_ARG_WINDOW,
-                       "server nick changed", EXPANDO_ARG_SERVER, NULL);
+		"server nick changed", EXPANDO_ARG_SERVER, NULL);
 	expando_create("O", expando_statusoper,
 		       "setup changed", EXPANDO_ARG_NONE,
 		       "window changed", EXPANDO_ARG_NONE,
@@ -704,7 +704,7 @@ void expandos_init(void)
 
 	read_settings();
 
-        timer_tag = g_timeout_add(1000, (GSourceFunc) sig_timer, NULL);
+	timer_tag = g_timeout_add(1000, (GSourceFunc) sig_timer, NULL);
 	signal_add("message public", (SIGNAL_FUNC) sig_message_public);
 	signal_add("message private", (SIGNAL_FUNC) sig_message_private);
 	signal_add("message own_private", (SIGNAL_FUNC) sig_message_own_private);

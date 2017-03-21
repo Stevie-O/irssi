@@ -2,10 +2,10 @@
 #define __MODULES_H
 
 #define MODULE_DATA_INIT(rec) \
-        (rec)->module_data = g_hash_table_new(g_str_hash, g_str_equal)
+	(rec)->module_data = g_hash_table_new(g_str_hash, g_str_equal)
 
 #define MODULE_DATA_DEINIT(rec) \
-        g_hash_table_destroy((rec)->module_data)
+	g_hash_table_destroy((rec)->module_data)
 
 #define MODULE_DATA_SET(rec, data) \
 	g_hash_table_insert((rec)->module_data, MODULE_NAME, data)
@@ -19,7 +19,7 @@
 
 #ifdef HAVE_GMODULE
 #  define MODULE_IS_STATIC(rec) \
-        ((rec)->gmodule == NULL)
+	((rec)->gmodule == NULL)
 #else
 #  define MODULE_IS_STATIC(rec) TRUE
 #endif
@@ -36,7 +36,7 @@ typedef struct _MODULE_REC MODULE_REC;
 typedef struct {
 	MODULE_REC *root;
 	char *name;
-        char *defined_module_name;
+	char *defined_module_name;
 	void (*module_deinit) (void);
 
 #ifdef HAVE_GMODULE
@@ -47,7 +47,7 @@ typedef struct {
 
 struct _MODULE_REC {
 	char *name;
-        GSList *files; /* list of modules that belong to this root module */
+	GSList *files; /* list of modules that belong to this root module */
 };
 
 extern GSList *modules;
@@ -58,7 +58,7 @@ extern GSList *modules;
 MODULE_FILE_REC *module_register_full(const char *name, const char *submodule,
 				      const char *defined_module_name);
 #define module_register(name, submodule) \
-        module_register_full(name, submodule, MODULE_NAME)
+	module_register_full(name, submodule, MODULE_NAME)
 
 MODULE_REC *module_find(const char *name);
 MODULE_FILE_REC *module_file_find(MODULE_REC *module, const char *name);

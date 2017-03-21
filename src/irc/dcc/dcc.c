@@ -48,7 +48,7 @@ static int dcc_timeouttag;
 
 void dcc_register_type(const char *type)
 {
-        dcc_types = g_slist_append(dcc_types, g_strdup(type));
+	dcc_types = g_slist_append(dcc_types, g_strdup(type));
 }
 
 void dcc_unregister_type(const char *type)
@@ -58,7 +58,7 @@ void dcc_unregister_type(const char *type)
 	pos = gslist_find_string(dcc_types, type);
 	if (pos != NULL) {
 		g_free(pos->data);
-                dcc_types = g_slist_remove(dcc_types, pos->data);
+		dcc_types = g_slist_remove(dcc_types, pos->data);
 	}
 }
 
@@ -67,7 +67,7 @@ int dcc_str2type(const char *str)
 	if (gslist_find_string(dcc_types, str) == NULL)
 		return -1;
 
-        return module_get_uniq_id_str("DCC", str);
+	return module_get_uniq_id_str("DCC", str);
 }
 
 /* Initialize DCC record */
@@ -78,7 +78,7 @@ void dcc_init_rec(DCC_REC *dcc, IRC_SERVER_REC *server, CHAT_DCC_REC *chat,
 	g_return_if_fail(nick != NULL);
 	g_return_if_fail(arg != NULL);
 
-        MODULE_DATA_INIT(dcc);
+	MODULE_DATA_INIT(dcc);
 	dcc->created = time(NULL);
 	dcc->chat = chat;
 	dcc->arg = g_strdup(arg);
@@ -113,7 +113,7 @@ void dcc_destroy(DCC_REC *dcc)
 	if (dcc->tagread != -1) g_source_remove(dcc->tagread);
 	if (dcc->tagwrite != -1) g_source_remove(dcc->tagwrite);
 
-        MODULE_DATA_DEINIT(dcc);
+	MODULE_DATA_DEINIT(dcc);
 	g_free_not_null(dcc->servertag);
 	g_free_not_null(dcc->target);
 	g_free(dcc->mynick);
@@ -125,9 +125,9 @@ void dcc_destroy(DCC_REC *dcc)
 DCC_REC *dcc_find_request_latest(int type)
 {
 	DCC_REC *latest;
-        GSList *tmp;
+	GSList *tmp;
 
-        latest = NULL;
+	latest = NULL;
 	for (tmp = dcc_conns; tmp != NULL; tmp = tmp->next) {
 		DCC_REC *dcc = tmp->data;
 
@@ -135,7 +135,7 @@ DCC_REC *dcc_find_request_latest(int type)
 			latest = dcc;
 	}
 
-        return latest;
+	return latest;
 }
 
 DCC_REC *dcc_find_request(int type, const char *nick, const char *arg)
@@ -162,9 +162,9 @@ void dcc_ip2str(IPADDR *ip, char *host)
 	guint32 addr;
 
 	if (*settings_get_str("dcc_own_ip") != '\0') {
-                /* overridden IP address */
+		/* overridden IP address */
 		net_host2ip(settings_get_str("dcc_own_ip"), &temp_ip);
-                ip = &temp_ip;
+		ip = &temp_ip;
 	}
 
 	if (IPADDR_IS_V6(ip)) {
@@ -183,7 +183,7 @@ void dcc_str2ip(const char *str, IPADDR *ip)
 
 	if (strchr(str, ':') == NULL) {
 		/* normal IPv4 address in 32bit number form */
-                addr = strtoul(str, NULL, 10);
+		addr = strtoul(str, NULL, 10);
 		ip->family = AF_INET;
 		addr = (guint32) ntohl(addr);
 		memcpy(&ip->ip, &addr, sizeof(addr));
@@ -196,7 +196,7 @@ void dcc_str2ip(const char *str, IPADDR *ip)
 /* Start listening for incoming connections */
 GIOChannel *dcc_listen(GIOChannel *iface, IPADDR *ip, int *port)
 {
-        GIOChannel *handle;
+	GIOChannel *handle;
 	IPADDR *listen_ip = NULL;
 	const char *dcc_port, *p, *own_ip;
 	int first, last;
@@ -215,16 +215,16 @@ GIOChannel *dcc_listen(GIOChannel *iface, IPADDR *ip, int *port)
 			listen_ip = &ip4_any;
 	}
 
-        /* get first port */
+	/* get first port */
 	dcc_port = settings_get_str("dcc_port");
 	first = atoi(dcc_port);
 	if (first == 0) {
-                /* random port */
+		/* random port */
 		*port = 0;
 		return net_listen(listen_ip, port);
 	}
 
-        /* get last port */
+	/* get last port */
 	p = strchr(dcc_port, ' ');
 	if (p == NULL) p = strchr(dcc_port, '-');
 
@@ -237,14 +237,14 @@ GIOChannel *dcc_listen(GIOChannel *iface, IPADDR *ip, int *port)
 			last = first;
 	}
 
-        /* use the first available port */
+	/* use the first available port */
 	for (*port = first; *port <= last; (*port)++) {
 		handle = net_listen(listen_ip, port);
 		if (handle != NULL)
-                        return handle;
+			return handle;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 /* Connect to specified IP address using the correct own_ip. */
@@ -257,7 +257,7 @@ GIOChannel *dcc_connect_ip(IPADDR *ip, int port)
 	own_ip_str = settings_get_str("dcc_own_ip");
 	own_ip = NULL;
 	if (*own_ip_str != '\0') {
-                /* use the specified interface for connecting */
+		/* use the specified interface for connecting */
 		net_host2ip(own_ip_str, &temp_ip);
 		if (IPADDR_IS_V6(ip) == IPADDR_IS_V6(&temp_ip))
 			own_ip = &temp_ip;
@@ -306,16 +306,16 @@ static void sig_server_disconnected(IRC_SERVER_REC *server)
 		DCC_REC *dcc = tmp->data;
 
 		if (dcc->server == server)
-                        dcc->server = NULL;
+			dcc->server = NULL;
 	}
 }
 
 /* Your nick changed, change nick in all DCC records */
 static void sig_server_nick_changed(IRC_SERVER_REC *server)
 {
-        GSList *tmp;
+	GSList *tmp;
 
-        if (!IS_IRC_SERVER(server)) return;
+	if (!IS_IRC_SERVER(server)) return;
 
 	for (tmp = dcc_conns; tmp != NULL; tmp = tmp->next) {
 		DCC_REC *dcc = tmp->data;
@@ -333,11 +333,11 @@ static void ctcp_msg(IRC_SERVER_REC *server, const char *data,
 		     const char *nick, const char *addr, const char *target)
 {
 	if (g_ascii_strncasecmp(data, "dcc ", 4) != 0)
-                return;
+		return;
 	data += 4;
 
 	signal_emit("ctcp msg dcc", 5, server, data, nick, addr, target);
-        signal_stop();
+	signal_stop();
 }
 
 /* handle emitting "ctcp reply dcc" signal - don't use it directly because
@@ -346,11 +346,11 @@ static void ctcp_reply(IRC_SERVER_REC *server, const char *data,
 		       const char *nick, const char *addr, const char *target)
 {
 	if (g_ascii_strncasecmp(data, "dcc ", 4) != 0)
-                return;
+		return;
 	data += 4;
 
 	signal_emit("ctcp reply dcc", 5, server, data, nick, addr, target);
-        signal_stop();
+	signal_stop();
 }
 
 /* Handle incoming DCC CTCP messages - either from IRC server or DCC chat */
@@ -402,23 +402,23 @@ static void ctcp_reply_dcc_reject(IRC_SERVER_REC *server, const char *data,
 				  const char *nick, const char *addr,
 				  DCC_REC *chat)
 {
-        DCC_REC *dcc;
+	DCC_REC *dcc;
 	char *type, *args;
 
 	type = g_strdup(data);
 	args = strchr(type, ' ');
-        if (args != NULL) *args++ = '\0'; else args = "";
+	if (args != NULL) *args++ = '\0'; else args = "";
 
 	dcc = dcc_find_request(dcc_str2type(type), nick, args);
 	if (dcc != NULL) dcc_close(dcc);
 
-        g_free(type);
+	g_free(type);
 }
 
 void dcc_close(DCC_REC *dcc)
 {
 	signal_emit("dcc closed", 1, dcc);
-        dcc_destroy(dcc);
+	dcc_destroy(dcc);
 }
 
 /* Reject a DCC request */

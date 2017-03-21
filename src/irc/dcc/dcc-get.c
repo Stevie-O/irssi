@@ -43,7 +43,7 @@ GET_DCC_REC *dcc_get_create(IRC_SERVER_REC *server, CHAT_DCC_REC *chat,
 	dcc->fhandle = -1;
 
 	dcc_init_rec(DCC(dcc), server, chat, nick, arg);
-        return dcc;
+	return dcc;
 }
 
 static void sig_dcc_destroyed(GET_DCC_REC *dcc)
@@ -133,12 +133,12 @@ static void sig_dccget_send(GET_DCC_REC *dcc)
 
 	if (dcc->count_pos == 0) {
 		g_source_remove(dcc->tagwrite);
-                dcc->tagwrite = -1;
+		dcc->tagwrite = -1;
 	}
 
 	memcpy(&recd, dcc->count_buf, 4);
 	if (recd != (guint32) htonl(dcc->transfd & 0xffffffff))
-                dcc_get_send_received(dcc);
+		dcc_get_send_received(dcc);
 }
 
 #define DCC_GET_RECV_BUFFER_SIZE 32768
@@ -169,7 +169,7 @@ static void sig_dccget_receive(GET_DCC_REC *dcc)
 			signal_emit("dcc error write", 2,
 				    dcc, g_strerror(errno));
 			dcc_close(DCC(dcc));
-                        return;
+			return;
 		}
 		dcc->transfd += ret;
 	}
@@ -186,7 +186,7 @@ void sig_dccget_connected(GET_DCC_REC *dcc)
 {
 	struct stat statbuf;
 	char *fname, *tempfname, *str;
-        int ret, ret_errno, temphandle, old_umask;
+	int ret, ret_errno, temphandle, old_umask;
 
 	if (!dcc->from_dccserver) {
 		if (net_geterror(dcc->handle) != 0) {
@@ -225,7 +225,7 @@ void sig_dccget_connected(GET_DCC_REC *dcc)
 		   if download_path is in some global temp directory */
 		tempfname = g_strconcat(dcc->file, ".XXXXXX", NULL);
 
-                old_umask = umask(0077);
+		old_umask = umask(0077);
 		temphandle = mkstemp(tempfname);
 		umask(old_umask);
 
@@ -388,13 +388,13 @@ int get_file_params_count(char **params, int paramcount)
 		}
 	}
 
-        best = paramcount-3;
+	best = paramcount-3;
 	for (pos = paramcount-3; pos > 0; pos--) {
 		if (get_params_match(params, pos))
-                        best = pos;
+			best = pos;
 	}
 
-        return best;
+	return best;
 }
 
 char *get_file_name(char **params, int fileparams)
@@ -424,7 +424,7 @@ static void ctcp_msg_dcc_send(IRC_SERVER_REC *server, const char *data,
 	char *address, **params, *fname;
 	int paramcount, fileparams;
 	int port, len, quoted = FALSE;
-        uoff_t size;
+	uoff_t size;
 	int p_id = -1;
 	int passive = FALSE;
 
@@ -437,7 +437,7 @@ static void ctcp_msg_dcc_send(IRC_SERVER_REC *server, const char *data,
 		signal_emit("dcc error ctcp", 5, "SEND", data,
 			    nick, addr, target);
 		g_strfreev(params);
-                return;
+		return;
 	}
 
 	fileparams = get_file_params_count(params, paramcount);
@@ -456,12 +456,12 @@ static void ctcp_msg_dcc_send(IRC_SERVER_REC *server, const char *data,
 	fname = get_file_name(params, fileparams);
 	g_strfreev(params);
 
-        len = strlen(fname);
+	len = strlen(fname);
 	if (len > 1 && *fname == '"' && fname[len-1] == '"') {
 		/* "file name" - MIRC sends filenames with spaces like this */
 		fname[len-1] = '\0';
 		g_memmove(fname, fname+1, len);
-                quoted = TRUE;
+		quoted = TRUE;
 	}
 
 	if (passive && port != 0) {
@@ -588,7 +588,7 @@ static void cmd_dcc_get(const char *data)
 
 void dcc_get_init(void)
 {
-        dcc_register_type("GET");
+	dcc_register_type("GET");
 	settings_add_bool("dcc", "dcc_autorename", FALSE);
 	settings_add_str("dcc", "dcc_download_path", "~");
 	settings_add_int("dcc", "dcc_file_create_mode", 644);
@@ -600,7 +600,7 @@ void dcc_get_init(void)
 
 void dcc_get_deinit(void)
 {
-        dcc_unregister_type("GET");
+	dcc_unregister_type("GET");
 	signal_remove("dcc destroyed", (SIGNAL_FUNC) sig_dcc_destroyed);
 	signal_remove("ctcp msg dcc send", (SIGNAL_FUNC) ctcp_msg_dcc_send);
 	command_unbind("dcc get", (SIGNAL_FUNC) cmd_dcc_get);

@@ -43,7 +43,7 @@ static void cmd_network_list(void)
 		IRC_CHATNET_REC *rec = tmp->data;
 
 		if (!IS_IRCNET(rec))
-                        continue;
+			continue;
 
 		g_string_truncate(str, 0);
 		if (rec->nick != NULL)
@@ -118,7 +118,7 @@ static void cmd_network_add_modify(const char *data, gboolean add)
 		if (g_hash_table_lookup(optlist, "realname")) g_free_and_null(rec->realname);
 		if (g_hash_table_lookup(optlist, "host")) {
 			g_free_and_null(rec->own_host);
-                        rec->own_ip4 = rec->own_ip6 = NULL;
+			rec->own_ip4 = rec->own_ip6 = NULL;
 		}
 		if (g_hash_table_lookup(optlist, "usermode")) g_free_and_null(rec->usermode);
 		if (g_hash_table_lookup(optlist, "autosendcmd")) g_free_and_null(rec->autosendcmd);
@@ -176,12 +176,12 @@ static void cmd_network_add_modify(const char *data, gboolean add)
 }
 
 /* SYNTAX: NETWORK ADD|MODIFY [-nick <nick>] [-user <user>] [-realname <name>]
-                              [-host <host>] [-usermode <mode>] [-autosendcmd <cmd>]
-                              [-querychans <count>] [-whois <count>] [-msgs <count>]
-                              [-kicks <count>] [-modes <count>] [-cmdspeed <ms>]
-                              [-cmdmax <count>] [-sasl_mechanism <mechanism>]
-                              [-sasl_username <username>] [-sasl_password <password>]
-                              <name> */
+			[-host <host>] [-usermode <mode>] [-autosendcmd <cmd>]
+			[-querychans <count>] [-whois <count>] [-msgs <count>]
+			[-kicks <count>] [-modes <count>] [-cmdspeed <ms>]
+			[-cmdmax <count>] [-sasl_mechanism <mechanism>]
+			[-sasl_username <username>] [-sasl_password <password>]
+			<name> */
 static void cmd_network_add(const char *data)
 {
 	cmd_network_add_modify(data, TRUE);

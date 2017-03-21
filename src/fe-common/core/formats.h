@@ -50,7 +50,7 @@ typedef struct _HILIGHT_REC HILIGHT_REC;
 typedef struct _TEXT_DEST_REC {
 	WINDOW_REC *window;
 	SERVER_REC *server;
-        const char *server_tag; /* if server is non-NULL, must be server->tag */
+	const char *server_tag; /* if server is non-NULL, must be server->tag */
 	const char *target;
 	const char *nick;
 	const char *address;
@@ -58,7 +58,7 @@ typedef struct _TEXT_DEST_REC {
 
 	int hilight_priority;
 	char *hilight_color;
-        int flags;
+	int flags;
 } TEXT_DEST_REC;
 
 #define window_get_theme(window) \

@@ -60,14 +60,14 @@ static void sig_layout_restore_item(WINDOW_REC *window, const char *type,
 	if (g_ascii_strcasecmp(type, "CHANNEL") == 0) {
 		/* bind channel to window */
 		WINDOW_BIND_REC *rec = window_bind_add(window, tag, name);
-                rec->sticky = TRUE;
+		rec->sticky = TRUE;
 	} else if (g_ascii_strcasecmp(type, "QUERY") == 0 && chat_type != NULL) {
 		CHAT_PROTOCOL_REC *protocol;
 		/* create query immediately */
 		signal_add("query created",
 			   (SIGNAL_FUNC) signal_query_created_curwin);
 
-                restore_win = window;
+		restore_win = window;
 
 		protocol = chat_protocol_find(chat_type);
 		if (protocol == NULL)
@@ -133,8 +133,8 @@ static void sig_layout_restore(void)
 			window = window_create(NULL, TRUE);
 
 		window_set_refnum(window, atoi(node->key));
-                window->sticky_refnum = config_node_get_bool(node, "sticky_refnum", FALSE);
-                window->immortal = config_node_get_bool(node, "immortal", FALSE);
+		window->sticky_refnum = config_node_get_bool(node, "sticky_refnum", FALSE);
+		window->immortal = config_node_get_bool(node, "immortal", FALSE);
 		window_set_name(window, config_node_get_str(node, "name", NULL));
 		window_set_history(window, config_node_get_str(node, "history_name", NULL));
 		window_set_level(window, level2bits(config_node_get_str(node, "level", ""), NULL));
@@ -153,7 +153,7 @@ static void sig_layout_save_item(WINDOW_REC *window, WI_ITEM_REC *item,
 				 CONFIG_NODE *node)
 {
 	CONFIG_NODE *subnode;
-        CHAT_PROTOCOL_REC *proto;
+	CHAT_PROTOCOL_REC *proto;
 	const char *type;
 	WINDOW_BIND_REC *rec;
 
@@ -195,7 +195,7 @@ static void window_save(WINDOW_REC *window, CONFIG_NODE *node)
 {
 	char refnum[MAX_INT_STRLEN];
 
-        ltoa(refnum, window->refnum);
+	ltoa(refnum, window->refnum);
 	node = iconfig_node_section(node, refnum, NODE_TYPE_BLOCK);
 
 	if (window->sticky_refnum)
@@ -213,7 +213,7 @@ static void window_save(WINDOW_REC *window, CONFIG_NODE *node)
 	if (window->servertag != NULL)
 		iconfig_node_set_str(node, "servertag", window->servertag);
 	if (window->level != 0) {
-                char *level = bits2level(window->level);
+		char *level = bits2level(window->level);
 		iconfig_node_set_str(node, "level", level);
 		g_free(level);
 	}

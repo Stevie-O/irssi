@@ -33,7 +33,7 @@ NET_SENDBUF_REC *net_sendbuffer_create(GIOChannel *handle, int bufsize)
 	g_return_val_if_fail(handle != NULL, NULL);
 
 	rec = g_new0(NET_SENDBUF_REC, 1);
-        rec->send_tag = -1;
+	rec->send_tag = -1;
 	rec->handle = handle;
 	rec->bufsize = bufsize > 0 ? bufsize : DEFAULT_BUFFER_SIZE;
 	rec->def_bufsize = rec->bufsize;
@@ -44,7 +44,7 @@ NET_SENDBUF_REC *net_sendbuffer_create(GIOChannel *handle, int bufsize)
 /* Destroy the buffer. `close' specifies if socket handle should be closed. */
 void net_sendbuffer_destroy(NET_SENDBUF_REC *rec, int close)
 {
-        if (rec->send_tag != -1) g_source_remove(rec->send_tag);
+	if (rec->send_tag != -1) g_source_remove(rec->send_tag);
 	if (close) net_disconnect(rec->handle);
 	if (rec->readbuffer != NULL) line_split_free(rec->readbuffer);
 	g_free_not_null(rec->buffer);
@@ -66,7 +66,7 @@ static int buffer_send(NET_SENDBUF_REC *rec)
 	}
 
 	if (ret > 0) {
-                rec->bufpos -= ret;
+		rec->bufpos -= ret;
 		g_memmove(rec->buffer, rec->buffer+ret, rec->bufpos);
 	}
 	return FALSE;
@@ -76,7 +76,7 @@ static void sig_sendbuffer(NET_SENDBUF_REC *rec)
 {
 	if (rec->buffer != NULL) {
 		if (!buffer_send(rec))
-                        return;
+			return;
 	}
 
 	g_source_remove(rec->send_tag);
@@ -119,7 +119,7 @@ int net_sendbuffer_send(NET_SENDBUF_REC *rec, const void *data, int size)
 	if (size <= 0) return 0;
 
 	if (rec->buffer == NULL || rec->bufpos == 0) {
-                /* nothing in buffer - transmit immediately */
+		/* nothing in buffer - transmit immediately */
 		ret = net_transmit(rec->handle, data, size);
 		if (ret < 0) return -1;
 		size -= ret;
@@ -158,7 +158,7 @@ void net_sendbuffer_flush(NET_SENDBUF_REC *rec)
 	if (rec->buffer == NULL)
 		return;
 
-        /* set the socket blocking while doing this */
+	/* set the socket blocking while doing this */
 	handle = g_io_channel_unix_get_fd(rec->handle);
 	fcntl(handle, F_SETFL, 0);
 	while (!buffer_send(rec)) ;

@@ -37,7 +37,7 @@ static GUI_WINDOW_REC *gui_window_init(WINDOW_REC *window,
 	GUI_WINDOW_REC *gui;
 
 	window->width = parent->width;
-        window->height = MAIN_WINDOW_TEXT_HEIGHT(parent);
+	window->height = MAIN_WINDOW_TEXT_HEIGHT(parent);
 
 	gui = g_new0(GUI_WINDOW_REC, 1);
 	gui->parent = parent;
@@ -57,7 +57,7 @@ static GUI_WINDOW_REC *gui_window_init(WINDOW_REC *window,
 
 static void gui_window_deinit(GUI_WINDOW_REC *gui)
 {
-        textbuffer_view_destroy(gui->view);
+	textbuffer_view_destroy(gui->view);
 	g_free(gui);
 }
 
@@ -69,7 +69,7 @@ static void sig_window_create_override(gpointer tab)
 static void gui_window_created(WINDOW_REC *window, void *automatic)
 {
 	MAIN_WINDOW_REC *parent;
-        int new_parent;
+	int new_parent;
 
 	g_return_if_fail(window != NULL);
 
@@ -124,23 +124,23 @@ void gui_window_resize(WINDOW_REC *window, int width, int height)
 	GUI_WINDOW_REC *gui;
 
 	if (window->width == width && window->height == height)
-                return;
+		return;
 
 	gui = WINDOW_GUI(window);
 
 	irssi_set_dirty();
-        WINDOW_MAIN(window)->dirty = TRUE;
+	WINDOW_MAIN(window)->dirty = TRUE;
 
-        window->width = width;
+	window->width = width;
 	window->height = height;
-        textbuffer_view_resize(gui->view, width, height);
+	textbuffer_view_resize(gui->view, width, height);
 }
 
 void gui_window_scroll(WINDOW_REC *window, int lines)
 {
 	g_return_if_fail(window != NULL);
 
-        textbuffer_view_scroll(WINDOW_GUI(window)->view, lines);
+	textbuffer_view_scroll(WINDOW_GUI(window)->view, lines);
 	signal_emit("gui page scrolled", 1, window);
 }
 
@@ -149,7 +149,7 @@ void gui_window_scroll_line(WINDOW_REC *window, LINE_REC *line)
 	g_return_if_fail(window != NULL);
 	g_return_if_fail(line != NULL);
 
-        textbuffer_view_scroll_line(WINDOW_GUI(window)->view, line);
+	textbuffer_view_scroll_line(WINDOW_GUI(window)->view, line);
 	signal_emit("gui page scrolled", 1, window);
 }
 
@@ -181,11 +181,11 @@ void gui_window_reparent(WINDOW_REC *window, MAIN_WINDOW_REC *parent)
 	if (oldparent == parent)
 		return;
 
-        gui_window_set_unsticky(window);
+	gui_window_set_unsticky(window);
 	textbuffer_view_set_window(WINDOW_GUI(window)->view, NULL);
 
 	WINDOW_MAIN(window) = parent;
-        if (parent->sticky_windows)
+	if (parent->sticky_windows)
 		gui_window_set_sticky(window);
 
 	if (MAIN_WINDOW_TEXT_HEIGHT(parent) !=
@@ -225,39 +225,39 @@ static MAIN_WINDOW_REC *mainwindow_find_unsticky(void)
 		MAIN_WINDOW_REC *rec = tmp->data;
 
 		if (!rec->sticky_windows)
-                        return rec;
+			return rec;
 	}
 
-        /* all windows are sticky, fallback to active window */
-        return active_mainwin;
+	/* all windows are sticky, fallback to active window */
+	return active_mainwin;
 }
 
 static void signal_window_changed(WINDOW_REC *window)
 {
 	MAIN_WINDOW_REC *parent;
-        WINDOW_REC *old_window;
+	WINDOW_REC *old_window;
 
 	g_return_if_fail(window != NULL);
 
-        if (quitting) return;
+	if (quitting) return;
 
-        parent = WINDOW_MAIN(window);
+	parent = WINDOW_MAIN(window);
 	if (is_window_visible(window)) {
 		/* already visible */
 		active_mainwin = parent;
 	} else if (active_mainwin == NULL) {
-                /* no main window set yet */
+		/* no main window set yet */
 		active_mainwin = parent;
 	} else if (WINDOW_GUI(window)->sticky) {
-                /* window is sticky, switch to correct main window */
+		/* window is sticky, switch to correct main window */
 		if (parent != active_mainwin)
-                        active_mainwin = parent;
+			active_mainwin = parent;
 	} else {
 		/* move window to active main window */
-                if (active_mainwin->sticky_windows) {
+		if (active_mainwin->sticky_windows) {
 			/* active mainwindow is sticky, we'll need to
 			   set the window active somewhere else */
-                        active_mainwin = mainwindow_find_unsticky();
+			active_mainwin = mainwindow_find_unsticky();
 		}
 		gui_window_reparent(window, active_mainwin);
 	}
@@ -276,12 +276,12 @@ static void signal_window_changed(WINDOW_REC *window)
 
 static void read_settings(void)
 {
-        gui_windows_reset_settings();
+	gui_windows_reset_settings();
 }
 
 void gui_windows_init(void)
 {
-        settings_add_bool("lookandfeel", "autostick_split_windows", TRUE);
+	settings_add_bool("lookandfeel", "autostick_split_windows", TRUE);
 	settings_add_int("lookandfeel", "indent", 10);
 	settings_add_bool("lookandfeel", "indent_always", FALSE);
 	settings_add_bool("lookandfeel", "break_wide", FALSE);

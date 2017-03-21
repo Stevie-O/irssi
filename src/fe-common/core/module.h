@@ -18,7 +18,7 @@ typedef struct {
 	   from the nick if it didn't keep quiet for long enough.
 
 	   so, the own-status is rememberd only for the last
-           `completion_keep_publics' lines */
+	`completion_keep_publics' lines */
 	int own;
 } LAST_MSG_REC;
 

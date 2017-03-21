@@ -65,7 +65,7 @@ static void event_privmsg(SERVER_REC *server, const char *data,
 
 	if (nick == NULL || address == NULL || server_ischannel(server, data) ||
 	    !settings_get_bool("query_track_nick_changes"))
-                return;
+		return;
 
 	query = query_find(server, nick);
 	if (query == NULL) {
@@ -90,7 +90,7 @@ static void event_privmsg(SERVER_REC *server, const char *data,
 
 void fe_irc_queries_init(void)
 {
-        settings_add_bool("lookandfeel", "query_track_nick_changes", TRUE);
+	settings_add_bool("lookandfeel", "query_track_nick_changes", TRUE);
 
 	signal_add_first("event privmsg", (SIGNAL_FUNC) event_privmsg);
 }

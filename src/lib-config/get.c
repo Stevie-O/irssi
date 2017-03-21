@@ -47,7 +47,7 @@ CONFIG_NODE *config_node_section_index(CONFIG_REC *rec, CONFIG_NODE *parent, con
 				       int index, int new_type)
 {
 	CONFIG_NODE *node;
-        int nindex;
+	int nindex;
 
 	g_return_val_if_fail(parent != NULL, NULL);
 	g_return_val_if_fail(is_node_list(parent), NULL);
@@ -124,7 +124,7 @@ CONFIG_NODE *config_node_traverse(CONFIG_REC *rec, const char *section, int crea
 		return node;
 	}
 
-        new_type = -1;
+	new_type = -1;
 
 	node = rec->mainnode;
 	list = g_strsplit(section, "/", -1);
@@ -156,7 +156,7 @@ CONFIG_NODE *config_node_traverse(CONFIG_REC *rec, const char *section, int crea
 	}
 
 	/* save to cache */
-        str = g_strdup(section);
+	str = g_strdup(section);
 	g_hash_table_insert(rec->cache, str, node);
 	g_hash_table_insert(rec->cache_nodes, node, str);
 	return node;
@@ -200,7 +200,7 @@ int config_get_int(CONFIG_REC *rec, const char *section, const char *key, int de
 	str = config_get_str(rec, section, key, NULL);
 	if (str == NULL) return def;
 
-        return atoi(str);
+	return atoi(str);
 }
 
 int config_get_bool(CONFIG_REC *rec, const char *section, const char *key, int def)
@@ -210,14 +210,14 @@ int config_get_bool(CONFIG_REC *rec, const char *section, const char *key, int d
 	str = config_get_str(rec, section, key, NULL);
 	if (str == NULL) return def;
 
-        return i_toupper(*str) == 'T' || i_toupper(*str) == 'Y';
+	return i_toupper(*str) == 'T' || i_toupper(*str) == 'Y';
 }
 
 char *config_node_get_str(CONFIG_NODE *parent, const char *key, const char *def)
 {
 	CONFIG_NODE *node;
 
-        if (parent == NULL) return (char *) def;
+	if (parent == NULL) return (char *) def;
 
 	node = config_node_find(parent, key);
 	return (char *) ((node != NULL && has_node_value(node)) ?
@@ -268,11 +268,11 @@ char **config_node_get_list(CONFIG_NODE *node)
 		ret = NULL;
 	else {
 		g_string_truncate(values, values->len-1);
-                ret = g_strsplit(values->str, " ", -1);
+		ret = g_strsplit(values->str, " ", -1);
 	}
 
 	g_string_free(values, TRUE);
-        return ret;
+	return ret;
 }
 
 CONFIG_NODE *config_node_nth(CONFIG_NODE *node, int index)
@@ -319,7 +319,7 @@ int config_node_index(CONFIG_NODE *parent, const char *key)
 			index++;
 	}
 
-        return -1;
+	return -1;
 }
 
 GSList *config_node_first(GSList *list)
@@ -328,7 +328,7 @@ GSList *config_node_first(GSList *list)
 		CONFIG_NODE *node = list->data;
 
 		if (node->type != NODE_TYPE_COMMENT)
-                        break;
+			break;
 		list = list->next;
 	}
 	return list;
@@ -337,5 +337,5 @@ GSList *config_node_first(GSList *list)
 GSList *config_node_next(GSList *list)
 {
 	list = list->next;
-        return config_node_first(list);
+	return config_node_first(list);
 }

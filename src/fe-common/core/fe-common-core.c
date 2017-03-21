@@ -163,15 +163,15 @@ void fe_common_core_init(void)
 	g_get_charset(&str);
 	settings_add_str("lookandfeel", "term_charset", str);
 	themes_init();
-        theme_register(fecommon_core_formats);
+	theme_register(fecommon_core_formats);
 
 	command_history_init();
 	completion_init();
 	keyboard_init();
 	printtext_init();
 	formats_init();
-        fe_exec_init();
-        fe_expandos_init();
+	fe_exec_init();
+	fe_expandos_init();
 	fe_help_init();
 	fe_ignore_init();
 	fe_log_init();
@@ -186,8 +186,8 @@ void fe_common_core_init(void)
 	windows_layout_init();
 	fe_core_commands_init();
 
-        fe_channels_init();
-        fe_queries_init();
+	fe_channels_init();
+	fe_queries_init();
 
 	fe_messages_init();
 	hilight_text_init();
@@ -196,10 +196,10 @@ void fe_common_core_init(void)
 
 	settings_check();
 
-        signal_add_first("server connected", (SIGNAL_FUNC) sig_connected);
-        signal_add_last("server disconnected", (SIGNAL_FUNC) sig_disconnected);
-        signal_add_first("channel created", (SIGNAL_FUNC) sig_channel_created);
-        signal_add_last("channel destroyed", (SIGNAL_FUNC) sig_channel_destroyed);
+	signal_add_first("server connected", (SIGNAL_FUNC) sig_connected);
+	signal_add_last("server disconnected", (SIGNAL_FUNC) sig_disconnected);
+	signal_add_first("channel created", (SIGNAL_FUNC) sig_channel_created);
+	signal_add_last("channel destroyed", (SIGNAL_FUNC) sig_channel_destroyed);
 
 	module_register("core", "fe");
 }
@@ -212,8 +212,8 @@ void fe_common_core_deinit(void)
 	keyboard_deinit();
 	printtext_deinit();
 	formats_deinit();
-        fe_exec_deinit();
-        fe_expandos_deinit();
+	fe_exec_deinit();
+	fe_expandos_deinit();
 	fe_help_deinit();
 	fe_ignore_deinit();
 	fe_log_deinit();
@@ -228,21 +228,21 @@ void fe_common_core_deinit(void)
 	windows_layout_deinit();
 	fe_core_commands_deinit();
 
-        fe_channels_deinit();
-        fe_queries_deinit();
+	fe_channels_deinit();
+	fe_queries_deinit();
 
 	fe_messages_deinit();
 	fe_ignore_messages_deinit();
 	fe_recode_deinit();
 
-        theme_unregister();
+	theme_unregister();
 	themes_deinit();
 
-        signal_remove("setup changed", (SIGNAL_FUNC) sig_setup_changed);
-        signal_remove("server connected", (SIGNAL_FUNC) sig_connected);
-        signal_remove("server disconnected", (SIGNAL_FUNC) sig_disconnected);
-        signal_remove("channel created", (SIGNAL_FUNC) sig_channel_created);
-        signal_remove("channel destroyed", (SIGNAL_FUNC) sig_channel_destroyed);
+	signal_remove("setup changed", (SIGNAL_FUNC) sig_setup_changed);
+	signal_remove("server connected", (SIGNAL_FUNC) sig_connected);
+	signal_remove("server disconnected", (SIGNAL_FUNC) sig_disconnected);
+	signal_remove("channel created", (SIGNAL_FUNC) sig_channel_created);
+	signal_remove("channel destroyed", (SIGNAL_FUNC) sig_channel_destroyed);
 }
 
 void glog_func(const char *log_domain, GLogLevelFlags log_level,
@@ -252,14 +252,14 @@ void glog_func(const char *log_domain, GLogLevelFlags log_level,
 
 	switch (log_level) {
 	case G_LOG_LEVEL_WARNING:
-                reason = "warning";
-                break;
+		reason = "warning";
+		break;
 	case G_LOG_LEVEL_CRITICAL:
-                reason = "critical";
+		reason = "critical";
 		break;
 	default:
 		reason = "error";
-                break;
+		break;
 	}
 
 	if (windows == NULL)
@@ -315,7 +315,7 @@ static void create_windows(void)
 
 	if (windows == NULL) {
 		/* we have to have at least one window.. */
-                window = window_create(NULL, TRUE);
+		window = window_create(NULL, TRUE);
 	}
 }
 
@@ -433,7 +433,7 @@ void fe_common_core_finish_init(void)
 	signal(SIGPIPE, SIG_IGN);
 #endif
 
-        setup_changed = FALSE;
+	setup_changed = FALSE;
 	if (cmdline_nick != NULL && *cmdline_nick != '\0') {
 		/* override nick found from setup */
 		settings_set_str("nick", cmdline_nick);
@@ -449,11 +449,11 @@ void fe_common_core_finish_init(void)
 	sig_setup_changed();
 	signal_add_first("setup changed", (SIGNAL_FUNC) sig_setup_changed);
 
-        /* _after_ windows are created.. */
+	/* _after_ windows are created.. */
 	g_log_set_default_handler((GLogFunc) glog_func, NULL);
 
 	if (setup_changed)
-                signal_emit("setup changed", 0);
+		signal_emit("setup changed", 0);
 
 	autorun_startup();
 	autoconnect_servers();

@@ -121,7 +121,7 @@ static int dcc_resume_file_check(FILE_DCC_REC *dcc, IRC_SERVER_REC *server,
 		dcc_reject(DCC(dcc), server);
 	} else {
 		dcc->transfd = dcc->skipped = size;
-                return TRUE;
+		return TRUE;
 	}
 
 	return FALSE;
@@ -133,7 +133,7 @@ static void ctcp_msg_dcc_resume(IRC_SERVER_REC *server, const char *data,
 				const char *target, DCC_REC *chat)
 {
 	FILE_DCC_REC *dcc;
-        char *str;
+	char *str;
 	uoff_t size;
 	int pasv_id = -1;
 
@@ -164,7 +164,7 @@ static void ctcp_msg_dcc_accept(IRC_SERVER_REC *server, const char *data,
 				const char *target, DCC_REC *chat)
 {
 	FILE_DCC_REC *dcc;
-        uoff_t size;
+	uoff_t size;
 	int pasv_id;
 
 	if (!dcc_ctcp_resume_parse(DCC_GET_TYPE, data, nick, &dcc, &size, &pasv_id) ||
@@ -182,10 +182,10 @@ static void ctcp_msg_dcc_accept(IRC_SERVER_REC *server, const char *data,
 /* Resume a DCC GET */
 static void dcc_send_resume(GET_DCC_REC *dcc)
 {
-        off_t pos;
+	off_t pos;
 	char *str;
 
-        g_return_if_fail(dcc != NULL);
+	g_return_if_fail(dcc != NULL);
 
 	dcc->file = dcc_get_download_path(dcc->arg);
 	dcc->fhandle = open(dcc->file, O_WRONLY);

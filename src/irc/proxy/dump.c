@@ -181,7 +181,7 @@ static void dump_join(IRC_CHANNEL_REC *channel, CLIENT_REC *client)
 			g_string_append_c(str, ' ');
 
 		if (nick->prefixes[0])
-                        g_string_append_c(str, nick->prefixes[0]);
+			g_string_append_c(str, nick->prefixes[0]);
 		g_string_append(str, nick->nick);
 	}
 	g_slist_free(nicks);

@@ -48,7 +48,7 @@ static void cmd_me(const char *data, IRC_SERVER_REC *server, WI_ITEM_REC *item)
 	char **splitdata;
 	int n = 0;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 	if (!IS_IRC_ITEM(item))
 		return;
 
@@ -75,7 +75,7 @@ static void cmd_action(const char *data, IRC_SERVER_REC *server)
 	int n = 0;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTIONS |
 			    PARAM_FLAG_UNKNOWN_OPTIONS | PARAM_FLAG_GETREST,
@@ -105,7 +105,7 @@ static void cmd_notice(const char *data, IRC_SERVER_REC *server,
 	const char *target, *msg;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_GETREST,
 			    &target, &msg))
@@ -128,7 +128,7 @@ static void cmd_ctcp(const char *data, IRC_SERVER_REC *server,
 	char *ctcpcmd, *ctcpdata;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 3 | PARAM_FLAG_GETREST,
 			    &target, &ctcpcmd, &ctcpdata))
@@ -157,7 +157,7 @@ static void cmd_nctcp(const char *data, IRC_SERVER_REC *server,
 	const char *target, *text;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_GETREST,
 			    &target, &text))
@@ -178,7 +178,7 @@ static void cmd_wall(const char *data, IRC_SERVER_REC *server,
 	const char *channame, *msg;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTCHAN |
 			    PARAM_FLAG_GETREST, item, &channame, &msg))
@@ -212,7 +212,7 @@ static void bans_ask_channel(const char *channel, IRC_SERVER_REC *server,
 static void bans_show_channel(IRC_CHANNEL_REC *channel, IRC_SERVER_REC *server)
 {
 	GSList *tmp;
-        int counter;
+	int counter;
 
 	if (channel->banlist == NULL) {
 		printformat(server, channel->visible_name,
@@ -222,7 +222,7 @@ static void bans_show_channel(IRC_CHANNEL_REC *channel, IRC_SERVER_REC *server)
 	}
 
 	/* show bans.. */
-        counter = 1;
+	counter = 1;
 	for (tmp = channel->banlist; tmp != NULL; tmp = tmp->next) {
 		BAN_REC *rec = tmp->data;
 
@@ -232,7 +232,7 @@ static void bans_show_channel(IRC_CHANNEL_REC *channel, IRC_SERVER_REC *server)
 			    counter, channel->visible_name,
 			    rec->ban, rec->setby,
 			    (int) (time(NULL)-rec->time));
-                counter++;
+		counter++;
 	}
 }
 
@@ -244,9 +244,9 @@ static void cmd_ban(const char *data, IRC_SERVER_REC *server,
 	char *channel, *nicks;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
-	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTCHAN | 
+	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTCHAN |
 			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 			    item, &channel, &nicks))
 		return;
@@ -284,7 +284,7 @@ static void cmd_ver(gchar *data, IRC_SERVER_REC *server, WI_ITEM_REC *item)
 
 	g_return_if_fail(data != NULL);
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 	if (*data == '\0' && !IS_QUERY(item))
 		cmd_return_error(CMDERR_NOT_ENOUGH_PARAMS);
 
@@ -351,10 +351,10 @@ typedef struct {
 
 static void cmd_oper_got_pass(const char *password, OPER_PASS_REC *rec)
 {
-        if (*password != '\0')
+	if (*password != '\0')
 		irc_send_cmdv(rec->server, "OPER %s %s", rec->nick, password);
 	g_free(rec->nick);
-        g_free(rec);
+	g_free(rec);
 }
 
 static void cmd_oper(const char *data, IRC_SERVER_REC *server)
@@ -383,7 +383,7 @@ static void cmd_oper(const char *data, IRC_SERVER_REC *server)
 		keyboard_entry_redirect((SIGNAL_FUNC) cmd_oper_got_pass,
 					format,
 					ENTRY_REDIRECT_FLAG_HIDDEN, rec);
-                g_free(format);
+		g_free(format);
 
 		signal_stop();
 	}
@@ -392,7 +392,7 @@ static void cmd_oper(const char *data, IRC_SERVER_REC *server)
 }
 
 /* SYNTAX: SETHOST <host> <password> (non-ircops)
-           SETHOST <ident> <host> (ircops) */
+	SETHOST <ident> <host> (ircops) */
 static void cmd_sethost(const char *data, IRC_SERVER_REC *server)
 {
 	GSList *tmp;
@@ -410,7 +410,7 @@ static void cmd_sethost(const char *data, IRC_SERVER_REC *server)
 				server->tag, channel->visible_name);
 	}
 
-        irc_send_cmdv(server, "SETHOST %s", data);
+	irc_send_cmdv(server, "SETHOST %s", data);
 }
 
 void fe_irc_commands_init(void)

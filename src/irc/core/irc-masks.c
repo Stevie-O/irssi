@@ -28,7 +28,7 @@ static char *get_domain_mask(char *host)
 	char *ptr;
 
 	if (strchr(host, '.') == NULL) {
-                /* no dots - toplevel domain or IPv6 address */
+		/* no dots - toplevel domain or IPv6 address */
 		ptr = strrchr(host, ':');
 		if (ptr != NULL) {
 			/* IPv6 address, ban the last 64k addresses */
@@ -38,7 +38,7 @@ static char *get_domain_mask(char *host)
 		return host;
 	}
 
-        if (is_ipv4_address(host)) {
+	if (is_ipv4_address(host)) {
 		/* it's an IP address, change last digit to * */
 		ptr = strrchr(host, '.');
 		if (ptr != NULL && i_isdigit(ptr[1]))
@@ -49,7 +49,7 @@ static char *get_domain_mask(char *host)
 		ptr = strchr(host, '.');
 		if (ptr != NULL && strchr(ptr+1, '.') != NULL) {
 			host = ptr-1;
-                        host[0] = '*';
+			host[0] = '*';
 		}
 	}
 

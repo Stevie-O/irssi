@@ -93,7 +93,7 @@ CHAT_PROTOCOL_REC *chat_protocol_find_net(GHashTable *optlist)
 
 		if (rec->chatnet != NULL &&
 		    g_hash_table_lookup(optlist, rec->chatnet) != NULL)
-                        return rec;
+			return rec;
 	}
 
 	return NULL;
@@ -103,18 +103,18 @@ CHAT_PROTOCOL_REC *chat_protocol_find_net(GHashTable *optlist)
 CHAT_PROTOCOL_REC *chat_protocol_register(CHAT_PROTOCOL_REC *rec)
 {
 	CHAT_PROTOCOL_REC *newrec;
-        int created;
+	int created;
 
 	g_return_val_if_fail(rec != NULL, NULL);
 
 	newrec = chat_protocol_find(rec->name);
-        created = newrec == NULL;
+	created = newrec == NULL;
 	if (newrec == NULL) {
 		newrec = g_new0(CHAT_PROTOCOL_REC, 1);
 		chat_protocols = g_slist_append(chat_protocols, newrec);
 	} else {
 		/* updating existing protocol */
-                g_free(newrec->name);
+		g_free(newrec->name);
 	}
 
 	memcpy(newrec, rec, sizeof(CHAT_PROTOCOL_REC));
@@ -122,13 +122,13 @@ CHAT_PROTOCOL_REC *chat_protocol_register(CHAT_PROTOCOL_REC *rec)
 	newrec->name = g_strdup(rec->name);
 
 	if (default_proto == NULL)
-                chat_protocol_set_default(newrec);
+		chat_protocol_set_default(newrec);
 
-        if (created)
+	if (created)
 		signal_emit("chat protocol created", 1, newrec);
-        else
+	else
 		signal_emit("chat protocol updated", 1, newrec);
-        return newrec;
+	return newrec;
 }
 
 static void chat_protocol_destroy(CHAT_PROTOCOL_REC *rec)
@@ -168,32 +168,32 @@ void chat_protocol_unregister(const char *name)
 /* Default chat protocol to use */
 void chat_protocol_set_default(CHAT_PROTOCOL_REC *rec)
 {
-        default_proto = rec;
+	default_proto = rec;
 }
 
 CHAT_PROTOCOL_REC *chat_protocol_get_default(void)
 {
-        return default_proto;
+	return default_proto;
 }
 
 static CHATNET_REC *create_chatnet(void)
 {
-        return g_new0(CHATNET_REC, 1);
+	return g_new0(CHATNET_REC, 1);
 }
 
 static SERVER_SETUP_REC *create_server_setup(void)
 {
-        return g_new0(SERVER_SETUP_REC, 1);
+	return g_new0(SERVER_SETUP_REC, 1);
 }
 
 static CHANNEL_SETUP_REC *create_channel_setup(void)
 {
-        return g_new0(CHANNEL_SETUP_REC, 1);
+	return g_new0(CHANNEL_SETUP_REC, 1);
 }
 
 static SERVER_CONNECT_REC *create_server_connect(void)
 {
-        return g_new0(SERVER_CONNECT_REC, 1);
+	return g_new0(SERVER_CONNECT_REC, 1);
 }
 
 static void destroy_server_connect(SERVER_CONNECT_REC *conn)
@@ -208,22 +208,22 @@ CHAT_PROTOCOL_REC *chat_protocol_get_unknown(const char *name)
 
 	g_return_val_if_fail(name != NULL, NULL);
 
-        rec = chat_protocol_find(name);
+	rec = chat_protocol_find(name);
 	if (rec != NULL)
-                return rec;
+		return rec;
 
 	rec = g_new0(CHAT_PROTOCOL_REC, 1);
-        rec->not_initialized = TRUE;
+	rec->not_initialized = TRUE;
 	rec->name = (char *) name;
 	rec->create_chatnet = create_chatnet;
-        rec->create_server_setup = create_server_setup;
-        rec->create_channel_setup = create_channel_setup;
+	rec->create_server_setup = create_server_setup;
+	rec->create_channel_setup = create_channel_setup;
 	rec->create_server_connect = create_server_connect;
 	rec->destroy_server_connect = destroy_server_connect;
 
 	newrec = chat_protocol_register(rec);
 	g_free(rec);
-        return newrec;
+	return newrec;
 }
 
 void chat_protocols_init(void)
@@ -235,5 +235,5 @@ void chat_protocols_init(void)
 void chat_protocols_deinit(void)
 {
 	while (chat_protocols != NULL)
-                chat_protocol_destroy(chat_protocols->data);
+		chat_protocol_destroy(chat_protocols->data);
 }

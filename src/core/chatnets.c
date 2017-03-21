@@ -46,7 +46,7 @@ static void chatnet_config_save(CHATNET_REC *chatnet)
 	iconfig_node_set_str(node, "host", chatnet->own_host);
 	iconfig_node_set_str(node, "autosendcmd", chatnet->autosendcmd);
 
-        signal_emit("chatnet saved", 2, chatnet, node);
+	signal_emit("chatnet saved", 2, chatnet, node);
 }
 
 static void chatnet_config_remove(CHATNET_REC *chatnet)
@@ -61,7 +61,7 @@ void chatnet_create(CHATNET_REC *chatnet)
 {
 	g_return_if_fail(chatnet != NULL);
 
-        chatnet->type = module_get_uniq_id("CHATNET", 0);
+	chatnet->type = module_get_uniq_id("CHATNET", 0);
 	if (g_slist_find(chatnets, chatnet) == NULL)
 		chatnets = g_slist_append(chatnets, chatnet);
 
@@ -128,9 +128,9 @@ static void sig_connected(SERVER_REC *server)
 
 static void chatnet_read(CONFIG_NODE *node)
 {
-        CHAT_PROTOCOL_REC *proto;
+	CHAT_PROTOCOL_REC *proto;
 	CHATNET_REC *rec;
-        char *type;
+	char *type;
 
 	if (node == NULL || node->key == NULL || !is_node_list(node))
 		return;
@@ -156,22 +156,22 @@ static void chatnet_read(CONFIG_NODE *node)
 	rec->autosendcmd = g_strdup(config_node_get_str(node, "autosendcmd", NULL));
 
 	chatnets = g_slist_append(chatnets, rec);
-        signal_emit("chatnet read", 2, rec, node);
+	signal_emit("chatnet read", 2, rec, node);
 }
 
 static void read_chatnets(void)
 {
 	CONFIG_NODE *node;
-        GSList *tmp;
+	GSList *tmp;
 
 	while (chatnets != NULL)
-                chatnet_destroy(chatnets->data);
+		chatnet_destroy(chatnets->data);
 
 	node = iconfig_node_traverse("chatnets", FALSE);
 	if (node != NULL) {
 		tmp = config_node_first(node->value);
 		for (; tmp != NULL; tmp = config_node_next(tmp))
-                        chatnet_read(tmp->data);
+			chatnet_read(tmp->data);
 	}
 }
 
@@ -181,7 +181,7 @@ void chatnets_init(void)
 
 	signal_add_first("event connected", (SIGNAL_FUNC) sig_connected);
 	signal_add("setup reread", (SIGNAL_FUNC) read_chatnets);
-        signal_add_first("irssi init read settings", (SIGNAL_FUNC) read_chatnets);
+	signal_add_first("irssi init read settings", (SIGNAL_FUNC) read_chatnets);
 }
 
 void chatnets_deinit(void)
@@ -190,5 +190,5 @@ void chatnets_deinit(void)
 
 	signal_remove("event connected", (SIGNAL_FUNC) sig_connected);
 	signal_remove("setup reread", (SIGNAL_FUNC) read_chatnets);
-        signal_remove("irssi init read settings", (SIGNAL_FUNC) read_chatnets);
+	signal_remove("irssi init read settings", (SIGNAL_FUNC) read_chatnets);
 }

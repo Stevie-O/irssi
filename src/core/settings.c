@@ -237,7 +237,7 @@ static void settings_add(const char *module, const char *section,
 		rec->module = g_strdup(module);
 		rec->key = g_strdup(key);
 		rec->section = g_strdup(section);
-                rec->type = type;
+		rec->type = type;
 
 		rec->default_value = *default_value;
 		rec->choices = choices_vec;
@@ -271,7 +271,7 @@ void settings_add_int_module(const char *module, const char *section,
 	SettingValue default_value;
 
 	memset(&default_value, 0, sizeof(default_value));
-        default_value.v_int = def;
+	default_value.v_int = def;
 	settings_add(module, section, key, SETTING_TYPE_INT, &default_value, NULL);
 }
 
@@ -281,7 +281,7 @@ void settings_add_bool_module(const char *module, const char *section,
 	SettingValue default_value;
 
 	memset(&default_value, 0, sizeof(default_value));
-        default_value.v_bool = def;
+	default_value.v_bool = def;
 	settings_add(module, section, key, SETTING_TYPE_BOOLEAN, &default_value, NULL);
 }
 
@@ -322,9 +322,9 @@ static void settings_destroy(SETTINGS_REC *rec)
 	    rec->type != SETTING_TYPE_CHOICE)
 		g_free(rec->default_value.v_string);
 	g_strfreev(rec->choices);
-        g_free(rec->module);
-        g_free(rec->section);
-        g_free(rec->key);
+	g_free(rec->module);
+	g_free(rec->section);
+	g_free(rec->key);
 	g_free(rec);
 }
 
@@ -353,10 +353,10 @@ static int settings_remove_hash(const char *key, SETTINGS_REC *rec,
 {
 	if (g_strcmp0(rec->module, module) == 0) {
 		settings_unref(rec, FALSE);
-                return TRUE;
+		return TRUE;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 void settings_remove_module(const char *module)
@@ -369,7 +369,7 @@ void settings_remove_module(const char *module)
 static CONFIG_NODE *settings_get_node(const char *key)
 {
 	SETTINGS_REC *rec;
-        CONFIG_NODE *node;
+	CONFIG_NODE *node;
 
 	g_return_val_if_fail(key != NULL, NULL);
 
@@ -399,17 +399,17 @@ gboolean settings_set_choice(const char *key, const char *value)
 
 void settings_set_str(const char *key, const char *value)
 {
-        iconfig_node_set_str(settings_get_node(key), key, value);
+	iconfig_node_set_str(settings_get_node(key), key, value);
 }
 
 void settings_set_int(const char *key, int value)
 {
-        iconfig_node_set_int(settings_get_node(key), key, value);
+	iconfig_node_set_int(settings_get_node(key), key, value);
 }
 
 void settings_set_bool(const char *key, int value)
 {
-        iconfig_node_set_bool(settings_get_node(key), key, value);
+	iconfig_node_set_bool(settings_get_node(key), key, value);
 }
 
 gboolean settings_set_time(const char *key, const char *value)
@@ -431,7 +431,7 @@ gboolean settings_set_level(const char *key, const char *value)
 	if (iserror)
 		return FALSE;
 
-        iconfig_node_set_str(settings_get_node(key), key, value);
+	iconfig_node_set_str(settings_get_node(key), key, value);
 	return TRUE;
 }
 
@@ -442,7 +442,7 @@ gboolean settings_set_size(const char *key, const char *value)
 	if (!parse_size(value, &size))
 		return FALSE;
 
-        iconfig_node_set_str(settings_get_node(key), key, value);
+	iconfig_node_set_str(settings_get_node(key), key, value);
 	return TRUE;
 }
 
@@ -483,8 +483,8 @@ static void sig_init_finished(void)
 
 static void settings_clean_invalid_module(const char *module)
 {
-        CONFIG_NODE *node;
-        SETTINGS_REC *set;
+	CONFIG_NODE *node;
+	SETTINGS_REC *set;
 	GSList *tmp, *next;
 
 	node = iconfig_node_traverse("settings", FALSE);
@@ -495,11 +495,11 @@ static void settings_clean_invalid_module(const char *module)
 
 	for (tmp = config_node_first(node->value); tmp != NULL; tmp = next) {
 		CONFIG_NODE *subnode = tmp->data;
-                next = config_node_next(tmp);
+		next = config_node_next(tmp);
 
 		set = g_hash_table_lookup(settings, subnode->key);
 		if (set == NULL || g_strcmp0(set->module, module) != 0)
-                        iconfig_node_remove(node, subnode);
+			iconfig_node_remove(node, subnode);
 	}
 }
 
@@ -510,11 +510,11 @@ void settings_clean_invalid(void)
 	while (last_invalid_modules != NULL) {
 		char *module = last_invalid_modules->data;
 
-                settings_clean_invalid_module(module);
+		settings_clean_invalid_module(module);
 
 		last_invalid_modules =
 			g_slist_remove(last_invalid_modules, module);
-                g_free(module);
+		g_free(module);
 	}
 }
 
@@ -563,23 +563,23 @@ static int backwards_compatibility(const char *module, CONFIG_NODE *node,
    from /SET list */
 void settings_check_module(const char *module)
 {
-        SETTINGS_REC *set;
+	SETTINGS_REC *set;
 	CONFIG_NODE *node, *parent;
-        GString *errors;
+	GString *errors;
 	GSList *tmp, *next;
-        int count;
+	int count;
 
-        g_return_if_fail(module != NULL);
+	g_return_if_fail(module != NULL);
 
 	node = iconfig_node_traverse("settings", FALSE);
 	node = node == NULL ? NULL : iconfig_node_section(node, module, -1);
 	if (node == NULL) return;
 
-        errors = g_string_new(NULL);
+	errors = g_string_new(NULL);
 	g_string_printf(errors, "Unknown settings in configuration "
 			 "file for module %s:", module);
 
-        count = 0;
+	count = 0;
 	parent = node;
 	tmp = config_node_first(node->value);
 	for (; tmp != NULL; tmp = next) {
@@ -593,28 +593,28 @@ void settings_check_module(const char *module)
 
 		if (set == NULL || g_strcmp0(set->module, module) != 0) {
 			g_string_append_printf(errors, " %s", node->key);
-                        count++;
+			count++;
 		}
 	}
 	if (count > 0) {
 		if (gslist_find_icase_string(last_invalid_modules,
 					     module) == NULL) {
-                        /* mark this module having invalid settings */
+			/* mark this module having invalid settings */
 			last_invalid_modules =
 				g_slist_append(last_invalid_modules,
 					       g_strdup(module));
 		}
 		if (fe_initialized)
-                        signal_emit("settings errors", 1, errors->str);
+			signal_emit("settings errors", 1, errors->str);
 		else {
 			if (last_errors == NULL)
 				last_errors = g_string_new(NULL);
 			else
 				g_string_append_c(last_errors, '\n');
-                        g_string_append(last_errors, errors->str);
+			g_string_append(last_errors, errors->str);
 		}
 	}
-        g_string_free(errors, TRUE);
+	g_string_free(errors, TRUE);
 }
 
 static int settings_compare(SETTINGS_REC *v1, SETTINGS_REC *v2)
@@ -657,14 +657,14 @@ void sig_term(int n)
    would be nice but would just take more space without much real benefit */
 static unsigned int file_checksum(const char *fname)
 {
-        char buf[512];
-        int f, ret, n;
+	char buf[512];
+	int f, ret, n;
 	unsigned int checksum = 0;
 
 	f = open(fname, O_RDONLY);
 	if (f == -1) return 0;
 
-        n = 0;
+	n = 0;
 	while ((ret = read(f, buf, sizeof(buf))) > 0) {
 		while (ret-- > 0)
 			checksum += buf[ret] << ((n++ & 3)*8);
@@ -707,7 +707,7 @@ static CONFIG_REC *parse_configfile(const char *fname)
 {
 	CONFIG_REC *config;
 	struct stat statbuf;
-        const char *path;
+	const char *path;
 	char *str;
 
 	if (fname == NULL)
@@ -718,11 +718,11 @@ static CONFIG_REC *parse_configfile(const char *fname)
 	else {
 		/* user configuration file not found, use the default one
 		   from sysconfdir */
-                path = SYSCONFDIR"/"IRSSI_GLOBAL_CONFIG;
+		path = SYSCONFDIR"/"IRSSI_GLOBAL_CONFIG;
 		if (stat(path, &statbuf) != 0) {
 			/* no configuration file in sysconfdir ..
 			   use the build-in configuration */
-                        path = NULL;
+			path = NULL;
 		}
 	}
 
@@ -731,18 +731,18 @@ static CONFIG_REC *parse_configfile(const char *fname)
 		str = g_strdup_printf("Error opening configuration file %s: %s",
 				      path, g_strerror(errno));
 		signal_emit("gui dialog", 2, "error", str);
-                g_free(str);
+		g_free(str);
 
 		config = config_open(NULL, -1);
 	}
 
-        if (config->fname != NULL)
+	if (config->fname != NULL)
 		config_parse(config);
-        else
+	else
 		config_parse_data(config, default_config, "internal");
 
 	config_change_file_name(config, fname, 0660);
-        irssi_config_save_state(fname);
+	irssi_config_save_state(fname);
 	return config;
 }
 
@@ -770,7 +770,7 @@ static void init_configfile(void)
 		str = g_strdup_printf("Ignored errors in configuration file:\n%s",
 				      config_last_error(mainconfig));
 		signal_emit("gui dialog", 2, "error", str);
-                g_free(str);
+		g_free(str);
 	}
 
 	signal(SIGTERM, sig_term);
@@ -783,7 +783,7 @@ int settings_reread(const char *fname)
 
 	str = fname == NULL ? NULL : convert_home(fname);
 	tempconfig = parse_configfile(str);
-        g_free_not_null(str);
+	g_free_not_null(str);
 
 	if (tempconfig == NULL) {
 		signal_emit("gui dialog", 2, "error", g_strerror(errno));
@@ -797,7 +797,7 @@ int settings_reread(const char *fname)
 		g_free(str);
 
 		config_close(tempconfig);
-                return FALSE;
+		return FALSE;
 	}
 
 	config_close(mainconfig);
@@ -806,7 +806,7 @@ int settings_reread(const char *fname)
 
 	signal_emit("setup changed", 0);
 	signal_emit("setup reread", 1, mainconfig->fname);
-        return TRUE;
+	return TRUE;
 }
 
 int settings_save(const char *fname, int autosave)
@@ -827,7 +827,7 @@ int settings_save(const char *fname, int autosave)
 		g_free(str);
 	}
 	signal_emit("setup saved", 2, fname, GINT_TO_POINTER(autosave));
-        return !error;
+	return !error;
 }
 
 static int sig_autosave(void)
@@ -850,11 +850,11 @@ static int sig_autosave(void)
 		signal_emit("gui dialog", 2, "warning", str);
 		g_free(str);
 
-                settings_save(fname, TRUE);
+		settings_save(fname, TRUE);
 		g_free(fname);
 	}
 
-        return 1;
+	return 1;
 }
 
 void settings_init(void)
@@ -863,9 +863,9 @@ void settings_init(void)
 				    (GCompareFunc) g_istr_equal);
 
 	last_errors = NULL;
-        last_invalid_modules = NULL;
+	last_invalid_modules = NULL;
 	fe_initialized = FALSE;
-        config_changed = FALSE;
+	config_changed = FALSE;
 
 	config_last_mtime = 0;
 	config_last_modifycounter = 0;
@@ -885,7 +885,7 @@ static void settings_hash_free(const char *key, SETTINGS_REC *rec)
 
 void settings_deinit(void)
 {
-        g_source_remove(timeout_tag);
+	g_source_remove(timeout_tag);
 	signal_remove("irssi init finished", (SIGNAL_FUNC) sig_init_finished);
 	signal_remove("gui exit", (SIGNAL_FUNC) sig_autosave);
 

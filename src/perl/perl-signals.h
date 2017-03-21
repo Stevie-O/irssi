@@ -2,7 +2,7 @@
 #define __PERL_SIGNALS_H
 
 void perl_signal_args_to_c(void (*callback)(void *, void **), void *cb_arg,
-                           int signal_id, SV **args, size_t n_args);
+			int signal_id, SV **args, size_t n_args);
 
 void perl_signal_add_full(const char *signal, SV *func, int priority);
 
@@ -13,11 +13,11 @@ void perl_signal_remove_script(PERL_SCRIPT_REC *script);
 void perl_command_bind_to(const char *cmd, const char *category,
 			  SV *func, int priority);
 #define perl_command_bind_first(cmd, category, func) \
-        perl_command_bind_to(cmd, category, func, 0)
+	perl_command_bind_to(cmd, category, func, 0)
 #define perl_command_bind(cmd, category, func) \
-        perl_command_bind_to(cmd, category, func, 1)
+	perl_command_bind_to(cmd, category, func, 1)
 #define perl_command_bind_last(cmd, category, func) \
-        perl_command_bind_to(cmd, category, func, 2)
+	perl_command_bind_to(cmd, category, func, 2)
 
 void perl_command_unbind(const char *cmd, SV *func);
 

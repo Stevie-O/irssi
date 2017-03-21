@@ -48,7 +48,7 @@ static int signal_exec_input;
 
 static void exec_wi_destroy(EXEC_WI_REC *rec)
 {
-        g_return_if_fail(rec != NULL);
+	g_return_if_fail(rec != NULL);
 
 	if (rec->destroying) return;
 	rec->destroying = TRUE;
@@ -59,7 +59,7 @@ static void exec_wi_destroy(EXEC_WI_REC *rec)
 
 	MODULE_DATA_DEINIT(rec);
 	g_free(rec->visible_name);
-        g_free(rec);
+	g_free(rec);
 }
 
 static const char *exec_get_target(WI_ITEM_REC *item)
@@ -71,27 +71,27 @@ static EXEC_WI_REC *exec_wi_create(WINDOW_REC *window, PROCESS_REC *rec)
 {
 	EXEC_WI_REC *item;
 
-        g_return_val_if_fail(window != NULL, NULL);
-        g_return_val_if_fail(rec != NULL, NULL);
+	g_return_val_if_fail(window != NULL, NULL);
+	g_return_val_if_fail(rec != NULL, NULL);
 
 	item = g_new0(EXEC_WI_REC, 1);
 	item->type = module_get_uniq_id_str("WINDOW ITEM TYPE", "EXEC");
-        item->destroy = (void (*) (WI_ITEM_REC *)) exec_wi_destroy;
+	item->destroy = (void (*) (WI_ITEM_REC *)) exec_wi_destroy;
 	item->get_target = exec_get_target;
 	item->visible_name = rec->name != NULL ? g_strdup(rec->name) :
 		g_strdup_printf("%%%d", rec->id);
 
 	item->createtime = time(NULL);
-        item->process = rec;
+	item->process = rec;
 
 	MODULE_DATA_INIT(item);
 	window_item_add(window, (WI_ITEM_REC *) item, FALSE);
-        return item;
+	return item;
 }
 
 static int process_get_new_id(void)
 {
-        PROCESS_REC *rec;
+	PROCESS_REC *rec;
 	GSList *tmp;
 	int id;
 
@@ -116,7 +116,7 @@ static PROCESS_REC *process_find_pid(int pid)
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(pid > 0, NULL);
+	g_return_val_if_fail(pid > 0, NULL);
 
 	for (tmp = processes; tmp != NULL; tmp = tmp->next) {
 		PROCESS_REC *rec = tmp->data;
@@ -132,7 +132,7 @@ static PROCESS_REC *process_find_id(int id, int verbose)
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(id != -1, NULL);
+	g_return_val_if_fail(id != -1, NULL);
 
 	for (tmp = processes; tmp != NULL; tmp = tmp->next) {
 		PROCESS_REC *rec = tmp->data;
@@ -153,10 +153,10 @@ static PROCESS_REC *process_find(const char *name, int verbose)
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
 
 	if (*name == '%' && is_numeric(name+1, 0))
-                return process_find_id(atoi(name+1), verbose);
+		return process_find_id(atoi(name+1), verbose);
 
 	for (tmp = processes; tmp != NULL; tmp = tmp->next) {
 		PROCESS_REC *rec = tmp->data;
@@ -182,18 +182,18 @@ static void process_destroy(PROCESS_REC *rec, int status)
 	if (rec->read_tag != -1)
 		g_source_remove(rec->read_tag);
 	if (rec->target_item != NULL)
-                exec_wi_destroy(rec->target_item);
+		exec_wi_destroy(rec->target_item);
 
 	line_split_free(rec->databuf);
-        g_io_channel_shutdown(rec->in, TRUE, NULL);
-        g_io_channel_unref(rec->in);
-        net_sendbuffer_destroy(rec->out, TRUE);
+	g_io_channel_shutdown(rec->in, TRUE, NULL);
+	g_io_channel_unref(rec->in);
+	net_sendbuffer_destroy(rec->out, TRUE);
 
 	g_free_not_null(rec->name);
 	g_free_not_null(rec->target);
 	g_free_not_null(rec->target_server);
-        g_free(rec->args);
-        g_free(rec);
+	g_free(rec->args);
+	g_free(rec);
 }
 
 static void processes_killall(int signum)
@@ -218,18 +218,18 @@ static int signal_name_to_id(const char *name)
 	   them all. if we sometimes want more, procps-sources/proc/sig.c
 	   would be useful for copypasting */
 	if (g_ascii_strcasecmp(name, "hup") == 0)
-                return SIGHUP;
+		return SIGHUP;
 	if (g_ascii_strcasecmp(name, "int") == 0)
-                return SIGINT;
+		return SIGINT;
 	if (g_ascii_strcasecmp(name, "term") == 0)
-                return SIGTERM;
+		return SIGTERM;
 	if (g_ascii_strcasecmp(name, "kill") == 0)
-                return SIGKILL;
+		return SIGKILL;
 	if (g_ascii_strcasecmp(name, "usr1") == 0)
-                return SIGUSR1;
+		return SIGUSR1;
 	if (g_ascii_strcasecmp(name, "usr2") == 0)
-                return SIGUSR2;
-        return -1;
+		return SIGUSR2;
+	return -1;
 }
 
 /* `optlist' should contain only one unknown key - the server tag.
@@ -239,7 +239,7 @@ static int cmd_options_get_signal(const char *cmd,
 {
 	GList *list;
 	char *signame;
-        int signum;
+	int signum;
 
 	/* get all the options, then remove the known ones. there should
 	   be only one left - the signal */
@@ -260,7 +260,7 @@ static int cmd_options_get_signal(const char *cmd,
 			    GINT_TO_POINTER(CMDERR_OPTION_UNKNOWN),
 			    signum == -1 ? list->data : list->next->data);
 		signal_stop();
-                return -2;
+		return -2;
 	}
 
 	g_list_free(list);
@@ -282,35 +282,35 @@ static void exec_show_list(void)
 static void process_exec(PROCESS_REC *rec, const char *cmd)
 {
 	const char *shell_args[4] = { "/bin/sh", "-c", NULL, NULL };
-        char **args;
+	char **args;
 	int in[2], out[2];
-        int n;
+	int n;
 
 	if (pipe(in) == -1)
-                return;
+		return;
 	if (pipe(out) == -1)
 		return;
 
 	shell_args[2] = cmd;
 	rec->pid = fork();
 	if (rec->pid == -1) {
-                /* error */
+		/* error */
 		close(in[0]); close(in[1]);
-                close(out[0]); close(out[1]);
+		close(out[0]); close(out[1]);
 		return;
 	}
 
 	if (rec->pid != 0) {
 		/* parent process */
-                GIOChannel *outio = g_io_channel_new(in[1]);
+		GIOChannel *outio = g_io_channel_new(in[1]);
 
 		rec->in = g_io_channel_new(out[0]);
 		rec->out = net_sendbuffer_create(outio, 0);
 
-                close(out[1]);
+		close(out[1]);
 		close(in[0]);
 		pidwait_add(rec->pid);
-                return;
+		return;
 	}
 
 	/* child process, try to clean up everything */
@@ -328,13 +328,13 @@ static void process_exec(PROCESS_REC *rec, const char *cmd)
 	putenv("TERM=tty");
 
 	/* set stdin, stdout and stderr */
-        dup2(in[0], STDIN_FILENO);
-        dup2(out[1], STDOUT_FILENO);
+	dup2(in[0], STDIN_FILENO);
+	dup2(out[1], STDOUT_FILENO);
 	dup2(out[1], STDERR_FILENO);
 
-        /* don't let child see our files */
+	/* don't let child see our files */
 	for (n = 3; n < 256; n++)
-                close(n);
+		close(n);
 
 	if (rec->shell) {
 		execvp(shell_args[0], (char **) shell_args);
@@ -342,7 +342,7 @@ static void process_exec(PROCESS_REC *rec, const char *cmd)
 		fprintf(stderr, "Exec: /bin/sh: %s\n", g_strerror(errno));
 	} else {
 		args = g_strsplit(cmd, " ", -1);
-                execvp(args[0], args);
+		execvp(args[0], args);
 
 		fprintf(stderr, "Exec: %s: %s\n", args[0], g_strerror(errno));
 	}
@@ -352,8 +352,8 @@ static void process_exec(PROCESS_REC *rec, const char *cmd)
 
 static void sig_exec_input_reader(PROCESS_REC *rec)
 {
-        char tmpbuf[512], *str;
-        int recvlen;
+	char tmpbuf[512], *str;
+	int recvlen;
 	int ret;
 
 	g_return_if_fail(rec != NULL);
@@ -364,23 +364,23 @@ static void sig_exec_input_reader(PROCESS_REC *rec)
 		if (ret == -1) {
 			/* link to terminal closed? */
 			g_source_remove(rec->read_tag);
-                        rec->read_tag = -1;
+			rec->read_tag = -1;
 			break;
 		}
 
 		if (ret > 0) {
 			signal_emit_id(signal_exec_input, 2, rec, str);
-                        if (recvlen > 0) recvlen = 0;
+			if (recvlen > 0) recvlen = 0;
 		}
 	} while (ret > 0);
 }
 
 static void handle_exec(const char *args, GHashTable *optlist,
-                        SERVER_REC *server, WI_ITEM_REC *item)
+			SERVER_REC *server, WI_ITEM_REC *item)
 {
 	PROCESS_REC *rec;
 	SERVER_REC *target_server;
-        char *target, *level;
+	char *target, *level;
 	int notice, signum, interactive, target_nick, target_channel, kill_ret;
 
 	/* check that there's no unknown options. we allowed them
@@ -388,11 +388,11 @@ static void handle_exec(const char *args, GHashTable *optlist,
 	   only one unknown option: the signal name/number. */
 	signum = cmd_options_get_signal("exec", optlist);
 	if (signum == -2)
-                return;
+		return;
 
 	if (*args == '\0') {
 		exec_show_list();
-                return;
+		return;
 	}
 
 	target = NULL;
@@ -414,10 +414,10 @@ static void handle_exec(const char *args, GHashTable *optlist,
 	if (*args == '%' && rec == NULL)
 		return;
 
-        /* common options */
-        target_channel = target_nick = FALSE;
+	/* common options */
+	target_channel = target_nick = FALSE;
 	if (g_hash_table_lookup(optlist, "out") != NULL) {
-                /* redirect output to active channel/query */
+		/* redirect output to active channel/query */
 		if (item == NULL)
 			cmd_return_error(CMDERR_NOT_JOINED);
 		target = (char *) window_item_get_target(item);
@@ -425,16 +425,16 @@ static void handle_exec(const char *args, GHashTable *optlist,
 		target_channel = IS_CHANNEL(item);
 		target_nick = IS_QUERY(item);
 	} else if (g_hash_table_lookup(optlist, "msg") != NULL) {
-                /* redirect output to /msg <nick> */
+		/* redirect output to /msg <nick> */
 		target = g_hash_table_lookup(optlist, "msg");
 		target_server = server;
 	} else if (g_hash_table_lookup(optlist, "notice") != NULL) {
 		target = g_hash_table_lookup(optlist, "notice");
 		target_server = server;
-                notice = TRUE;
+		notice = TRUE;
 	}
 
-        /* options that require process ID/name as argument */
+	/* options that require process ID/name as argument */
 	if (rec == NULL &&
 	    (signum != -1 || g_hash_table_lookup(optlist, "close") != NULL)) {
 		printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
@@ -443,35 +443,35 @@ static void handle_exec(const char *args, GHashTable *optlist,
 	}
 	if (g_hash_table_lookup(optlist, "close") != NULL) {
 		/* forcibly close the process */
-                process_destroy(rec, -1);
-                return;
+		process_destroy(rec, -1);
+		return;
 	}
 
 	if (signum != -1) {
 		/* send a signal to process group */
-                kill_ret = kill(-rec->pid, signum);
-                if (kill_ret != 0)
-                        printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-                                  "Error sending signal %d to pid %d: %s",
-                                  signum, rec->pid, g_strerror(errno));
-                return;
+		kill_ret = kill(-rec->pid, signum);
+		if (kill_ret != 0)
+			printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+				"Error sending signal %d to pid %d: %s",
+				signum, rec->pid, g_strerror(errno));
+		return;
 	}
 
-        interactive = g_hash_table_lookup(optlist, "interactive") != NULL;
+	interactive = g_hash_table_lookup(optlist, "interactive") != NULL;
 	if (*args == '%') {
 		/* do something to already existing process */
 		char *name;
 
 		if (target != NULL) {
-                        /* redirect output to target */
+			/* redirect output to target */
 			g_free_and_null(rec->target);
 			rec->target = g_strdup(target);
 			rec->target_server = target_server == NULL ? NULL :
 				g_strdup(target_server->tag);
-                        rec->notice = notice;
+			rec->notice = notice;
 		}
 
-                name = g_hash_table_lookup(optlist, "name");
+		name = g_hash_table_lookup(optlist, "name");
 		if (name != NULL) {
 			/* change window name */
 			g_free_not_null(rec->name);
@@ -491,32 +491,32 @@ static void handle_exec(const char *args, GHashTable *optlist,
 					exec_wi_create(active_win, rec);
 			}
 		}
-                return;
+		return;
 	}
 
-        /* starting a new process */
+	/* starting a new process */
 	rec = g_new0(PROCESS_REC, 1);
 	rec->pid = -1;
-        rec->shell = g_hash_table_lookup(optlist, "nosh") == NULL;
+	rec->shell = g_hash_table_lookup(optlist, "nosh") == NULL;
 
 	process_exec(rec, args);
 	if (rec->pid == -1) {
-                /* pipe() or fork() failed */
+		/* pipe() or fork() failed */
 		g_free(rec);
 		cmd_return_error(CMDERR_ERRNO);
 	}
 
-        rec->id = process_get_new_id();
+	rec->id = process_get_new_id();
 	rec->target = g_strdup(target);
 	rec->target_server = target_server == NULL ? NULL :
 		g_strdup(target_server->tag);
 	rec->target_win = active_win;
 	rec->target_channel = target_channel;
 	rec->target_nick = target_nick;
-        rec->args = g_strdup(args);
+	rec->args = g_strdup(args);
 	rec->notice = notice;
-        rec->silent = g_hash_table_lookup(optlist, "-") != NULL;
-        rec->quiet = g_hash_table_lookup(optlist, "quiet") != NULL;
+	rec->silent = g_hash_table_lookup(optlist, "-") != NULL;
+	rec->quiet = g_hash_table_lookup(optlist, "quiet") != NULL;
 	rec->name = g_strdup(g_hash_table_lookup(optlist, "name"));
 
 	level = g_hash_table_lookup(optlist, "level");
@@ -541,7 +541,7 @@ static void handle_exec(const char *args, GHashTable *optlist,
 static void cmd_exec(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 {
 	GHashTable *optlist;
-        char *args;
+	char *args;
 	void *free_arg;
 
 	g_return_if_fail(data != NULL);
@@ -557,10 +557,10 @@ static void cmd_exec(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 static void sig_pidwait(void *pid, void *statusp)
 {
 	PROCESS_REC *rec;
-        char *str;
+	char *str;
 	int status = GPOINTER_TO_INT(statusp);
 
-        rec = process_find_pid(GPOINTER_TO_INT(pid));
+	rec = process_find_pid(GPOINTER_TO_INT(pid));
 	if (rec == NULL) return;
 
 	/* process exited - print the last line if
@@ -576,7 +576,7 @@ static void sig_pidwait(void *pid, void *statusp)
 				  rec->id, rec->args,
 				  status, g_strsignal(status));
 		} else {
-                        status = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+			status = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 			printtext(NULL, NULL, MSGLEVEL_CLIENTNOTICE,
 				  "process %d (%s) terminated with return code %d",
 				  rec->id, rec->args, status);
@@ -589,12 +589,12 @@ static void sig_exec_input(PROCESS_REC *rec, const char *text)
 {
 	WI_ITEM_REC *item;
 	SERVER_REC *server;
-        char *str;
+	char *str;
 
 	if (rec->quiet)
 		return;
 
-        item = NULL;
+	item = NULL;
 	server = NULL;
 
 	if (rec->target != NULL) {
@@ -616,7 +616,7 @@ static void sig_exec_input(PROCESS_REC *rec, const char *text)
 				  rec->target, " ", text, NULL);
 		signal_emit(rec->notice ? "command notice" : "command msg",
 			    3, str, server, item);
-                g_free(str);
+		g_free(str);
 	} else if (rec->target_item != NULL) {
 		printtext(NULL, rec->target_item->visible_name,
 			  rec->level, "%s", text);
@@ -646,7 +646,7 @@ static void event_text(const char *data, SERVER_REC *server, EXEC_WI_REC *item)
 
 	net_sendbuffer_send(item->process->out, data, strlen(data));
 	net_sendbuffer_send(item->process->out, "\n", 1);
-        signal_stop();
+	signal_stop();
 }
 
 void fe_exec_init(void)
@@ -654,10 +654,10 @@ void fe_exec_init(void)
 	command_bind("exec", NULL, (SIGNAL_FUNC) cmd_exec);
 	command_set_options("exec", "!- interactive nosh +name out +msg +notice +in window close +level quiet");
 
-        signal_exec_input = signal_get_uniq_id("exec input");
-        signal_add("pidwait", (SIGNAL_FUNC) sig_pidwait);
-        signal_add("exec input", (SIGNAL_FUNC) sig_exec_input);
-        signal_add("window destroyed", (SIGNAL_FUNC) sig_window_destroyed);
+	signal_exec_input = signal_get_uniq_id("exec input");
+	signal_add("pidwait", (SIGNAL_FUNC) sig_pidwait);
+	signal_add("exec input", (SIGNAL_FUNC) sig_exec_input);
+	signal_add("window destroyed", (SIGNAL_FUNC) sig_window_destroyed);
 	signal_add_first("send text", (SIGNAL_FUNC) event_text);
 }
 
@@ -674,8 +674,8 @@ void fe_exec_deinit(void)
 
 	command_unbind("exec", (SIGNAL_FUNC) cmd_exec);
 
-        signal_remove("pidwait", (SIGNAL_FUNC) sig_pidwait);
-        signal_remove("exec input", (SIGNAL_FUNC) sig_exec_input);
-        signal_remove("window destroyed", (SIGNAL_FUNC) sig_window_destroyed);
+	signal_remove("pidwait", (SIGNAL_FUNC) sig_pidwait);
+	signal_remove("exec input", (SIGNAL_FUNC) sig_exec_input);
+	signal_remove("window destroyed", (SIGNAL_FUNC) sig_window_destroyed);
 	signal_remove("send text", (SIGNAL_FUNC) event_text);
 }

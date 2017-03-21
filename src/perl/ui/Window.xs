@@ -33,7 +33,7 @@ OUTPUT:
 void
 print(str, level=MSGLEVEL_CLIENTNOTICE)
 	char *str
-        int level;
+	int level;
 CODE:
 	printtext_string(NULL, NULL, level, str);
 
@@ -138,7 +138,7 @@ PREINIT:
 	GSList *tmp;
 PPCODE:
 	for (tmp = window->items; tmp != NULL; tmp = tmp->next) {
-                CHANNEL_REC *rec = tmp->data;
+		CHANNEL_REC *rec = tmp->data;
 
 		XPUSHs(sv_2mortal(iobject_bless(rec)));
 	}
@@ -147,7 +147,7 @@ void
 print(window, str, level=MSGLEVEL_CLIENTNOTICE)
 	Irssi::UI::Window window
 	char *str
-        int level;
+	int level;
 CODE:
 	printtext_string_window(window, level, str);
 
@@ -163,7 +163,7 @@ CODE:
 	perl_command(cmd, window->active_server, window->active);
 	if (active_win == window &&
 	    g_slist_find(windows, old) != NULL)
-        	active_win = old;
+		active_win = old;
 
 void
 window_item_add(window, item, automatic)

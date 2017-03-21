@@ -47,14 +47,14 @@ static INDENT_FUNC default_indent_func;
 void gui_register_indent_func(const char *name, INDENT_FUNC func)
 {
 	gpointer key, value;
-        GSList *list;
+	GSList *list;
 
 	if (g_hash_table_lookup_extended(indent_functions, name, &key, &value)) {
-                list = value;
+		list = value;
 		g_hash_table_remove(indent_functions, key);
 	} else {
 		key = g_strdup(name);
-                list = NULL;
+		list = NULL;
 	}
 
 	list = g_slist_append(list, (void *) func);
@@ -64,7 +64,7 @@ void gui_register_indent_func(const char *name, INDENT_FUNC func)
 void gui_unregister_indent_func(const char *name, INDENT_FUNC func)
 {
 	gpointer key, value;
-        GSList *list;
+	GSList *list;
 
 	if (g_hash_table_lookup_extended(indent_functions, name, &key, &value)) {
 		list = value;
@@ -73,7 +73,7 @@ void gui_unregister_indent_func(const char *name, INDENT_FUNC func)
 		g_hash_table_remove(indent_functions, key);
 		if (list == NULL)
 			g_free(key);
-                else
+		else
 			g_hash_table_insert(indent_functions, key, list);
 	}
 
@@ -91,12 +91,12 @@ void gui_set_default_indent(const char *name)
 		g_hash_table_lookup(indent_functions, name);
 	default_indent_func = list == NULL ? NULL :
 		(INDENT_FUNC) list->data;
-        gui_windows_reset_settings();
+	gui_windows_reset_settings();
 }
 
 INDENT_FUNC get_default_indent_func(void)
 {
-        return default_indent_func;
+	return default_indent_func;
 }
 
 void gui_printtext(int xpos, int ypos, const char *str)
@@ -146,7 +146,7 @@ static void remove_old_lines(TEXT_BUFFER_VIEW_REC *view)
 	old_time = time(NULL)-scrollback_time+1;
 	if (view->buffer->lines_count >=
 	    scrollback_lines+scrollback_burst_remove) {
-                /* remove lines by line count */
+		/* remove lines by line count */
 		while (view->buffer->lines_count > scrollback_lines) {
 			line = view->buffer->first_line;
 			if (line->info.time >= old_time ||
@@ -166,7 +166,7 @@ static void get_colors(int flags, int *fg, int *bg, int *attr)
 	*attr = 0;
 	if (flags & GUI_PRINT_FLAG_MIRC_COLOR) {
 		/* mirc colors - extended colours proposal */
-                if (*bg >= 0) {
+		if (*bg >= 0) {
 			*bg = mirc_colors[*bg % 100];
 			flags &= ~GUI_PRINT_FLAG_COLOR_24_BG;
 			/* ignore mirc color 99 = -1 (reset) */
@@ -194,7 +194,7 @@ static void get_colors(int flags, int *fg, int *bg, int *attr)
 	if (flags & GUI_PRINT_FLAG_COLOR_24_BG)
 		*attr |= ATTR_BGCOLOR24;
 	else if (*bg < 0 || *bg > 255) {
-                *bg = -1;
+		*bg = -1;
 		*attr |= ATTR_RESETBG;
 	}
 	else
@@ -219,10 +219,10 @@ static void sig_gui_print_text(WINDOW_REC *window, void *fgcolor,
 			       void *bgcolor, void *pflags,
 			       char *str, TEXT_DEST_REC *dest)
 {
-        GUI_WINDOW_REC *gui;
-        TEXT_BUFFER_VIEW_REC *view;
+	GUI_WINDOW_REC *gui;
+	TEXT_BUFFER_VIEW_REC *view;
 	LINE_REC *insert_after;
-        LINE_INFO_REC lineinfo;
+	LINE_INFO_REC lineinfo;
 	int fg, bg, flags, attr;
 
 	flags = GPOINTER_TO_INT(pflags);
@@ -243,8 +243,8 @@ static void sig_gui_print_text(WINDOW_REC *window, void *fgcolor,
 	}
 
 	lineinfo.level = dest == NULL ? 0 : dest->level;
-        gui = WINDOW_GUI(window);
-        lineinfo.time = (gui->use_insert_after && gui->insert_after_time) ?
+	gui = WINDOW_GUI(window);
+	lineinfo.time = (gui->use_insert_after && gui->insert_after_time) ?
 		gui->insert_after_time : time(NULL);
 
 	view = gui->view;
@@ -252,7 +252,7 @@ static void sig_gui_print_text(WINDOW_REC *window, void *fgcolor,
 		gui->insert_after : view->buffer->cur_line;
 
 	if (flags & GUI_PRINT_FLAG_NEWLINE) {
-                view_add_eol(view, &insert_after);
+		view_add_eol(view, &insert_after);
 	}
 	textbuffer_line_add_colors(view->buffer, &insert_after, fg, bg, flags);
 
@@ -260,7 +260,7 @@ static void sig_gui_print_text(WINDOW_REC *window, void *fgcolor,
 					 (unsigned char *) str,
 					 strlen(str), &lineinfo);
 	if (gui->use_insert_after)
-                gui->insert_after = insert_after;
+		gui->insert_after = insert_after;
 }
 
 static void sig_gui_printtext_finished(WINDOW_REC *window)
@@ -272,7 +272,7 @@ static void sig_gui_printtext_finished(WINDOW_REC *window)
 	insert_after = WINDOW_GUI(window)->use_insert_after ?
 		WINDOW_GUI(window)->insert_after : view->buffer->cur_line;
 
-        view_add_eol(view, &insert_after);
+	view_add_eol(view, &insert_after);
 	remove_old_lines(view);
 }
 
@@ -280,7 +280,7 @@ static void read_settings(void)
 {
 	scrollback_lines = settings_get_int("scrollback_lines");
 	scrollback_time = settings_get_time("scrollback_time")/1000;
-        scrollback_burst_remove = settings_get_int("scrollback_burst_remove");
+	scrollback_burst_remove = settings_get_int("scrollback_burst_remove");
 }
 
 void gui_printtext_init(void)

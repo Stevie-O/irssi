@@ -44,15 +44,15 @@ struct _IRC_SERVER_REC {
 
 	/* For deciding if event should be redirected */
 	GSList *redirects;
-        GSList *redirect_queue; /* should be updated from redirect_next each time cmdqueue is updated */
-        REDIRECT_REC *redirect_next;
+	GSList *redirect_queue; /* should be updated from redirect_next each time cmdqueue is updated */
+	REDIRECT_REC *redirect_next;
 	GSList *redirect_active; /* redirects start event has been received for, must have unique prefix */
 
-        char *last_nick; /* last /NICK, kept even if it resulted as not valid change */
+	char *last_nick; /* last /NICK, kept even if it resulted as not valid change */
 
 	char *real_address; /* address the irc server gives */
 	char *usermode; /* The whole mode string .. */
-        char *wanted_usermode; /* The usermode we want to use, doesn't include the modes given us by the server (eg. +r) */
+	char *wanted_usermode; /* The usermode we want to use, doesn't include the modes given us by the server (eg. +r) */
 	char *userhost; /* /USERHOST <nick> - set when joined to first channel */
 	int channels_formed; /* channels formed in irc network */
 
@@ -77,7 +77,7 @@ struct _IRC_SERVER_REC {
 
 	GSList *cap_supported; /* A list of caps supported by the server */
 	GSList *cap_active;    /* A list of caps active for this session */
-	GSList *cap_queue;     /* A list of caps to request on connection */ 
+	GSList *cap_queue;     /* A list of caps to request on connection */
 
 	GString *sasl_buffer; /* Buffer used to reassemble a fragmented SASL payload */
 	guint sasl_timeout;   /* Holds the source id of the running timeout */

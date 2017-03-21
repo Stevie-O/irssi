@@ -60,7 +60,7 @@ void pidwait_remove(int pid)
    don't free the return value. */
 GSList *pidwait_get_pids(void)
 {
-        return pids;
+	return pids;
 }
 
 void pidwait_init(void)

@@ -37,7 +37,7 @@ typedef struct {
 
 static int g_io_channel_write_block(GIOChannel *channel, void *data, int len)
 {
-        gsize ret;
+	gsize ret;
 	int sent;
 	GIOStatus status;
 
@@ -45,7 +45,7 @@ static int g_io_channel_write_block(GIOChannel *channel, void *data, int len)
 	do {
 		status = g_io_channel_write_chars(channel, (char *) data + sent,
 						  len-sent, &ret, NULL);
-                sent += ret;
+		sent += ret;
 	} while (sent < len && status != G_IO_STATUS_ERROR);
 
 	return sent < len ? -1 : 0;
@@ -54,7 +54,7 @@ static int g_io_channel_write_block(GIOChannel *channel, void *data, int len)
 static int g_io_channel_read_block(GIOChannel *channel, void *data, int len)
 {
 	time_t maxwait;
-        gsize ret;
+	gsize ret;
 	int received;
 	GIOStatus status;
 
@@ -98,7 +98,7 @@ int net_gethostbyname_nonblock(const char *addr, GIOChannel *pipe,
 	/* child */
 	srand(time(NULL));
 
-        memset(&rec, 0, sizeof(rec));
+	memset(&rec, 0, sizeof(rec));
 	rec.error = net_gethostbyname(addr, &rec.ip4, &rec.ip6);
 	if (rec.error == 0) {
 		errorstr = NULL;
@@ -114,7 +114,7 @@ int net_gethostbyname_nonblock(const char *addr, GIOChannel *pipe,
 		rec.errlen = errorstr == NULL ? 0 : strlen(errorstr)+1;
 	}
 
-        g_io_channel_write_block(pipe, &rec, sizeof(rec));
+	g_io_channel_write_block(pipe, &rec, sizeof(rec));
 	if (rec.errlen != 0)
 		g_io_channel_write_block(pipe, (void *) errorstr, rec.errlen);
 	else {
@@ -164,7 +164,7 @@ int net_gethostbyname_return(GIOChannel *pipe, RESOLVED_IP_REC *rec)
 		/* read error string, if we can't read everything for some
 		   reason, just ignore it. */
 		rec->errorstr = g_malloc0(rec->errlen+1);
-                g_io_channel_read_block(pipe, rec->errorstr, rec->errlen);
+		g_io_channel_read_block(pipe, rec->errorstr, rec->errlen);
 	} else {
 		if (rec->host4) {
 			g_io_channel_read_block(pipe, &len, sizeof(int));
@@ -205,7 +205,7 @@ static void simple_init(SIMPLE_THREAD_REC *rec, GIOChannel *handle)
 	if (net_geterror(handle) != 0) {
 		/* failed */
 		g_io_channel_shutdown(handle, TRUE, NULL);
-                g_io_channel_unref(handle);
+		g_io_channel_unref(handle);
 		handle = NULL;
 	}
 

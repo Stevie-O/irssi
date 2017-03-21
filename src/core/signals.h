@@ -34,9 +34,9 @@ void signal_add_full_id(const char *module, int priority,
 /* unbind signal */
 void signal_remove_full(const char *signal, SIGNAL_FUNC func, void *user_data);
 #define signal_remove(signal, func) \
-        signal_remove_full((signal), (SIGNAL_FUNC) (func), NULL)
+	signal_remove_full((signal), (SIGNAL_FUNC) (func), NULL)
 #define signal_remove_data(signal, func, data) \
-        signal_remove_full((signal), (SIGNAL_FUNC) (func), data)
+	signal_remove_full((signal), (SIGNAL_FUNC) (func), data)
 void signal_remove_id(int signal_id, SIGNAL_FUNC func, void *user_data);
 
 /* emit signal */
@@ -65,7 +65,7 @@ void signals_remove_module(const char *module);
 
 /* signal name -> ID */
 #define signal_get_uniq_id(signal) \
-        module_get_uniq_id_str("signals", signal)
+	module_get_uniq_id_str("signals", signal)
 /* signal ID -> name */
 #define signal_get_id_str(signal_id) \
 	module_find_id_str("signals", signal_id)

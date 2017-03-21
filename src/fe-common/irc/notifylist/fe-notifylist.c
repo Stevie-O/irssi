@@ -104,7 +104,7 @@ static void cmd_notify_show(void)
 	}
 	offline = g_slist_copy(nicks);
 
-        /* print the notifies on specific ircnets */
+	/* print the notifies on specific ircnets */
 	for (tmp = chatnets; tmp != NULL; tmp = tmp->next) {
 		IRC_CHATNET_REC *rec = tmp->data;
 

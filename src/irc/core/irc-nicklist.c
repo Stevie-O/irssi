@@ -80,7 +80,7 @@ static void event_names_list(IRC_SERVER_REC *server, const char *data)
 	IRC_CHANNEL_REC *chanrec;
 	NICK_REC *rec;
 	char *params, *type, *channel, *names, *ptr, *host;
-        int op, halfop, voice;
+	int op, halfop, voice;
 	char prefixes[MAX_USER_PREFIXES+1];
 	const char *nick_flags, *nick_flag_cur, *nick_flag_op;
 
@@ -104,7 +104,7 @@ static void event_names_list(IRC_SERVER_REC *server, const char *data)
 	   we receive the MODE reply...
 
 	   If the channel key is set, assume the channel is +k also until
-           we know better, so parse_channel_modes() won't clear the key */
+	we know better, so parse_channel_modes() won't clear the key */
 	if (*type == '*') {
 		parse_channel_modes(chanrec, NULL,
 				    chanrec->key ? "+kp" : "+p", FALSE);
@@ -129,14 +129,14 @@ static void event_names_list(IRC_SERVER_REC *server, const char *data)
 			prefix_add(prefixes, *ptr, (SERVER_REC *) server);
 			switch (*ptr) {
 			case '@':
-                                op = TRUE;
-                                break;
+				op = TRUE;
+				break;
 			case '%':
-                                halfop = TRUE;
-                                break;
+				halfop = TRUE;
+				break;
 			case '+':
-                                voice = TRUE;
-                                break;
+				voice = TRUE;
+				break;
 			default:
 				/* If this flag is listed higher than op (in the
 				 * isupport PREFIX reply), then count this user
@@ -147,7 +147,7 @@ static void event_names_list(IRC_SERVER_REC *server, const char *data)
 				}
 				break;
 			}
-                        ptr++;
+			ptr++;
 		}
 
 		host = strchr(ptr, '!');
@@ -188,7 +188,7 @@ static void event_end_of_names(IRC_SERVER_REC *server, const char *data)
 						      FALSE, FALSE, NULL);
 		}
 		nicklist_set_own(CHANNEL(chanrec), ownnick);
-                chanrec->chanop = chanrec->ownnick->op;
+		chanrec->chanop = chanrec->ownnick->op;
 		chanrec->names_got = TRUE;
 		signal_emit("channel joined", 1, chanrec);
 	}
@@ -219,9 +219,9 @@ static void event_who(SERVER_REC *server, const char *data)
 		nicklist_find(chanrec, nick);
 	if (nickrec != NULL) {
 		if (nickrec->host == NULL) {
-                        char *str = g_strdup_printf("%s@%s", user, host);
+			char *str = g_strdup_printf("%s@%s", user, host);
 			nicklist_set_host(chanrec, nickrec, str);
-                        g_free(str);
+			g_free(str);
 		}
 		if (nickrec->realname == NULL)
 			nickrec->realname = g_strdup(realname);
@@ -396,7 +396,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 		/* You changed your nick */
 		if (server->last_nick != NULL &&
 		    g_ascii_strcasecmp(server->last_nick, nick) == 0) {
-                        /* changed with /NICK - keep it as wanted nick */
+			/* changed with /NICK - keep it as wanted nick */
 			g_free(server->connrec->nick);
 			server->connrec->nick = g_strdup(nick);
 		}
@@ -404,7 +404,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 		server_change_nick(SERVER(server), nick);
 	}
 
-        nicklist_rename(SERVER(server), orignick, nick);
+	nicklist_rename(SERVER(server), orignick, nick);
 	g_free(params);
 }
 

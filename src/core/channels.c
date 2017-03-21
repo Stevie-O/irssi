@@ -50,11 +50,11 @@ void channel_init(CHANNEL_REC *channel, SERVER_REC *server, const char *name,
 	if (visible_name == NULL)
 		visible_name = name;
 
-        MODULE_DATA_INIT(channel);
+	MODULE_DATA_INIT(channel);
 	channel->type = module_get_uniq_id_str("WINDOW ITEM TYPE", "CHANNEL");
-        channel->destroy = (void (*) (WI_ITEM_REC *)) channel_destroy;
+	channel->destroy = (void (*) (WI_ITEM_REC *)) channel_destroy;
 	channel->get_target = channel_get_target;
-        channel->get_join_data = get_join_data;
+	channel->get_join_data = get_join_data;
 
 	channel->chat_type = server->chat_type;
 	channel->server = server;
@@ -82,7 +82,7 @@ void channel_destroy(CHANNEL_REC *channel)
 
 	signal_emit("channel destroyed", 1, channel);
 
-        MODULE_DATA_DEINIT(channel);
+	MODULE_DATA_DEINIT(channel);
 	g_free_not_null(channel->hilight_color);
 	g_free_not_null(channel->topic);
 	g_free_not_null(channel->topic_by);
@@ -91,7 +91,7 @@ void channel_destroy(CHANNEL_REC *channel)
 	g_free(channel->name);
 	g_free(channel->visible_name);
 
-        channel->type = 0;
+	channel->type = 0;
 	g_free(channel);
 }
 
@@ -162,7 +162,7 @@ static GSList *servers_find_chatnet_except(SERVER_REC *server)
 {
 	GSList *tmp, *list;
 
-        list = NULL;
+	list = NULL;
 	for (tmp = servers; tmp != NULL; tmp = tmp->next) {
 		SERVER_REC *rec = tmp->data;
 
@@ -174,7 +174,7 @@ static GSList *servers_find_chatnet_except(SERVER_REC *server)
 		}
 	}
 
-        return list;
+	return list;
 }
 
 /* connected to server, autojoin to channels. */
@@ -205,10 +205,10 @@ static void event_connected(SERVER_REC *server)
 
 		/* check that we haven't already joined this channel in
 		   same chat network connection.. */
-                if (channel_find_servers(chatnet_servers, rec->name) == NULL)
+		if (channel_find_servers(chatnet_servers, rec->name) == NULL)
 			g_string_append_printf(chans, "%s,", rec->name);
 	}
-        g_slist_free(chatnet_servers);
+	g_slist_free(chatnet_servers);
 
 	if (chans->len > 0) {
 		g_string_truncate(chans, chans->len-1);
@@ -264,7 +264,7 @@ void channel_send_botcommands(CHANNEL_REC *channel)
 	g_return_if_fail(IS_CHANNEL(channel));
 
 	if (channel->session_rejoin)
-                return;
+		return;
 
 	rec = channel_setup_find(channel->name, channel->server->connrec->chatnet);
 	if (rec == NULL || rec->autosendcmd == NULL || !*rec->autosendcmd)
@@ -280,7 +280,7 @@ void channel_send_botcommands(CHANNEL_REC *channel)
 		const char *botnick = *bot;
 
 		if (*botnick == '\0')
-                        continue;
+			continue;
 
 		nick = nicklist_find_mask(channel,
 					  channel->server->isnickflag(channel->server, *botnick) ?

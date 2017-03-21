@@ -25,7 +25,7 @@
 typedef struct _SignalHook {
 	struct _SignalHook *next;
 
-        int priority;
+	int priority;
 	const char *module;
 	SIGNAL_FUNC func;
 	void *user_data;
@@ -33,14 +33,14 @@ typedef struct _SignalHook {
 
 typedef struct {
 	int id; /* signal id */
-        int refcount;
+	int refcount;
 
 	int emitting; /* signal is being emitted */
 	int stop_emit; /* this signal was stopped */
 	int continue_emit; /* this signal emit was continued elsewhere */
-        int remove_count; /* hooks were removed from signal */
+	int remove_count; /* hooks were removed from signal */
 
-        SignalHook *hooks;
+	SignalHook *hooks;
 } Signal;
 
 void *signal_user_data;
@@ -54,7 +54,7 @@ static SignalHook *current_emitted_hook;
 
 static int signal_unref_full(Signal *rec, int remove)
 {
-        g_assert(rec->refcount > 0);
+	g_assert(rec->refcount > 0);
 
 	if (--rec->refcount != 0)
 		return TRUE;
@@ -67,7 +67,7 @@ static int signal_unref_full(Signal *rec, int remove)
 
 	if (remove)
 		g_hash_table_remove(signals, GINT_TO_POINTER(rec->id));
-        g_free(rec);
+	g_free(rec);
 
 	return FALSE;
 }
@@ -94,14 +94,14 @@ void signal_add_full_id(const char *module, int priority,
 			int signal_id, SIGNAL_FUNC func, void *user_data)
 {
 	Signal *signal;
-        SignalHook *hook, **tmp;
+	SignalHook *hook, **tmp;
 
 	g_return_if_fail(signal_id >= 0);
 	g_return_if_fail(func != NULL);
 
 	signal = g_hash_table_lookup(signals, GINT_TO_POINTER(signal_id));
 	if (signal == NULL) {
-                /* new signal */
+		/* new signal */
 		signal = g_new0(Signal, 1);
 		signal->id = signal_id;
 		g_hash_table_insert(signals, GINT_TO_POINTER(signal_id), signal);
@@ -116,26 +116,26 @@ void signal_add_full_id(const char *module, int priority,
 	/* insert signal to proper position in list */
 	for (tmp = &signal->hooks; ; tmp = &(*tmp)->next) {
 		if (*tmp == NULL) {
-                        /* last in list */
+			/* last in list */
 			*tmp = hook;
-                        break;
+			break;
 		} else if (priority <= (*tmp)->priority) {
-                        /* insert before others with same priority */
+			/* insert before others with same priority */
 			hook->next = *tmp;
 			*tmp = hook;
-                        break;
+			break;
 		}
 	}
 
-        signal_ref(signal);
+	signal_ref(signal);
 }
 
 static void signal_remove_hook(Signal *rec, SignalHook **hook_pos)
 {
 	SignalHook *hook;
 
-        hook = *hook_pos;
-        *hook_pos = hook->next;
+	hook = *hook_pos;
+	*hook_pos = hook->next;
 
 	g_free(hook);
 
@@ -145,14 +145,14 @@ static void signal_remove_hook(Signal *rec, SignalHook **hook_pos)
 /* Remove function from signal's emit list */
 static int signal_remove_func(Signal *rec, SIGNAL_FUNC func, void *user_data)
 {
-        SignalHook **hook;
+	SignalHook **hook;
 
 	for (hook = &rec->hooks; *hook != NULL; hook = &(*hook)->next) {
 		if ((*hook)->func == func && (*hook)->user_data == user_data) {
 			if (rec->emitting) {
 				/* mark it removed after emitting is done */
 				(*hook)->func = NULL;
-                                rec->remove_count++;
+				rec->remove_count++;
 			} else {
 				/* remove the function from emit list */
 				signal_remove_hook(rec, hook);
@@ -161,7 +161,7 @@ static int signal_remove_func(Signal *rec, SIGNAL_FUNC func, void *user_data)
 		}
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 void signal_remove_id(int signal_id, SIGNAL_FUNC func, void *user_data)
@@ -172,8 +172,8 @@ void signal_remove_id(int signal_id, SIGNAL_FUNC func, void *user_data)
 	g_return_if_fail(func != NULL);
 
 	rec = g_hash_table_lookup(signals, GINT_TO_POINTER(signal_id));
-        if (rec != NULL)
-                signal_remove_func(rec, func, user_data);
+	if (rec != NULL)
+		signal_remove_func(rec, func, user_data);
 }
 
 /* unbind signal */
@@ -187,20 +187,20 @@ void signal_remove_full(const char *signal, SIGNAL_FUNC func, void *user_data)
 static void signal_hooks_clean(Signal *rec)
 {
 	SignalHook **hook, **next;
-        int count;
+	int count;
 
-        count = rec->remove_count;
-        rec->remove_count = 0;
+	count = rec->remove_count;
+	rec->remove_count = 0;
 
 	for (hook = &rec->hooks; *hook != NULL; hook = next) {
 		next = &(*hook)->next;
 
 		if ((*hook)->func == NULL) {
-                        next = hook;
+			next = hook;
 			signal_remove_hook(rec, hook);
 
 			if (--count == 0)
-                                break;
+				break;
 		}
 	}
 }
@@ -210,7 +210,7 @@ static int signal_emit_real(Signal *rec, int params, va_list va,
 {
 	const void *arglist[SIGNAL_MAX_ARGUMENTS];
 	Signal *prev_emitted_signal;
-        SignalHook *hook, *prev_emitted_hook;
+	SignalHook *hook, *prev_emitted_hook;
 	int i, stopped, stop_emit_count, continue_emit_count;
 
 	for (i = 0; i < SIGNAL_MAX_ARGUMENTS; i++)
@@ -221,7 +221,7 @@ static int signal_emit_real(Signal *rec, int params, va_list va,
 	stop_emit_count = rec->stop_emit;
 	continue_emit_count = rec->continue_emit;
 
-        signal_ref(rec);
+	signal_ref(rec);
 
 	stopped = FALSE;
 	rec->emitting++;
@@ -238,7 +238,7 @@ static int signal_emit_real(Signal *rec, int params, va_list va,
 #if SIGNAL_MAX_ARGUMENTS != 6
 #  error SIGNAL_MAX_ARGUMENTS changed - update code
 #endif
-                signal_user_data = hook->user_data;
+		signal_user_data = hook->user_data;
 		hook->func(arglist[0], arglist[1], arglist[2], arglist[3],
 			   arglist[4], arglist[5]);
 
@@ -262,11 +262,11 @@ static int signal_emit_real(Signal *rec, int params, va_list va,
 		g_assert(rec->stop_emit == 0);
 		g_assert(rec->continue_emit == 0);
 
-                if (rec->remove_count > 0)
+		if (rec->remove_count > 0)
 			signal_hooks_clean(rec);
 	}
 
-        signal_unref(rec);
+	signal_unref(rec);
 	return stopped;
 }
 
@@ -368,7 +368,7 @@ int signal_get_emitted_id(void)
 	Signal *rec;
 
 	rec = current_emitted_signal;
-        g_return_val_if_fail(rec != NULL, -1);
+	g_return_val_if_fail(rec != NULL, -1);
 	return rec->id;
 }
 
@@ -380,7 +380,7 @@ int signal_is_stopped(int signal_id)
 	rec = g_hash_table_lookup(signals, GINT_TO_POINTER(signal_id));
 	g_return_val_if_fail(rec != NULL, FALSE);
 
-        return rec->emitting <= rec->stop_emit;
+	return rec->emitting <= rec->stop_emit;
 }
 
 static void signal_remove_module(void *signal, Signal *rec,
@@ -392,7 +392,7 @@ static void signal_remove_module(void *signal, Signal *rec,
 		next = &(*hook)->next;
 
 		if (strcasecmp((*hook)->module, module) == 0) {
-                        next = hook;
+			next = hook;
 			signal_remove_hook(rec, hook);
 		}
 	}
@@ -431,7 +431,7 @@ static void signal_free(void *key, Signal *rec)
 void signals_deinit(void)
 {
 	g_hash_table_foreach(signals, (GHFunc) signal_hash_ref, NULL);
-        g_hash_table_foreach(signals, (GHFunc) signal_free, NULL);
+	g_hash_table_foreach(signals, (GHFunc) signal_free, NULL);
 	g_hash_table_foreach_remove(signals, (GHRFunc) signal_hash_unref, NULL);
 	g_hash_table_destroy(signals);
 

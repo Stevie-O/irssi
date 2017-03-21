@@ -77,7 +77,7 @@ int dcc_queue_new(void)
 		g_ptr_array_set_size(queuelist, (i + 1) * 2);
 
 	/* create stub */
-        g_ptr_array_index(queuelist, i) = g_slist_append(NULL, NULL);
+	g_ptr_array_index(queuelist, i) = g_slist_append(NULL, NULL);
 	return i;
 }
 

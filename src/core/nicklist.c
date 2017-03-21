@@ -28,7 +28,7 @@
 #include "masks.h"
 
 #define isalnumhigh(a) \
-        (i_isalnum(a) || (unsigned char) (a) >= 128)
+	(i_isalnum(a) || (unsigned char) (a) >= 128)
 
 static void nick_hash_add(CHANNEL_REC *channel, NICK_REC *nick)
 {
@@ -37,17 +37,17 @@ static void nick_hash_add(CHANNEL_REC *channel, NICK_REC *nick)
 	nick->next = NULL;
 
 	list = g_hash_table_lookup(channel->nicks, nick->nick);
-        if (list == NULL)
+	if (list == NULL)
 		g_hash_table_insert(channel->nicks, nick->nick, nick);
 	else {
-                /* multiple nicks with same name */
+		/* multiple nicks with same name */
 		while (list->next != NULL)
 			list = list->next;
 		list->next = nick;
 	}
 
 	if (nick == channel->ownnick) {
-                /* move our own nick to beginning of the nick list.. */
+		/* move our own nick to beginning of the nick list.. */
 		nicklist_set_own(channel, nick);
 	}
 }
@@ -79,23 +79,23 @@ void nicklist_insert(CHANNEL_REC *channel, NICK_REC *nick)
 	/*MODULE_DATA_INIT(nick);*/
 
 	nick->type = module_get_uniq_id("NICK", 0);
-        nick->chat_type = channel->chat_type;
+	nick->chat_type = channel->chat_type;
 
-        nick_hash_add(channel, nick);
+	nick_hash_add(channel, nick);
 	signal_emit("nicklist new", 2, channel, nick);
 }
 
 /* Set host address for nick */
 void nicklist_set_host(CHANNEL_REC *channel, NICK_REC *nick, const char *host)
 {
-        g_return_if_fail(channel != NULL);
-        g_return_if_fail(nick != NULL);
+	g_return_if_fail(channel != NULL);
+	g_return_if_fail(nick != NULL);
 	g_return_if_fail(host != NULL);
 
-        g_free_not_null(nick->host);
+	g_free_not_null(nick->host);
 	nick->host = g_strdup(host);
 
-        signal_emit("nicklist host changed", 2, channel, nick);
+	signal_emit("nicklist host changed", 2, channel, nick);
 }
 
 static void nicklist_destroy(CHANNEL_REC *channel, NICK_REC *nick)
@@ -103,9 +103,9 @@ static void nicklist_destroy(CHANNEL_REC *channel, NICK_REC *nick)
 	signal_emit("nicklist remove", 2, channel, nick);
 
 	if (channel->ownnick == nick)
-                channel->ownnick = NULL;
+		channel->ownnick = NULL;
 
-        /*MODULE_DATA_DEINIT(nick);*/
+	/*MODULE_DATA_DEINIT(nick);*/
 	g_free(nick->nick);
 	g_free_not_null(nick->realname);
 	g_free_not_null(nick->host);
@@ -118,7 +118,7 @@ void nicklist_remove(CHANNEL_REC *channel, NICK_REC *nick)
 	g_return_if_fail(IS_CHANNEL(channel));
 	g_return_if_fail(nick != NULL);
 
-        nick_hash_remove(channel, nick);
+	nick_hash_remove(channel, nick);
 	nicklist_destroy(channel, nick);
 }
 
@@ -135,7 +135,7 @@ static void nicklist_rename_list(SERVER_REC *server, void *new_nick_id,
 		nickrec = tmp->next->data;
 
 		/* remove old nick from hash table */
-                nick_hash_remove(channel, nickrec);
+		nick_hash_remove(channel, nickrec);
 
 		if (new_nick_id != NULL)
 			nickrec->unique_id = new_nick_id;
@@ -144,7 +144,7 @@ static void nicklist_rename_list(SERVER_REC *server, void *new_nick_id,
 		nickrec->nick = g_strdup(new_nick);
 
 		/* add new nick to hash table */
-                nick_hash_add(channel, nickrec);
+		nick_hash_add(channel, nickrec);
 
 		signal_emit("nicklist changed", 3, channel, nickrec, old_nick);
 	}
@@ -199,7 +199,7 @@ GSList *nicklist_find_multiple(CHANNEL_REC *channel, const char *mask)
 		next = tmp->next;
 		if (!mask_match_address(channel->server, mask,
 					nick->nick, nick->host))
-                        nicks = g_slist_remove(nicks, tmp->data);
+			nicks = g_slist_remove(nicks, tmp->data);
 	}
 
 	return nicks;
@@ -224,9 +224,9 @@ NICK_REC *nicklist_find_unique(CHANNEL_REC *channel, const char *nick,
 
 	rec = g_hash_table_lookup(channel->nicks, nick);
 	while (rec != NULL && rec->unique_id != id)
-                rec = rec->next;
+		rec = rec->next;
 
-        return rec;
+	return rec;
 }
 
 /* Find nick mask, wildcards allowed */
@@ -265,7 +265,7 @@ static void get_nicks_hash(gpointer key, NICK_REC *rec, GSList **list)
 {
 	while (rec != NULL) {
 		*list = g_slist_append(*list, rec);
-                rec = rec->next;
+		rec = rec->next;
 	}
 }
 
@@ -305,7 +305,7 @@ GSList *nicklist_get_same(SERVER_REC *server, const char *nick)
 
 typedef struct {
 	CHANNEL_REC *channel;
-        void *id;
+	void *id;
 	GSList *list;
 } NICKLIST_GET_SAME_UNIQUE_REC;
 
@@ -316,10 +316,10 @@ static void get_nicks_same_hash_unique(gpointer key, NICK_REC *nick,
 		if (nick->unique_id == rec->id) {
 			rec->list = g_slist_append(rec->list, rec->channel);
 			rec->list = g_slist_append(rec->list, nick);
-                        break;
+			break;
 		}
 
-                nick = nick->next;
+		nick = nick->next;
 	}
 }
 
@@ -331,7 +331,7 @@ GSList *nicklist_get_same_unique(SERVER_REC *server, void *id)
 	g_return_val_if_fail(IS_SERVER(server), NULL);
 	g_return_val_if_fail(id != NULL, NULL);
 
-        rec.id = id;
+	rec.id = id;
 	rec.list = NULL;
 	for (tmp = server->channels; tmp != NULL; tmp = tmp->next) {
 		rec.channel = tmp->data;
@@ -420,7 +420,7 @@ void nicklist_set_own(CHANNEL_REC *channel, NICK_REC *nick)
 {
 	NICK_REC *first, *next;
 
-        channel->ownnick = nick;
+	channel->ownnick = nick;
 
 	/* move our nick in the list to first, makes some things easier
 	   (like handling multiple identical nicks in fe-messages.c) */
@@ -432,10 +432,10 @@ void nicklist_set_own(CHANNEL_REC *channel, NICK_REC *nick)
 	nick->next = first;
 
 	while (first->next != nick)
-                first = first->next;
+		first = first->next;
 	first->next = next;
 
-        g_hash_table_insert(channel->nicks, nick->nick, nick);
+	g_hash_table_insert(channel->nicks, nick->nick, nick);
 }
 
 static void sig_channel_created(CHANNEL_REC *channel)
@@ -452,9 +452,9 @@ static void nicklist_remove_hash(gpointer key, NICK_REC *nick,
 	NICK_REC *next;
 
 	while (nick != NULL) {
-                next = nick->next;
+		next = nick->next;
 		nicklist_destroy(channel, nick);
-                nick = next;
+		nick = next;
 	}
 }
 
@@ -469,7 +469,7 @@ static void sig_channel_destroyed(CHANNEL_REC *channel)
 
 static NICK_REC *nick_nfind(CHANNEL_REC *channel, const char *nick, int len)
 {
-        NICK_REC *rec;
+	NICK_REC *rec;
 	char *tmpnick;
 
 	tmpnick = g_strndup(nick, len);
@@ -480,11 +480,11 @@ static NICK_REC *nick_nfind(CHANNEL_REC *channel, const char *nick, int len)
 		while (rec->next != NULL) {
 			if (g_strcmp0(rec->nick, tmpnick) == 0)
 				break;
-                        rec = rec->next;
+			rec = rec->next;
 		}
 	}
 
-        g_free(tmpnick);
+	g_free(tmpnick);
 	return rec;
 }
 
@@ -510,7 +510,7 @@ int nick_match_msg(CHANNEL_REC *channel, const char *msg, const char *nick)
 	for (;;) {
 		nick = orignick;
 		msgstart = msg;
-                fullmatch = TRUE;
+		fullmatch = TRUE;
 
 		/* check if it matches for alphanumeric parts of nick */
 		while (*nick != '\0' && *msg != '\0') {
@@ -519,7 +519,7 @@ int nick_match_msg(CHANNEL_REC *channel, const char *msg, const char *nick)
 				msg++;
 			} else if (i_isalnum(*msg) && !i_isalnum(*nick)) {
 				/* some strange char in your nick, pass it */
-                                fullmatch = FALSE;
+				fullmatch = FALSE;
 			} else
 				break;
 
@@ -533,14 +533,14 @@ int nick_match_msg(CHANNEL_REC *channel, const char *msg, const char *nick)
 			if (*nick != '\0') {
 				/* remove the rest of the non-alphanum chars
 				   from nick and check if it then matches. */
-                                fullmatch = FALSE;
+				fullmatch = FALSE;
 				while (*nick != '\0' && !i_isalnum(*nick))
 					nick++;
 			}
 
 			if (*nick == '\0') {
 				/* yes, match! */
-                                break;
+				break;
 			}
 		}
 
@@ -549,11 +549,11 @@ int nick_match_msg(CHANNEL_REC *channel, const char *msg, const char *nick)
 		while (*msg != '\0' && *msg != ' ' && *msg != ',') msg++;
 
 		if (*msg != ',') {
-                        nick = orignick;
+			nick = orignick;
 			break;
 		}
 
-                msg++;
+		msg++;
 	}
 
 	if (*nick != '\0')

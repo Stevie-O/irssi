@@ -34,7 +34,7 @@
 #define MAX_FAILURE_COUNT 1
 
 typedef struct {
-        char *name;
+	char *name;
 	int refcount;
 
 	int remote;
@@ -54,7 +54,7 @@ struct _REDIRECT_REC {
 	unsigned int first_signal_sent:1;
 
 	char *arg;
-        int count;
+	int count;
 	char *failure_signal, *default_signal, *first_signal, *last_signal;
 	GSList *signals; /* event, signal, ... */
 };
@@ -64,19 +64,19 @@ static GHashTable *command_redirects; /* "command xxx" : REDIRECT_CMD_REC* */
 /* Find redirection command record for specified command line. */
 static REDIRECT_CMD_REC *redirect_cmd_find(const char *command)
 {
-        REDIRECT_CMD_REC *rec;
+	REDIRECT_CMD_REC *rec;
 	const char *p;
-        char *cmd;
+	char *cmd;
 
 	p = strchr(command, ' ');
 	if (p == NULL)
-                rec = g_hash_table_lookup(command_redirects, command);
+		rec = g_hash_table_lookup(command_redirects, command);
 	else {
 		cmd = g_strndup(command, (int) (p-command));
-                rec = g_hash_table_lookup(command_redirects, cmd);
+		rec = g_hash_table_lookup(command_redirects, cmd);
 		g_free(cmd);
 	}
-        return rec;
+	return rec;
 }
 
 static void redirect_cmd_destroy(REDIRECT_CMD_REC *rec)
@@ -84,27 +84,27 @@ static void redirect_cmd_destroy(REDIRECT_CMD_REC *rec)
 	GSList *tmp;
 
 	for (tmp = rec->start; tmp != NULL; tmp = tmp->next->next)
-                g_free(tmp->data);
+		g_free(tmp->data);
 	for (tmp = rec->stop; tmp != NULL; tmp = tmp->next->next)
-                g_free(tmp->data);
+		g_free(tmp->data);
 	for (tmp = rec->opt; tmp != NULL; tmp = tmp->next->next)
-                g_free(tmp->data);
-        g_slist_free(rec->start);
-        g_slist_free(rec->stop);
-        g_slist_free(rec->opt);
-        g_free(rec->name);
+		g_free(tmp->data);
+	g_slist_free(rec->start);
+	g_slist_free(rec->stop);
+	g_slist_free(rec->opt);
+	g_free(rec->name);
 	g_free(rec);
 }
 
 static void redirect_cmd_ref(REDIRECT_CMD_REC *rec)
 {
-        rec->refcount++;
+	rec->refcount++;
 }
 
 static void redirect_cmd_unref(REDIRECT_CMD_REC *rec)
 {
 	if (--rec->refcount <= 0)
-                redirect_cmd_destroy(rec);
+		redirect_cmd_destroy(rec);
 }
 
 void server_redirect_destroy(REDIRECT_REC *rec)
@@ -113,13 +113,13 @@ void server_redirect_destroy(REDIRECT_REC *rec)
 
 	g_free_not_null(rec->prefix);
 	g_free_not_null(rec->arg);
-        g_free_not_null(rec->failure_signal);
-        g_free_not_null(rec->default_signal);
-        g_free_not_null(rec->first_signal);
-        g_free_not_null(rec->last_signal);
+	g_free_not_null(rec->failure_signal);
+	g_free_not_null(rec->default_signal);
+	g_free_not_null(rec->first_signal);
+	g_free_not_null(rec->last_signal);
 	g_slist_foreach(rec->signals, (GFunc) g_free, NULL);
 	g_slist_free(rec->signals);
-        g_free(rec);
+	g_free(rec);
 }
 
 void server_redirect_register(const char *command,
@@ -128,7 +128,7 @@ void server_redirect_register(const char *command,
 	va_list va;
 	GSList *start, *stop, *opt, **list;
 	const char *event;
-        int argpos;
+	int argpos;
 
 	va_start(va, timeout);
 	start = stop = opt = NULL; list = &start;
@@ -140,11 +140,11 @@ void server_redirect_register(const char *command,
 			else if (list == &stop)
 				list = &opt;
 			else
-                                break;
-                        continue;
+				break;
+			continue;
 		}
 
-                argpos = va_arg(va, int);
+		argpos = va_arg(va, int);
 		*list = g_slist_append(*list, g_strdup(event));
 		*list = g_slist_append(*list, GINT_TO_POINTER(argpos));
 	}
@@ -160,28 +160,28 @@ void server_redirect_register_list(const char *command,
 				   GSList *start, GSList *stop, GSList *opt)
 {
 	REDIRECT_CMD_REC *rec;
-        gpointer key, value;
+	gpointer key, value;
 
-        g_return_if_fail(command != NULL);
-        g_return_if_fail(stop != NULL);
+	g_return_if_fail(command != NULL);
+	g_return_if_fail(stop != NULL);
 
 	if (g_hash_table_lookup_extended(command_redirects, command,
 					 &key, &value)) {
 		/* Already registered - might have changed so destroy
 		   the old one */
 		g_hash_table_remove(command_redirects, command);
-                redirect_cmd_unref(value);
+		redirect_cmd_unref(value);
 	}
 
 	rec = g_new0(REDIRECT_CMD_REC, 1);
-        redirect_cmd_ref(rec);
-        rec->name = g_strdup(command);
+	redirect_cmd_ref(rec);
+	rec->name = g_strdup(command);
 	rec->remote = remote;
 	rec->timeout = timeout > 0 ? timeout : DEFAULT_REDIRECT_TIMEOUT;
 	rec->start = start;
-        rec->stop = stop;
-        rec->opt = opt;
-        g_hash_table_insert(command_redirects, rec->name, rec);
+	rec->stop = stop;
+	rec->opt = opt;
+	g_hash_table_insert(command_redirects, rec->name, rec);
 }
 
 void server_redirect_event(IRC_SERVER_REC *server, const char *command,
@@ -189,7 +189,7 @@ void server_redirect_event(IRC_SERVER_REC *server, const char *command,
 			   const char *failure_signal, ...)
 {
 	GSList *signals;
-        const char *event, *signal;
+	const char *event, *signal;
 	va_list va;
 
 	va_start(va, failure_signal);
@@ -217,20 +217,20 @@ void server_redirect_event(IRC_SERVER_REC *server, const char *command,
 static char *signal_list_move(GSList **signals, const char *event)
 {
 	GSList *link;
-        char *linkevent, *linksignal;
+	char *linkevent, *linksignal;
 
 	link = gslist_find_string(*signals, event);
 	if (link == NULL)
 		return NULL;
 
 	linkevent = link->data;
-        linksignal = link->next->data;
+	linksignal = link->next->data;
 
 	*signals = g_slist_remove(*signals, linkevent);
 	*signals = g_slist_remove(*signals, linksignal);
 
 	g_free(linkevent);
-        return linksignal;
+	return linksignal;
 }
 
 void server_redirect_event_list(IRC_SERVER_REC *server, const char *command,
@@ -242,38 +242,38 @@ void server_redirect_event_list(IRC_SERVER_REC *server, const char *command,
 
 	g_return_if_fail(IS_IRC_SERVER(server));
 	g_return_if_fail(command != NULL);
-        g_return_if_fail((g_slist_length(signals) & 1) == 0);
+	g_return_if_fail((g_slist_length(signals) & 1) == 0);
 
 	cmdrec = g_hash_table_lookup(command_redirects, command);
 	if (cmdrec == NULL) {
 		g_warning("Unknown redirection command: %s", command);
-                return;
+		return;
 	}
 
 	redirect_cmd_ref(cmdrec);
 
-        rec = g_new0(REDIRECT_REC, 1);
-        rec->created = time(NULL);
-        rec->cmd = cmdrec;
+	rec = g_new0(REDIRECT_REC, 1);
+	rec->created = time(NULL);
+	rec->cmd = cmdrec;
 	rec->arg = g_strdup(arg);
-        rec->count = count;
+	rec->count = count;
 	rec->remote = remote != -1 ? remote : cmdrec->remote;
 	rec->failure_signal = g_strdup(failure_signal);
 
-        rec->default_signal = signal_list_move(&signals, "");
-        rec->first_signal = signal_list_move(&signals, "redirect first");
-        rec->last_signal = signal_list_move(&signals, "redirect last");
+	rec->default_signal = signal_list_move(&signals, "");
+	rec->first_signal = signal_list_move(&signals, "redirect first");
+	rec->last_signal = signal_list_move(&signals, "redirect last");
 	rec->signals = signals;
 
 	if (server->redirect_next != NULL)
-                server_redirect_destroy(server->redirect_next);
-        server->redirect_next = rec;
+		server_redirect_destroy(server->redirect_next);
+	server->redirect_next = rec;
 }
 
 void server_redirect_command(IRC_SERVER_REC *server, const char *command,
 			     REDIRECT_REC *redirect)
 {
-        REDIRECT_CMD_REC *cmdrec;
+	REDIRECT_CMD_REC *cmdrec;
 
 	g_return_if_fail(IS_IRC_SERVER(server));
 	g_return_if_fail(command != NULL);
@@ -304,11 +304,11 @@ static int redirect_args_match(const char *event_args,
 	if (pos == -1)
 		return TRUE;
 
-        /* skip to the start of the wanted argument */
+	/* skip to the start of the wanted argument */
 	while (pos > 0 && *event_args != '\0') {
-                while (*event_args != ' ' && *event_args != '\0') event_args++;
+		while (*event_args != ' ' && *event_args != '\0') event_args++;
 		while (*event_args == ' ') event_args++;
-                pos--;
+		pos--;
 	}
 
 	/* now compare the arguments */
@@ -324,14 +324,14 @@ static int redirect_args_match(const char *event_args,
 		    (*event_args == '\0' || *event_args == ' '))
 			return TRUE;
 
-                /* compare the next argument */
+		/* compare the next argument */
 		while (*arg != ' ' && *arg != '\0') arg++;
-                while (*arg == ' ') arg++;
+		while (*arg == ' ') arg++;
 
 		event_args = start;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 static GSList *redirect_cmd_list_find(GSList *list, const char *event)
@@ -340,11 +340,11 @@ static GSList *redirect_cmd_list_find(GSList *list, const char *event)
 		const char *str = list->data;
 
 		if (g_strcmp0(str, event) == 0)
-                        break;
-                list = list->next->next;
+			break;
+		list = list->next->next;
 	}
 
-        return list;
+	return list;
 }
 
 #define MATCH_NONE      0
@@ -356,14 +356,14 @@ static const char *redirect_match(REDIRECT_REC *redirect, const char *event,
 {
 	GSList *tmp, *cmdpos;
 	const char *signal;
-        int match_list;
+	int match_list;
 
 	if (redirect->aborted)
-                return NULL;
+		return NULL;
 
 	/* get the signal for redirection event - if it's not found we'll
 	   use the default signal */
-        signal = NULL;
+	signal = NULL;
 	for (tmp = redirect->signals; tmp != NULL; tmp = tmp->next->next) {
 		if (g_strcmp0(tmp->data, event) == 0) {
 			signal = tmp->next->data;
@@ -379,9 +379,9 @@ static const char *redirect_match(REDIRECT_REC *redirect, const char *event,
 		if (cmdpos == NULL)
 			return NULL;
 
-                match_list = MATCH_STOP;
+		match_list = MATCH_STOP;
 	} else {
-                /* look from start/stop lists */
+		/* look from start/stop lists */
 		cmdpos = redirect_cmd_list_find(redirect->cmd->start, event);
 		if (cmdpos != NULL)
 			match_list = MATCH_START;
@@ -420,7 +420,7 @@ static const char *redirect_match(REDIRECT_REC *redirect, const char *event,
 				 GPOINTER_TO_INT(cmdpos->next->data)))
 		return NULL;
 
-        *match = match_list;
+	*match = match_list;
 	return signal != NULL ? signal : redirect->default_signal;
 }
 
@@ -444,7 +444,7 @@ static void redirect_abort(IRC_SERVER_REC *server, REDIRECT_REC *rec)
 		if (rec->failure_signal != NULL)
 			signal_emit(rec->failure_signal, 1, server);
 	} else if (rec->last_signal != NULL) {
-                /* emit the last signal */
+		/* emit the last signal */
 		signal_emit(rec->last_signal, 1, server);
 	}
 
@@ -461,10 +461,10 @@ static REDIRECT_REC *redirect_find(IRC_SERVER_REC *server, const char *event,
 				   const char *args, const char **signal,
 				   int *match)
 {
-        REDIRECT_REC *redirect;
+	REDIRECT_REC *redirect;
 	GSList *tmp, *next;
 	time_t now;
-        const char *match_signal;
+	const char *match_signal;
 
 	/* find the redirection */
 	*signal = NULL; redirect = NULL;
@@ -478,7 +478,7 @@ static REDIRECT_REC *redirect_find(IRC_SERVER_REC *server, const char *event,
 		match_signal = redirect_match(rec, event, args, match);
 		if (match_signal != NULL && *match != MATCH_NONE) {
 			redirect = rec;
-                        *signal = match_signal;
+			*signal = match_signal;
 			break;
 		}
 	}
@@ -494,20 +494,20 @@ static REDIRECT_REC *redirect_find(IRC_SERVER_REC *server, const char *event,
 
 		next = tmp->next;
 		if (rec->destroyed) {
-                        /* redirection is finished, destroy it */
+			/* redirection is finished, destroy it */
 			redirect_abort(server, rec);
 		} else if (redirect != NULL) {
-                        /* check if redirection failed */
+			/* check if redirection failed */
 			if (rec->aborted ||
 			    rec->failures++ >= MAX_FAILURE_COUNT) {
-                                /* enough failures, abort it now */
+				/* enough failures, abort it now */
 				if (!rec->remote || REDIRECT_IS_TIMEOUTED(rec))
 					redirect_abort(server, rec);
 			}
 		}
 	}
 
-        return redirect;
+	return redirect;
 }
 
 static const char *
@@ -519,7 +519,7 @@ server_redirect_get(IRC_SERVER_REC *server, const char *prefix,
 	GSList *ptr, *next;
 	REDIRECT_REC *r;
 
-        *redirect = NULL;
+	*redirect = NULL;
 	*match = MATCH_NONE;
 
 	if (server->redirects == NULL)
@@ -550,7 +550,7 @@ server_redirect_get(IRC_SERVER_REC *server, const char *prefix,
 	}
 
 	if (*redirect == NULL) {
-                /* find the redirection */
+		/* find the redirection */
 		*redirect = redirect_find(server, event, args, &signal, match);
 	}
 
@@ -561,11 +561,11 @@ server_redirect_get(IRC_SERVER_REC *server, const char *prefix,
 	if (*redirect != NULL && (*redirect)->first_signal != NULL &&
 	    !(*redirect)->first_signal_sent) {
 		/* emit the first_signal */
-                (*redirect)->first_signal_sent = TRUE;
+		(*redirect)->first_signal_sent = TRUE;
 		signal_emit((*redirect)->first_signal, 1, server);
 	}
 
-        return signal;
+	return signal;
 }
 
 const char *server_redirect_get_signal(IRC_SERVER_REC *server,
@@ -574,7 +574,7 @@ const char *server_redirect_get_signal(IRC_SERVER_REC *server,
 				       const char *args)
 {
 	REDIRECT_REC *redirect;
-        const char *signal;
+	const char *signal;
 	int match;
 
 	signal = server_redirect_get(server, prefix, event, args, &redirect, &match);
@@ -587,12 +587,12 @@ const char *server_redirect_get_signal(IRC_SERVER_REC *server,
 		/* stop event - remove this redirection next time this
 		   function is called (can't destroy now or our return
 		   value would be corrupted) */
-                if (--redirect->count <= 0)
+		if (--redirect->count <= 0)
 			redirect->destroyed = TRUE;
 		server->redirect_active = g_slist_remove(server->redirect_active, redirect);
 	}
 
-        return signal;
+	return signal;
 }
 
 const char *server_redirect_peek_signal(IRC_SERVER_REC *server,
@@ -602,35 +602,35 @@ const char *server_redirect_peek_signal(IRC_SERVER_REC *server,
 					int *redirected)
 {
 	REDIRECT_REC *redirect;
-        const char *signal;
+	const char *signal;
 	int match;
 
 	signal = server_redirect_get(server, prefix, event, args, &redirect, &match);
 	*redirected = match != MATCH_NONE;
-        return signal;
+	return signal;
 }
 
 static void sig_disconnected(IRC_SERVER_REC *server)
 {
 	if (!IS_IRC_SERVER(server))
-                return;
+		return;
 
 	g_slist_free(server->redirect_active);
-        server->redirect_active = NULL;
+	server->redirect_active = NULL;
 	g_slist_foreach(server->redirects,
 			(GFunc) server_redirect_destroy, NULL);
 	g_slist_free(server->redirects);
-        server->redirects = NULL;
+	server->redirects = NULL;
 
 	if (server->redirect_next != NULL) {
 		server_redirect_destroy(server->redirect_next);
-                server->redirect_next = NULL;
+		server->redirect_next = NULL;
 	}
 }
 
 static void cmd_redirect_destroy(char *key, REDIRECT_CMD_REC *cmd)
 {
-        redirect_cmd_unref(cmd);
+	redirect_cmd_unref(cmd);
 }
 
 void servers_redirect_init(void)
@@ -642,11 +642,11 @@ void servers_redirect_init(void)
 	server_redirect_register("whois", TRUE, 0,
 				 "event 311", 1, /* Begins the WHOIS */
 				 NULL,
-                                 "event 401", 1, /* No such nick */
+				"event 401", 1, /* No such nick */
 				 "event 318", 1, /* End of WHOIS */
-                                 "event 402", 1, /* No such server */
-                                 "event 431", 1, /* No nickname given */
-                                 "event 461", 1, /* Not enough parameters */
+				"event 402", 1, /* No such server */
+				"event 431", 1, /* No nickname given */
+				"event 461", 1, /* Not enough parameters */
 				 NULL,
 				 "event 318", 1, /* After 401, we should get 318, but in OPN we don't.. */
 				 NULL);
@@ -654,7 +654,7 @@ void servers_redirect_init(void)
 	/* WHOWAS */
 	server_redirect_register("whowas", FALSE, 0,
 				 "event 314", 1, /* Begins the WHOWAS */
-                                 "event 406", 1, /* There was no such nick */
+				"event 406", 1, /* There was no such nick */
 				 NULL,
 				 "event 369", 1, /* End of WHOWAS */
 				 NULL,
@@ -664,14 +664,14 @@ void servers_redirect_init(void)
 	server_redirect_register("who", FALSE, 0,
 				 "event 352", 1, /* An element of the WHO */
 				 "event 354", -1, /* WHOX element */
-                                 "event 401", 1, /* No such nick/channel */
+				"event 401", 1, /* No such nick/channel */
 				 NULL,
 				 "event 315", 1, /* End of WHO */
 				 "event 403", 1, /* no such channel */
 				 NULL,
 				 NULL);
 
-        /* LIST */
+	/* LIST */
 	server_redirect_register("list", FALSE, 0,
 				 "event 321", 1, /* Begins the LIST */
 				 NULL,
@@ -679,14 +679,14 @@ void servers_redirect_init(void)
 				 NULL,
 				 NULL);
 
-        /* ISON */
+	/* ISON */
 	server_redirect_register("ison", FALSE, 0,
 				 NULL,
 				 "event 303", -1, /* ISON */
 				 NULL,
 				 NULL);
 
-        /* USERHOST */
+	/* USERHOST */
 	server_redirect_register("userhost", FALSE, 0,
 				 "event 401", 1, /* no such nick */
 				 NULL,
@@ -713,12 +713,12 @@ void servers_redirect_init(void)
 				 "event 442", 1, /* "you're not on that channel" */
 				 "event 479", 1, /* "Cannot join channel (illegal name)" IMHO this is not a logical reply from server. */
 				 NULL,
-                                 "event 329", 1, /* Channel create time */
+				"event 329", 1, /* Channel create time */
 				 NULL);
 
 	/* MODE #channel b */
 	server_redirect_register("mode b", FALSE, 0,
-                                 "event 367", 1,
+				"event 367", 1,
 				 NULL,
 				 "event 368", 1, /* End of Channel ban List */
 				 "event 403", 1, /* no such channel */
@@ -729,7 +729,7 @@ void servers_redirect_init(void)
 
 	/* MODE #channel e */
 	server_redirect_register("mode e", FALSE, 0,
-                                 "event 348", 1,
+				"event 348", 1,
 				 NULL,
 				 "event 349", 1, /* End of ban exceptions */
 				 "event 482", 1, /* not channel operator - OPN's ircd doesn't want non-ops to see ban exceptions */
@@ -742,7 +742,7 @@ void servers_redirect_init(void)
 
 	/* MODE #channel I */
 	server_redirect_register("mode I", FALSE, 0,
-                                 "event 346", 1,
+				"event 346", 1,
 				 NULL,
 				 "event 347", 1, /* End of invite list */
 				 "event 482", 1, /* not channel operator - OPN's ircd doesn't want non-ops to see ban exceptions */
@@ -753,10 +753,10 @@ void servers_redirect_init(void)
 				 NULL,
 				 NULL);
 
-        /* PING - use default timeout */
+	/* PING - use default timeout */
 	server_redirect_register("ping", TRUE, 0,
 				 NULL,
-                                 "event 402", -1, /* no such server */
+				"event 402", -1, /* no such server */
 				 "event pong", -1, /* PONG */
 				 NULL,
 				 NULL);
@@ -768,7 +768,7 @@ void servers_redirect_deinit(void)
 {
 	g_hash_table_foreach(command_redirects,
 			     (GHFunc) cmd_redirect_destroy, NULL);
-        g_hash_table_destroy(command_redirects);
+	g_hash_table_destroy(command_redirects);
 
 	signal_remove("server disconnected", (SIGNAL_FUNC) sig_disconnected);
 }

@@ -2,24 +2,24 @@
 #define __ICONFIG_H
 
 enum {
-        NODE_TYPE_KEY,
-        NODE_TYPE_VALUE,
-        NODE_TYPE_BLOCK,
-        NODE_TYPE_LIST,
+	NODE_TYPE_KEY,
+	NODE_TYPE_VALUE,
+	NODE_TYPE_BLOCK,
+	NODE_TYPE_LIST,
 	NODE_TYPE_COMMENT
 };
 
 #define has_node_value(a) \
 	((a)->type == NODE_TYPE_KEY || (a)->type == NODE_TYPE_VALUE)
 #define is_node_list(a) \
-        ((a)->type == NODE_TYPE_BLOCK || (a)->type == NODE_TYPE_LIST)
+	((a)->type == NODE_TYPE_BLOCK || (a)->type == NODE_TYPE_LIST)
 
 typedef struct _CONFIG_NODE CONFIG_NODE;
 typedef struct _CONFIG_REC CONFIG_REC;
 
 struct _CONFIG_NODE {
 	int type;
-        char *key;
+	char *key;
 	void *value;
 };
 

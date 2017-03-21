@@ -19,7 +19,7 @@ typedef struct {
 
 	unsigned int sticky:1;
 	unsigned int use_insert_after:1;
-        LINE_REC *insert_after;
+	LINE_REC *insert_after;
 	time_t insert_after_time;
 } GUI_WINDOW_REC;
 

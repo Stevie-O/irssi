@@ -3,9 +3,9 @@
 
 typedef struct {
 	char *name; /* unique name */
-        char *package; /* package name */
+	char *package; /* package name */
 
-        /* Script can be loaded from a file, or from some data in memory */
+	/* Script can be loaded from a file, or from some data in memory */
 	char *path; /* FILE: full path for file */
 	char *data; /* DATA: data used for the script */
 } PERL_SCRIPT_REC;
@@ -50,7 +50,7 @@ int perl_get_api_version(void);
 		    "version of "library" library (%d)", \
 		    perl_get_api_version(), IRSSI_PERL_API_VERSION); \
 		return; \
-        }
+	}
 
 void perl_core_init(void);
 void perl_core_deinit(void);

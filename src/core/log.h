@@ -13,7 +13,7 @@ typedef struct _LOG_ITEM_REC LOG_ITEM_REC;
 
 struct _LOG_ITEM_REC {
 	int type;
-        char *name;
+	char *name;
 	char *servertag;
 };
 
@@ -27,7 +27,7 @@ struct _LOG_REC {
 	GSList *items; /* log only on these items */
 
 	time_t last; /* when last message was written */
-        COLORIZE_FUNC colorizer;
+	COLORIZE_FUNC colorizer;
 
 	unsigned int autoopen:1; /* automatically start logging at startup */
 	unsigned int failed:1; /* opening log failed last time */

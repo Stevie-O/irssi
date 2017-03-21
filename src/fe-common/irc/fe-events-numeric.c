@@ -50,8 +50,8 @@ static void event_user_mode(IRC_SERVER_REC *server, const char *data)
 	g_return_if_fail(server != NULL);
 
 	params = event_get_params(data, 2, NULL, &mode);
-        printformat(server, NULL, MSGLEVEL_CRAP, IRCTXT_USER_MODE,
-                    g_strchomp(mode));
+	printformat(server, NULL, MSGLEVEL_CRAP, IRCTXT_USER_MODE,
+		g_strchomp(mode));
 	g_free(params);
 }
 
@@ -81,7 +81,7 @@ static void event_names_list(IRC_SERVER_REC *server, const char *data)
 		printformat_module("fe-common/core", server, channel,
 				   MSGLEVEL_CRAP, TXT_NAMES,
 				   channel, 0, 0, 0, 0, 0);
-                printtext(server, channel, MSGLEVEL_CRAP, "%s", names);
+		printtext(server, channel, MSGLEVEL_CRAP, "%s", names);
 
 	}
 	g_free(params);
@@ -272,7 +272,7 @@ static void event_topic_info(IRC_SERVER_REC *server, const char *data)
 	params = event_get_params(data, 4, NULL, &channel,
 				  &bynick, &topictime);
 
-        timestr = my_asctime((time_t) atol(topictime));
+	timestr = my_asctime((time_t) atol(topictime));
 
 	byhost = strchr(bynick, '!');
 	if (byhost != NULL)
@@ -309,7 +309,7 @@ static void event_channel_created(IRC_SERVER_REC *server, const char *data)
 
 	params = event_get_params(data, 3, NULL, &channel, &createtime);
 
-        timestr = my_asctime((time_t) atol(createtime));
+	timestr = my_asctime((time_t) atol(createtime));
 	channel = get_visible_target(server, channel);
 	printformat(server, channel, MSGLEVEL_CRAP,
 		    IRCTXT_CHANNEL_CREATED, channel, timestr);
@@ -367,7 +367,7 @@ static void event_userhost(IRC_SERVER_REC *server, const char *data)
 
 static void event_sent_invite(IRC_SERVER_REC *server, const char *data)
 {
-        char *params, *nick, *channel;
+	char *params, *nick, *channel;
 
 	g_return_if_fail(data != NULL);
 
@@ -566,7 +566,7 @@ static void event_numeric(IRC_SERVER_REC *server, const char *data,
 {
 	data = strchr(data, ' ');
 	if (data != NULL)
-                print_event_received(server, data+1, nick, FALSE);
+		print_event_received(server, data+1, nick, FALSE);
 }
 
 static void print_event_received(IRC_SERVER_REC *server, const char *data,
@@ -577,7 +577,7 @@ static void print_event_received(IRC_SERVER_REC *server, const char *data,
 
 	g_return_if_fail(data != NULL);
 
-        /* first param is our nick, "*" or a channel */
+	/* first param is our nick, "*" or a channel */
 	ptr = strchr(data, ' ');
 	if (ptr == NULL)
 		return;
@@ -588,13 +588,13 @@ static void print_event_received(IRC_SERVER_REC *server, const char *data,
 	else if (!target_param || *ptr == ':' || (ptr2 = strchr(ptr, ' ')) == NULL)
 		target = NULL;
 	else {
-                /* target parameter expected and present */
-                target = g_strndup(ptr, (int) (ptr2-ptr));
+		/* target parameter expected and present */
+		target = g_strndup(ptr, (int) (ptr2-ptr));
 	}
 
 	/* param1 param2 ... :last parameter */
 	if (*ptr == ':') {
-                /* only one parameter */
+		/* only one parameter */
 		args = g_strdup(ptr+1);
 	} else {
 		args = g_strdup(ptr);
@@ -618,13 +618,13 @@ static void print_event_received(IRC_SERVER_REC *server, const char *data,
 static void event_received(IRC_SERVER_REC *server, const char *data,
 			   const char *nick)
 {
-        print_event_received(server, data, nick, FALSE);
+	print_event_received(server, data, nick, FALSE);
 }
 
 static void event_target_received(IRC_SERVER_REC *server, const char *data,
 				  const char *nick)
 {
-        print_event_received(server, data, nick, TRUE);
+	print_event_received(server, data, nick, TRUE);
 }
 
 static void event_motd(IRC_SERVER_REC *server, const char *data,
@@ -635,7 +635,7 @@ static void event_motd(IRC_SERVER_REC *server, const char *data,
 	if (settings_get_bool("skip_motd") && !server->motd_got)
 		return;
 
-        print_event_received(server, data, nick, FALSE);
+	print_event_received(server, data, nick, FALSE);
 }
 
 static void sig_empty(void)
@@ -690,7 +690,7 @@ void fe_events_numeric_init(void)
 	signal_add("event 439", (SIGNAL_FUNC) event_target_too_fast);
 	signal_add("event 707", (SIGNAL_FUNC) event_target_too_fast);
 
-        signal_add("default event numeric", (SIGNAL_FUNC) event_numeric);
+	signal_add("default event numeric", (SIGNAL_FUNC) event_numeric);
 	/* Because default event numeric only fires if there is no specific
 	 * event, add all numerics with a handler elsewhere in irssi that
 	 * should not be printed specially here.
@@ -783,7 +783,7 @@ void fe_events_numeric_deinit(void)
 	signal_remove("event 439", (SIGNAL_FUNC) event_target_too_fast);
 	signal_remove("event 707", (SIGNAL_FUNC) event_target_too_fast);
 
-        signal_remove("default event numeric", (SIGNAL_FUNC) event_numeric);
+	signal_remove("default event numeric", (SIGNAL_FUNC) event_numeric);
 	signal_remove("event 001", (SIGNAL_FUNC) event_received);
 	signal_remove("event 004", (SIGNAL_FUNC) event_received);
 	signal_remove("event 005", (SIGNAL_FUNC) event_received);

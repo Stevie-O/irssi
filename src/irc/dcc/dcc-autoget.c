@@ -29,12 +29,12 @@
 
 static void sig_dcc_request(GET_DCC_REC *dcc, const char *nickaddr)
 {
-        struct stat statbuf;
+	struct stat statbuf;
 	const char *masks;
-        char *str, *file, *esc_arg;
-        int max_size;
+	char *str, *file, *esc_arg;
+	int max_size;
 
-        if (!IS_DCC_GET(dcc)) return;
+	if (!IS_DCC_GET(dcc)) return;
 
 	/* check if we want to autoget file offer */
 	if (!settings_get_bool("dcc_autoget"))
@@ -42,7 +42,7 @@ static void sig_dcc_request(GET_DCC_REC *dcc, const char *nickaddr)
 
 	/* check for lowports */
 	if (dcc->port < 1024 && !settings_get_bool("dcc_autoaccept_lowports"))
-                return;
+		return;
 
 	/* check that autoget masks match */
 	masks = settings_get_str("dcc_autoget_masks");
@@ -63,9 +63,9 @@ static void sig_dcc_request(GET_DCC_REC *dcc, const char *nickaddr)
 
 	/* check file size limit, NOTE: it's still possible to send a
 	   bogus file size and then just send what ever sized file.. */
-        max_size = settings_get_size("dcc_autoget_max_size");
+	max_size = settings_get_size("dcc_autoget_max_size");
 	if (max_size > 0 && (uoff_t)max_size < dcc->size)
-                return;
+		return;
 
 	/* ok. but do we want/need to resume? */
 	file = dcc_get_download_path(dcc->arg);
@@ -76,7 +76,7 @@ static void sig_dcc_request(GET_DCC_REC *dcc, const char *nickaddr)
 			      dcc->nick, esc_arg);
 	signal_emit("command dcc", 2, str, dcc->server);
 	g_free(esc_arg);
-        g_free(file);
+	g_free(file);
 	g_free(str);
 }
 

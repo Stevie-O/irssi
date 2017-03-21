@@ -41,7 +41,7 @@ typedef struct {
 
 typedef struct {
 	char *nick;
-        GSList *items;
+	GSList *items;
 } FLOOD_REC;
 
 static int flood_tag;
@@ -61,7 +61,7 @@ static int flood_hash_check_remove(const char *key, FLOOD_REC *flood,
 		next = tmp->next;
 		/* remove old time entries for current rec item */
 		for (times = rec->msgtimes; times != NULL; times = tnext) {
-                        time_t *data = times->data;
+			time_t *data = times->data;
 			tnext = times->next;
 
 			if (*now-*((time_t *) times->data) >= flood_timecheck) {
@@ -97,7 +97,7 @@ static int flood_timeout(void)
 		IRC_SERVER_REC *rec = tmp->data;
 
 		if (!IS_IRC_SERVER(rec))
-                        continue;
+			continue;
 
 		mserver = MODULE_DATA(rec);
 		g_hash_table_foreach_remove(mserver->floodlist,
@@ -115,7 +115,7 @@ static void flood_init_server(IRC_SERVER_REC *server)
 	g_return_if_fail(server != NULL);
 
 	if (!IS_IRC_SERVER(server))
-                return;
+		return;
 
 	rec = g_new0(MODULE_SERVER_REC, 1);
 	MODULE_DATA_SET(server, rec);
@@ -149,7 +149,7 @@ static void flood_deinit_server(IRC_SERVER_REC *server)
 	g_return_if_fail(server != NULL);
 
 	if (!IS_IRC_SERVER(server))
-                return;
+		return;
 
 	mserver = MODULE_DATA(server);
 	if (mserver != NULL && mserver->floodlist != NULL) {

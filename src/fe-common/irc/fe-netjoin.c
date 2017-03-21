@@ -50,7 +50,7 @@ typedef struct {
 
 typedef struct {
 	int count;
-        GString *nicks;
+	GString *nicks;
 } TEMP_PRINT_REC;
 
 static int join_tag;
@@ -68,7 +68,7 @@ static NETJOIN_SERVER_REC *netjoin_find_server(IRC_SERVER_REC *server)
 		NETJOIN_SERVER_REC *rec = tmp->data;
 
 		if (rec->server == server)
-                        return rec;
+			return rec;
 	}
 
 	return NULL;
@@ -97,7 +97,7 @@ static NETJOIN_REC *netjoin_add(IRC_SERVER_REC *server, const char *nick,
 	if (srec == NULL) {
 		srec = g_new0(NETJOIN_SERVER_REC, 1);
 		srec->server = server;
-                joinservers = g_slist_append(joinservers, srec);
+		joinservers = g_slist_append(joinservers, srec);
 	}
 
 	srec->last_netjoin = time(NULL);
@@ -114,7 +114,7 @@ static NETJOIN_REC *netjoin_find(IRC_SERVER_REC *server, const char *nick)
 	g_return_val_if_fail(nick != NULL, NULL);
 
 	srec = netjoin_find_server(server);
-        if (srec == NULL) return NULL;
+	if (srec == NULL) return NULL;
 
 	for (tmp = srec->netjoins; tmp != NULL; tmp = tmp->next) {
 		NETJOIN_REC *rec = tmp->data;
@@ -130,7 +130,7 @@ static void netjoin_remove(NETJOIN_SERVER_REC *server, NETJOIN_REC *rec)
 {
 	server->netjoins = g_slist_remove(server->netjoins, rec);
 
-        g_slist_foreach(rec->old_channels, (GFunc) g_free, NULL);
+	g_slist_foreach(rec->old_channels, (GFunc) g_free, NULL);
 	g_slist_foreach(rec->now_channels, (GFunc) g_free, NULL);
 	g_slist_free(rec->old_channels);
 	g_slist_free(rec->now_channels);
@@ -145,7 +145,7 @@ static void netjoin_server_remove(NETJOIN_SERVER_REC *server)
 
 	while (server->netjoins != NULL)
 		netjoin_remove(server, server->netjoins->data);
-        g_free(server);
+	g_free(server);
 }
 
 static void print_channel_netjoins(char *channel, TEMP_PRINT_REC *rec,
@@ -228,7 +228,7 @@ static void print_netjoins(NETJOIN_SERVER_REC *server, const char *filter_channe
 		}
 
 		if (rec->old_channels == NULL)
-                        netjoin_remove(server, rec);
+			netjoin_remove(server, rec);
 	}
 
 	g_hash_table_foreach(channels, (GHFunc) print_channel_netjoins,
@@ -284,7 +284,7 @@ static int sig_check_netjoins(void)
 			continue;
 		}
 
-                if (server->netjoins != NULL)
+		if (server->netjoins != NULL)
 			print_netjoins(server, NULL);
 	}
 
@@ -298,14 +298,14 @@ static int sig_check_netjoins(void)
 		diff = now-server->last_netjoin;
 		if (diff >= NETJOIN_MAX_WAIT) {
 			/* waited long enough, forget about the rest */
-                        netjoin_server_remove(server);
+			netjoin_server_remove(server);
 		}
 	}
 
 	if (joinservers == NULL) {
 		g_source_remove(join_tag);
 		signal_remove("print starting", (SIGNAL_FUNC) sig_print_starting);
-                join_tag = -1;
+		join_tag = -1;
 	}
 	return 1;
 }
@@ -335,7 +335,7 @@ static void msg_join(IRC_SERVER_REC *server, const char *channel,
 	split = netsplit_find(server, nick, address);
 	netjoin = netjoin_find(server, nick);
 	if (split == NULL && netjoin == NULL)
-                return;
+		return;
 
 	/* if this was not a channel they split from, treat it normally */
 	if (netjoin != NULL) {
@@ -431,13 +431,13 @@ static void msg_mode(IRC_SERVER_REC *server, const char *channel,
 		}
 
 		if (*nick != NULL && GET_MODE_PREFIX(server, *mode)) {
-                        /* give/remove ops */
+			/* give/remove ops */
 			rec = netjoin_find(server, *nick);
 			prefix = GET_MODE_PREFIX(server, *mode);
 			if (rec == NULL || type != '+' || prefix == '\0' ||
 			    !netjoin_set_nickmode(server, rec, channel, prefix))
 				show = TRUE;
-                        nick++;
+			nick++;
 		} else {
 			if (HAS_MODE_ARG(server, type, *mode) && *nick != NULL)
 				nick++;
@@ -455,7 +455,7 @@ static void read_settings(void)
 {
 	int old_hide;
 
-        old_hide = hide_netsplit_quits;
+	old_hide = hide_netsplit_quits;
 	hide_netsplit_quits = settings_get_bool("hide_netsplit_quits");
 	netjoin_max_nicks = settings_get_int("netjoin_max_nicks");
 

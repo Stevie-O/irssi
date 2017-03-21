@@ -50,7 +50,7 @@ static void dcc_request(GET_DCC_REC *dcc)
 
 static void dcc_connected(GET_DCC_REC *dcc)
 {
-        if (!IS_DCC_GET(dcc)) return;
+	if (!IS_DCC_GET(dcc)) return;
 
 	printformat(dcc->server, NULL, MSGLEVEL_DCC, IRCTXT_DCC_GET_CONNECTED,
 		    dcc->arg, dcc->nick, dcc->addrstr, dcc->port);
@@ -62,7 +62,7 @@ static void dcc_closed(GET_DCC_REC *dcc)
 	double kbs;
 	time_t secs;
 
-        if (!IS_DCC_GET(dcc)) return;
+	if (!IS_DCC_GET(dcc)) return;
 
 	secs = dcc->starttime == 0 ? -1 : time(NULL)-dcc->starttime;
 	kbs = (double) (dcc->transfd-dcc->skipped) /
@@ -134,7 +134,7 @@ void fe_dcc_get_init(void)
 	signal_add("dcc error get not found", (SIGNAL_FUNC) dcc_error_get_not_found);
 	signal_add("dcc error close not found", (SIGNAL_FUNC) dcc_error_close_not_found);
 	signal_add("dcc error write", (SIGNAL_FUNC) dcc_error_write);
-        signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_add("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 }
 
 void fe_dcc_get_deinit(void)
@@ -146,5 +146,5 @@ void fe_dcc_get_deinit(void)
 	signal_remove("dcc error get not found", (SIGNAL_FUNC) dcc_error_get_not_found);
 	signal_remove("dcc error close not found", (SIGNAL_FUNC) dcc_error_close_not_found);
 	signal_remove("dcc error write", (SIGNAL_FUNC) dcc_error_write);
-        signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
+	signal_remove("dcc list print", (SIGNAL_FUNC) sig_dcc_list_print);
 }

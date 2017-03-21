@@ -28,7 +28,7 @@
 #include "utf8.h"
 
 #define isvarchar(c) \
-        (i_isalnum(c) || (c) == '_')
+	(i_isalnum(c) || (c) == '_')
 
 #define isarg(c) \
 	(i_isdigit(c) || (c) == '*' || (c) == '~' || (c) == '-')
@@ -94,7 +94,7 @@ static char *get_long_variable_value(const char *key, SERVER_REC *server,
 	*free_ret = FALSE;
 
 	/* expando? */
-        func = expando_find_long(key);
+	func = expando_find_long(key);
 	if (func != NULL) {
 		current_expando = key;
 		return func(server, item, free_ret);
@@ -127,7 +127,7 @@ static char *get_long_variable(char **cmd, SERVER_REC *server,
 	var = g_strndup(start, (int) (*cmd-start)+1);
 	if (getname) {
 		*free_ret = TRUE;
-                return var;
+		return var;
 	}
 	ret = get_long_variable_value(var, server, item, free_ret);
 	g_free(var);
@@ -158,7 +158,7 @@ static char *get_variable(char **cmd, SERVER_REC *server, void *item,
 	/* single character variable. */
 	if (getname) {
 		*free_ret = TRUE;
-                return g_strdup_printf("%c", **cmd);
+		return g_strdup_printf("%c", **cmd);
 	}
 	*free_ret = FALSE;
 	func = expando_find_char(**cmd);
@@ -215,7 +215,7 @@ static char *get_special_value(char **cmd, SERVER_REC *server, void *item,
 
 	command = 0;
 	if (**cmd == '#' || **cmd == '@') {
-                command = **cmd;
+		command = **cmd;
 		if ((*cmd)[1] != '\0')
 			(*cmd)++;
 		else {
@@ -223,7 +223,7 @@ static char *get_special_value(char **cmd, SERVER_REC *server, void *item,
 			char *temp_cmd = "*";
 
 			if (flags & PARSE_FLAG_GETNAME)
-                                return "*";
+				return "*";
 
 			*free_ret = TRUE;
 			return get_argument(&temp_cmd, arglist);
@@ -251,7 +251,7 @@ static char *get_special_value(char **cmd, SERVER_REC *server, void *item,
 			if (*p == ' ' && (p[1] != ' ' && p[1] != '\0'))
 				len++;
 		}
-                if (*free_ret) g_free(value);
+		if (*free_ret) g_free(value);
 
 		*free_ret = TRUE;
 		return g_strdup_printf("%d", len);
@@ -262,7 +262,7 @@ static char *get_special_value(char **cmd, SERVER_REC *server, void *item,
 		if (value == NULL) return "0";
 
 		len = strlen(value);
-                if (*free_ret) g_free(value);
+		if (*free_ret) g_free(value);
 
 		*free_ret = TRUE;
 		return g_strdup_printf("%d", len);
@@ -278,7 +278,7 @@ static int get_alignment_args(char **data, int *align, int *flags, char *pad)
 
 	*align = 0;
 	*flags = ALIGN_CUT|ALIGN_PAD;
-        *pad = ' ';
+	*pad = ' ';
 
 	/* '!' = don't cut, '-' = right padding */
 	str = *data;
@@ -288,7 +288,7 @@ static int get_alignment_args(char **data, int *align, int *flags, char *pad)
 		else if (*str == '-')
 			*flags |= ALIGN_RIGHT;
 		else if (*str == '.')
-                         *flags &= ~ALIGN_PAD;
+			*flags &= ~ALIGN_PAD;
 		str++;
 	}
 	if (!i_isdigit(*str))
@@ -407,7 +407,7 @@ char *parse_special(char **cmd, SERVER_REC *server, void *item,
 		}
 		cmd = &nest_value;
 
-                if (toplevel) nested_orig_cmd = NULL;
+		if (toplevel) nested_orig_cmd = NULL;
 	}
 
 	if (**cmd != '{')
@@ -514,7 +514,7 @@ char *parse_special_string(const char *cmd, SERVER_REC *server, void *item,
 					    arglist, &need_free, arg_used,
 					    flags);
 			if (ret != NULL) {
-                                gstring_append_escaped(str, ret, flags);
+				gstring_append_escaped(str, ret, flags);
 				if (need_free) g_free(ret);
 			}
 			code = 0;
@@ -525,7 +525,7 @@ char *parse_special_string(const char *cmd, SERVER_REC *server, void *item,
 				g_string_append_c(str, *cmd);
 		}
 
-                cmd++;
+		cmd++;
 	}
 	g_strfreev(arglist);
 
@@ -556,7 +556,7 @@ void eval_special_string(const char *cmd, const char *data,
 	do {
 		if (is_split_char(str, start)) {
 			*str++ = '\0';
-                        while (*str == ' ') str++;
+			while (*str == ' ') str++;
 		} else if (*str != '\0') {
 			str++;
 			continue;
@@ -591,14 +591,14 @@ void eval_special_string(const char *cmd, const char *data,
 			g_free(old);
 		}
 
-                if (server != NULL)
+		if (server != NULL)
 			server_ref(server);
 		signal_emit("send command", 3, ret, server, item);
 
 		if (server != NULL && !server_unref(server)) {
-                        /* the server was destroyed */
+			/* the server was destroyed */
 			server = NULL;
-                        item = NULL;
+			item = NULL;
 		}
 
 		/* FIXME: window item would need reference counting as well,
@@ -618,7 +618,7 @@ void special_history_func_set(SPECIAL_HISTORY_FUNC func)
 static void update_signals_hash(GHashTable **hash, int *signals)
 {
 	void *signal_id;
-        int arg_type;
+	int arg_type;
 
 	if (*hash == NULL) {
 		*hash = g_hash_table_new((GHashFunc) g_direct_hash,
@@ -626,7 +626,7 @@ static void update_signals_hash(GHashTable **hash, int *signals)
 	}
 
 	while (*signals != -1) {
-                signal_id = GINT_TO_POINTER(*signals);
+		signal_id = GINT_TO_POINTER(*signals);
 		arg_type = GPOINTER_TO_INT(g_hash_table_lookup(*hash, signal_id));
 		if (arg_type != 0 && arg_type != signals[1]) {
 			/* same signal is used for different purposes ..
@@ -646,8 +646,8 @@ static void update_signals_hash(GHashTable **hash, int *signals)
 static void get_signal_hash(void *signal_id, void *arg_type, int **pos)
 {
 	(*pos)[0] = GPOINTER_TO_INT(signal_id);
-        (*pos)[1] = GPOINTER_TO_INT(arg_type);
-        (*pos) += 2;
+	(*pos)[1] = GPOINTER_TO_INT(arg_type);
+	(*pos) += 2;
 }
 
 static int *get_signals_list(GHashTable *hash)
@@ -659,12 +659,12 @@ static int *get_signals_list(GHashTable *hash)
 		return NULL;
 	}
 
-        pos = signals = g_new(int, g_hash_table_size(hash)*2 + 1);
+	pos = signals = g_new(int, g_hash_table_size(hash)*2 + 1);
 	g_hash_table_foreach(hash, (GHFunc) get_signal_hash, &pos);
-        *pos = -1;
+	*pos = -1;
 
 	g_hash_table_destroy(hash);
-        return signals;
+	return signals;
 
 }
 
@@ -675,17 +675,17 @@ static int *get_signals_list(GHashTable *hash)
 static int *special_vars_signals_task(const char *text, int funccount,
 				      SIGNAL_FUNC *funcs, int task)
 {
-        GHashTable *signals;
+	GHashTable *signals;
 	char *expando;
 	int need_free, *expando_signals;
 
-        signals = NULL;
+	signals = NULL;
 	while (*text != '\0') {
 		if (*text == '\\' && text[1] != '\0') {
-                        /* escape */
+			/* escape */
 			text += 2;
 		} else if (*text == '$' && text[1] != '\0') {
-                        /* expando */
+			/* expando */
 			text++;
 			expando = parse_special((char **) &text, NULL, NULL,
 						NULL, &need_free, NULL,
@@ -705,33 +705,33 @@ static int *special_vars_signals_task(const char *text, int funccount,
 				if (expando_signals != NULL) {
 					update_signals_hash(&signals,
 							    expando_signals);
-                                        g_free(expando_signals);
+					g_free(expando_signals);
 				}
 				break;
 			}
 			if (need_free) g_free(expando);
 		} else {
-                        /* just a char */
+			/* just a char */
 			text++;
 		}
 	}
 
 	if (task == TASK_GET_SIGNALS)
-                return get_signals_list(signals);
+		return get_signals_list(signals);
 
-        return NULL;
+	return NULL;
 }
 
 void special_vars_add_signals(const char *text,
 			      int funccount, SIGNAL_FUNC *funcs)
 {
-        special_vars_signals_task(text, funccount, funcs, TASK_BIND);
+	special_vars_signals_task(text, funccount, funcs, TASK_BIND);
 }
 
 void special_vars_remove_signals(const char *text,
 				 int funccount, SIGNAL_FUNC *funcs)
 {
-        special_vars_signals_task(text, funccount, funcs, TASK_UNBIND);
+	special_vars_signals_task(text, funccount, funcs, TASK_UNBIND);
 }
 
 int *special_vars_get_signals(const char *text)

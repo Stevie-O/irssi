@@ -5,15 +5,15 @@
 #define MAX_BUFFER_SIZE 1048576
 
 struct _NET_SENDBUF_REC {
-        GIOChannel *handle;
-        LINEBUF_REC *readbuffer; /* receive buffer */
+	GIOChannel *handle;
+	LINEBUF_REC *readbuffer; /* receive buffer */
 
-        int send_tag;
-        int bufsize;
-        int bufpos;
-        char *buffer; /* Buffer is NULL until it's actually needed. */
-        int def_bufsize;
-        unsigned int dead:1;
+	int send_tag;
+	int bufsize;
+	int bufpos;
+	char *buffer; /* Buffer is NULL until it's actually needed. */
+	int def_bufsize;
+	unsigned int dead:1;
 };
 
 /* Create new buffer - if `bufsize' is zero or less, DEFAULT_BUFFER_SIZE

@@ -66,7 +66,7 @@ static void event_join(IRC_SERVER_REC *server, const char *data,
 
 	/* add user to nicklist */
 	nickrec = irc_nicklist_insert(chanrec, nick, FALSE, FALSE, FALSE, TRUE, NULL);
-        nicklist_set_host(CHANNEL(chanrec), nickrec, address);
+	nicklist_set_host(CHANNEL(chanrec), nickrec, address);
 
 	if (chanrec->massjoins == 0) {
 		/* no nicks waiting in massjoin queue */
@@ -134,7 +134,7 @@ static void event_part(IRC_SERVER_REC *server, const char *data,
 static void event_quit(IRC_SERVER_REC *server, const char *data,
 		       const char *nick)
 {
-        IRC_CHANNEL_REC *channel;
+	IRC_CHANNEL_REC *channel;
 	NICK_REC *nickrec;
 	GSList *nicks, *tmp;
 
@@ -148,7 +148,7 @@ static void event_quit(IRC_SERVER_REC *server, const char *data,
 	/* Remove nick from all channels */
 	nicks = nicklist_get_same(SERVER(server), nick);
 	for (tmp = nicks; tmp != NULL; tmp = tmp->next->next) {
-                channel = tmp->data;
+		channel = tmp->data;
 		nickrec = tmp->next->data;
 
 		if (nickrec->send_massjoin) {
@@ -260,7 +260,7 @@ static int sig_massjoin_timeout(void)
 	for (tmp = servers; tmp != NULL; tmp = tmp->next) {
 		IRC_SERVER_REC *server = tmp->data;
 
-                if (IS_IRC_SERVER(server))
+		if (IS_IRC_SERVER(server))
 			server_check_massjoins(server, max);
 	}
 
@@ -274,8 +274,8 @@ static void read_settings(void)
 
 void massjoin_init(void)
 {
-        settings_add_int("misc", "massjoin_max_wait", 5000);
-        settings_add_int("misc", "massjoin_max_joins", 3);
+	settings_add_int("misc", "massjoin_max_wait", 5000);
+	settings_add_int("misc", "massjoin_max_joins", 3);
 	massjoin_tag = g_timeout_add(1000, (GSourceFunc) sig_massjoin_timeout, NULL);
 
 	read_settings();

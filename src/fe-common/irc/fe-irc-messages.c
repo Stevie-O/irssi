@@ -61,7 +61,7 @@ static void sig_message_own_public(SERVER_REC *server, const char *msg,
 				   TXT_OWN_MSG_CHANNEL,
 				   server->nick, oldtarget, msg, nickmode);
 		g_free(nickmode);
-                signal_stop();
+		signal_stop();
 	}
 
 }
@@ -98,7 +98,7 @@ static void sig_message_irc_op_public(SERVER_REC *server, const char *msg,
 static void sig_message_own_wall(SERVER_REC *server, const char *msg,
 				 const char *target)
 {
-        char *nickmode, *optarget;
+	char *nickmode, *optarget;
 
 	nickmode = channel_get_nickmode(channel_find(server, target),
 					server->nick);
@@ -111,15 +111,15 @@ static void sig_message_own_wall(SERVER_REC *server, const char *msg,
 			   TXT_OWN_MSG_CHANNEL,
 			   server->nick, optarget, msg, nickmode);
 	g_free(nickmode);
-        g_free(optarget);
+	g_free(optarget);
 }
 
 static void sig_message_own_action(IRC_SERVER_REC *server, const char *msg,
-                                   const char *target)
+				const char *target)
 {
 	void *item;
 	const char *oldtarget;
-        char *freemsg = NULL;
+	char *freemsg = NULL;
 
 	oldtarget = target;
 	target = fe_channel_skip_prefix(IRC_SERVER(server), target);
@@ -136,7 +136,7 @@ static void sig_message_own_action(IRC_SERVER_REC *server, const char *msg,
 		    (server_ischannel(SERVER(server), target) ? MSGLEVEL_PUBLIC : MSGLEVEL_MSGS),
 		    item != NULL && oldtarget == target ? IRCTXT_OWN_ACTION : IRCTXT_OWN_ACTION_TARGET,
 		    server->nick, msg, oldtarget);
-        g_free_not_null(freemsg);
+	g_free_not_null(freemsg);
 }
 
 static void sig_message_irc_action(IRC_SERVER_REC *server, const char *msg,
@@ -145,7 +145,7 @@ static void sig_message_irc_action(IRC_SERVER_REC *server, const char *msg,
 {
 	void *item;
 	const char *oldtarget;
-        char *freemsg = NULL;
+	char *freemsg = NULL;
 	int level;
 	int own = FALSE;
 
@@ -228,7 +228,7 @@ static void sig_message_irc_notice(SERVER_REC *server, const char *msg,
 			printformat(server, target, MSGLEVEL_SNOTES,
 				    IRCTXT_NOTICE_SERVER, nick, msg);
 		}
-                return;
+		return;
 	}
 
 	if (ignore_check(server, nick, address,
@@ -241,7 +241,7 @@ static void sig_message_irc_notice(SERVER_REC *server, const char *msg,
 			 msg, level | MSGLEVEL_NO_ACT))
 		level |= MSGLEVEL_NO_ACT;
 
-        if (server_ischannel(SERVER(server), target)) {
+	if (server_ischannel(SERVER(server), target)) {
 		/* notice in some channel */
 		printformat(server, target, level,
 			    IRCTXT_NOTICE_PUBLIC, nick, oldtarget, msg);
@@ -276,26 +276,26 @@ static void sig_message_irc_ctcp(IRC_SERVER_REC *server, const char *cmd,
 
 void fe_irc_messages_init(void)
 {
-        signal_add_last("message own_public", (SIGNAL_FUNC) sig_message_own_public);
-        signal_add_last("message irc op_public", (SIGNAL_FUNC) sig_message_irc_op_public);
-        signal_add_last("message irc own_wall", (SIGNAL_FUNC) sig_message_own_wall);
-        signal_add_last("message irc own_action", (SIGNAL_FUNC) sig_message_own_action);
-        signal_add_last("message irc action", (SIGNAL_FUNC) sig_message_irc_action);
-        signal_add_last("message irc own_notice", (SIGNAL_FUNC) sig_message_own_notice);
-        signal_add_last("message irc notice", (SIGNAL_FUNC) sig_message_irc_notice);
-        signal_add_last("message irc own_ctcp", (SIGNAL_FUNC) sig_message_own_ctcp);
-        signal_add_last("message irc ctcp", (SIGNAL_FUNC) sig_message_irc_ctcp);
+	signal_add_last("message own_public", (SIGNAL_FUNC) sig_message_own_public);
+	signal_add_last("message irc op_public", (SIGNAL_FUNC) sig_message_irc_op_public);
+	signal_add_last("message irc own_wall", (SIGNAL_FUNC) sig_message_own_wall);
+	signal_add_last("message irc own_action", (SIGNAL_FUNC) sig_message_own_action);
+	signal_add_last("message irc action", (SIGNAL_FUNC) sig_message_irc_action);
+	signal_add_last("message irc own_notice", (SIGNAL_FUNC) sig_message_own_notice);
+	signal_add_last("message irc notice", (SIGNAL_FUNC) sig_message_irc_notice);
+	signal_add_last("message irc own_ctcp", (SIGNAL_FUNC) sig_message_own_ctcp);
+	signal_add_last("message irc ctcp", (SIGNAL_FUNC) sig_message_irc_ctcp);
 }
 
 void fe_irc_messages_deinit(void)
 {
-        signal_remove("message own_public", (SIGNAL_FUNC) sig_message_own_public);
-        signal_remove("message irc op_public", (SIGNAL_FUNC) sig_message_irc_op_public);
-        signal_remove("message irc own_wall", (SIGNAL_FUNC) sig_message_own_wall);
-        signal_remove("message irc own_action", (SIGNAL_FUNC) sig_message_own_action);
-        signal_remove("message irc action", (SIGNAL_FUNC) sig_message_irc_action);
-        signal_remove("message irc own_notice", (SIGNAL_FUNC) sig_message_own_notice);
-        signal_remove("message irc notice", (SIGNAL_FUNC) sig_message_irc_notice);
-        signal_remove("message irc own_ctcp", (SIGNAL_FUNC) sig_message_own_ctcp);
-        signal_remove("message irc ctcp", (SIGNAL_FUNC) sig_message_irc_ctcp);
+	signal_remove("message own_public", (SIGNAL_FUNC) sig_message_own_public);
+	signal_remove("message irc op_public", (SIGNAL_FUNC) sig_message_irc_op_public);
+	signal_remove("message irc own_wall", (SIGNAL_FUNC) sig_message_own_wall);
+	signal_remove("message irc own_action", (SIGNAL_FUNC) sig_message_own_action);
+	signal_remove("message irc action", (SIGNAL_FUNC) sig_message_irc_action);
+	signal_remove("message irc own_notice", (SIGNAL_FUNC) sig_message_own_notice);
+	signal_remove("message irc notice", (SIGNAL_FUNC) sig_message_irc_notice);
+	signal_remove("message irc own_ctcp", (SIGNAL_FUNC) sig_message_own_ctcp);
+	signal_remove("message irc ctcp", (SIGNAL_FUNC) sig_message_irc_ctcp);
 }

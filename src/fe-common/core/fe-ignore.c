@@ -86,7 +86,7 @@ static void ignore_print(int index, IGNORE_REC *rec)
 			    levels != NULL ? levels : "", options->str);
 	}
 	g_string_free(options, TRUE);
-        g_free(key);
+	g_free(key);
 	g_free(levels);
 }
 
@@ -98,7 +98,7 @@ static void cmd_ignore_show(void)
 	if (ignores == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP,
 			    TXT_IGNORE_NO_IGNORES);
-                return;
+		return;
 	}
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_IGNORE_HEADER);
@@ -112,8 +112,8 @@ static void cmd_ignore_show(void)
 }
 
 /* SYNTAX: IGNORE [-regexp | -full] [-pattern <pattern>] [-except] [-replies]
-                  [-network <network>] [-channels <channel>] [-time <secs>] <mask> [<levels>]
-           IGNORE [-regexp | -full] [-pattern <pattern>] [-except] [-replies]
+		[-network <network>] [-channels <channel>] [-time <secs>] <mask> [<levels>]
+	IGNORE [-regexp | -full] [-pattern <pattern>] [-except] [-replies]
 	          [-network <network>] [-time <secs>] <channels> [<levels>] */
 /* NOTE: -network replaces the old -ircnet flag. */
 static void cmd_ignore(const char *data)
@@ -130,20 +130,20 @@ static void cmd_ignore(const char *data)
 		return;
 	}
 
-	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTIONS | 
+	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_OPTIONS |
 			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 			    "ignore", &optlist, &mask, &levels))
 		return;
 
 	patternarg = g_hash_table_lookup(optlist, "pattern");
-        chanarg = g_hash_table_lookup(optlist, "channels");
+	chanarg = g_hash_table_lookup(optlist, "channels");
 	servertag = g_hash_table_lookup(optlist, "network");
 	/* Allow -ircnet for backwards compatibility */
 	if (!servertag)
 		servertag = g_hash_table_lookup(optlist, "ircnet");
 
 	if (*mask == '\0') cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
-        if (*levels == '\0') levels = "ALL";
+	if (*levels == '\0') levels = "ALL";
 	level = level2bits(levels, NULL);
 
 	msecs = 0;
@@ -172,7 +172,7 @@ static void cmd_ignore(const char *data)
 			g_strcmp0(mask, "*") == 0 ? NULL : g_strdup(mask);
 		rec->channels = channels;
 	} else {
-                g_free_and_null(rec->pattern);
+		g_free_and_null(rec->pattern);
 		g_strfreev(channels);
 	}
 
@@ -192,7 +192,7 @@ static void cmd_ignore(const char *data)
 		g_strfreev(rec->channels);
 		g_free(rec);
 		cmd_params_free(free_arg);
-                return;
+		return;
 	}
 	rec->servertag = (servertag == NULL || *servertag == '\0') ?
 		NULL : g_strdup(servertag);
@@ -218,14 +218,14 @@ static void cmd_unignore(const char *data)
 {
 	IGNORE_REC *rec;
 	GSList *tmp;
-        char *mask, *mask_orig;
+	char *mask, *mask_orig;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1, &mask))
 		return;
 
 	if (*mask == '\0')
-                cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
+		cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
 
 	/* Save the mask string here since it might be modified in the code
 	 * below and we need it to print meaningful error messages. */
@@ -262,7 +262,7 @@ static void cmd_unignore(const char *data)
 
 static void sig_ignore_created(IGNORE_REC *rec)
 {
-        ignore_print(-1, rec);
+	ignore_print(-1, rec);
 }
 
 static void sig_ignore_destroyed(IGNORE_REC *rec)

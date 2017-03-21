@@ -29,7 +29,7 @@
 typedef struct {
 	int condition;
 	GInputFunction function;
-        void *data;
+	void *data;
 } IRSSI_INPUT_REC;
 
 static int irssi_io_invoke(GIOChannel *source, GIOCondition condition,
@@ -60,7 +60,7 @@ static int irssi_io_invoke(GIOChannel *source, GIOCondition condition,
 int g_input_add_full(GIOChannel *source, int priority, int condition,
 		     GInputFunction function, void *data)
 {
-        IRSSI_INPUT_REC *rec;
+	IRSSI_INPUT_REC *rec;
 	unsigned int result;
 	GIOCondition cond;
 
@@ -190,7 +190,7 @@ void *gslist_foreach_find(GSList *list, FOREACH_FIND_FUNC func, const void *data
 
 	while (list != NULL) {
 		ret = func(list->data, (void *) data);
-                if (ret != NULL) return ret;
+		if (ret != NULL) return ret;
 
 		list = list->next;
 	}
@@ -237,7 +237,7 @@ char *gslistptr_to_string(GSList *list, int offset, const char *delimiter)
 		list = list->next;
 	}
 
-        ret = str->str;
+	ret = str->str;
 	g_string_free(str, FALSE);
 	return ret;
 }
@@ -256,14 +256,14 @@ char *gslist_to_string(GSList *list, const char *delimiter)
 		list = list->next;
 	}
 
-        ret = str->str;
+	ret = str->str;
 	g_string_free(str, FALSE);
 	return ret;
 }
 
 void hash_save_key(char *key, void *value, GSList **list)
 {
-        *list = g_slist_append(*list, key);
+	*list = g_slist_append(*list, key);
 }
 
 /* remove all the options from the optlist hash table that are valid for the
@@ -319,13 +319,13 @@ char *stristr(const char *data, const char *key)
 	pos = 0;
 	while (data <= max) {
 		if (key[pos] == '\0')
-                        return (char *) data;
+			return (char *) data;
 
 		if (i_toupper(data[pos]) == i_toupper(key[pos]))
 			pos++;
 		else {
 			data++;
-                        pos = 0;
+			pos = 0;
 		}
 	}
 
@@ -356,7 +356,7 @@ static char *strstr_full_case(const char *data, const char *key, int icase)
 			if (data[pos] != '\0' && !isbound(data[pos])) {
 				data++;
 				pos = 0;
-                                continue;
+				continue;
 			}
 			return (char *) data;
 		}
@@ -368,7 +368,7 @@ static char *strstr_full_case(const char *data, const char *key, int icase)
 			pos++;
 		else {
 			data++;
-                        pos = 0;
+			pos = 0;
 		}
 	}
 
@@ -377,12 +377,12 @@ static char *strstr_full_case(const char *data, const char *key, int icase)
 
 char *strstr_full(const char *data, const char *key)
 {
-        return strstr_full_case(data, key, FALSE);
+	return strstr_full_case(data, key, FALSE);
 }
 
 char *stristr_full(const char *data, const char *key)
 {
-        return strstr_full_case(data, key, TRUE);
+	return strstr_full_case(data, key, TRUE);
 }
 
 /* convert ~/ to $HOME */
@@ -557,14 +557,14 @@ char *my_asctime(time_t t)
 {
 	struct tm *tm;
 	char *str;
-        int len;
+	int len;
 
 	tm = localtime(&t);
 	str = g_strdup(asctime(tm));
 
 	len = strlen(str);
 	if (len > 0) str[len-1] = '\0';
-        return str;
+	return str;
 }
 
 /* Returns number of columns needed to print items.
@@ -574,7 +574,7 @@ int get_max_column_count(GSList *items, COLUMN_LEN_FUNC len_func,
 			 int item_extra, int item_min_size,
 			 int **save_column_widths, int *rows)
 {
-        GSList *tmp;
+	GSList *tmp;
 	int **columns, *columns_width, *columns_rows;
 	int item_pos, items_count;
 	int ret, len, max_len, n, col;
@@ -582,14 +582,14 @@ int get_max_column_count(GSList *items, COLUMN_LEN_FUNC len_func,
 	items_count = g_slist_length(items);
 	if (items_count == 0) {
 		*save_column_widths = NULL;
-                *rows = 0;
+		*rows = 0;
 		return 0;
 	}
 
 	len = max_width/(item_extra+item_min_size);
-        if (len <= 0) len = 1;
+	if (len <= 0) len = 1;
 	if (max_columns <= 0 || len < max_columns)
-                max_columns = len;
+		max_columns = len;
 
 	columns = g_new0(int *, max_columns);
 	columns_width = g_new0(int, max_columns);
@@ -598,12 +598,12 @@ int get_max_column_count(GSList *items, COLUMN_LEN_FUNC len_func,
 	for (n = 1; n < max_columns; n++) {
 		columns[n] = g_new0(int, n+1);
 		columns_rows[n] = items_count <= n+1 ? 1 :
-                        (items_count+n)/(n+1);
+			(items_count+n)/(n+1);
 	}
 
 	/* for each possible column count, save the column widths and
 	   find the biggest column count that fits to screen. */
-        item_pos = 0; max_len = 0;
+	item_pos = 0; max_len = 0;
 	for (tmp = items; tmp != NULL; tmp = tmp->next) {
 		len = item_extra+len_func(tmp->data);
 		if (max_len < len)
@@ -616,55 +616,55 @@ int get_max_column_count(GSList *items, COLUMN_LEN_FUNC len_func,
 			col = item_pos/columns_rows[n];
 			if (columns[n][col] < len) {
 				columns_width[n] += len-columns[n][col];
-                                columns[n][col] = len;
+				columns[n][col] = len;
 			}
 		}
 
-                item_pos++;
+		item_pos++;
 	}
 
 	for (n = max_columns-1; n >= 1; n--) {
 		if (columns_width[n] <= max_width &&
 		    columns[n][n] > 0)
-                        break;
+			break;
 	}
-        ret = n+1;
+	ret = n+1;
 
 	*save_column_widths = g_new(int, ret);
 	if (ret == 1) {
-                **save_column_widths = max_len;
-                *rows = 1;
+		**save_column_widths = max_len;
+		*rows = 1;
 	} else {
 		memcpy(*save_column_widths, columns[ret-1], sizeof(int)*ret);
 		*rows = columns_rows[ret-1];
 	}
 
 	for (n = 1; n < max_columns; n++)
-                g_free(columns[n]);
+		g_free(columns[n]);
 	g_free(columns_width);
 	g_free(columns_rows);
 	g_free(columns);
 
-        return ret;
+	return ret;
 }
 
 /* Return a column sorted copy of a list. */
 GSList *columns_sort_list(GSList *list, int rows)
 {
-        GSList *tmp, *sorted;
+	GSList *tmp, *sorted;
 	int row, skip;
 
 	if (list == NULL || rows == 0)
-                return list;
+		return list;
 
 	sorted = NULL;
 
 	for (row = 0; row < rows; row++) {
-                tmp = g_slist_nth(list, row);
-                skip = 1;
+		tmp = g_slist_nth(list, row);
+		skip = 1;
 		for (; tmp != NULL; tmp = tmp->next) {
 			if (--skip == 0) {
-                                skip = rows;
+				skip = rows;
 				sorted = g_slist_append(sorted, tmp->data);
 			}
 		}
@@ -672,14 +672,14 @@ GSList *columns_sort_list(GSList *list, int rows)
 
 	g_return_val_if_fail(g_slist_length(sorted) ==
 			     g_slist_length(list), sorted);
-        return sorted;
+	return sorted;
 }
 
 /* Expand escape string, the first character in data should be the
    one after '\'. Returns the expanded character or -1 if error. */
 int expand_escape(const char **data)
 {
-        char digit[4];
+	char digit[4];
 
 	switch (**data) {
 	case 't':
@@ -694,24 +694,24 @@ int expand_escape(const char **data)
 		return '\\';
 
 	case 'x':
-                /* hex digit */
+		/* hex digit */
 		if (!i_isxdigit((*data)[1]) || !i_isxdigit((*data)[2]))
 			return -1;
 
 		digit[0] = (*data)[1];
 		digit[1] = (*data)[2];
-                digit[2] = '\0';
+		digit[2] = '\0';
 		*data += 2;
 		return strtol(digit, NULL, 16);
 	case 'c':
-                /* control character (\cA = ^A) */
-                (*data)++;
+		/* control character (\cA = ^A) */
+		(*data)++;
 		return i_toupper(**data) - 64;
 	case '0': case '1': case '2': case '3':
 	case '4': case '5': case '6': case '7':
-                /* octal */
+		/* octal */
 		digit[1] = digit[2] = digit[3] = '\0';
-                digit[0] = (*data)[0];
+		digit[0] = (*data)[0];
 		if ((*data)[1] >= '0' && (*data)[1] <= '7') {
 			++*data;
 			digit[1] = **data;

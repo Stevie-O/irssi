@@ -52,16 +52,16 @@ const char *get_visible_target(IRC_SERVER_REC *server, const char *target)
 }
 
 /* SYNTAX: SERVER ADD|MODIFY [-4 | -6] [-ssl] [-ssl_cert <cert>] [-ssl_pkey <pkey>] [-ssl_pass <password>]
-                             [-ssl_verify] [-ssl_cafile <cafile>] [-ssl_capath <capath>]
-                             [-ssl_ciphers <list>]
-                             [-auto | -noauto] [-network <network>] [-host <hostname>]
-                             [-cmdspeed <ms>] [-cmdmax <count>] [-port <port>]
-                             <address> [<port> [<password>]] */
+			[-ssl_verify] [-ssl_cafile <cafile>] [-ssl_capath <capath>]
+			[-ssl_ciphers <list>]
+			[-auto | -noauto] [-network <network>] [-host <hostname>]
+			[-cmdspeed <ms>] [-cmdmax <count>] [-port <port>]
+			<address> [<port> [<password>]] */
 /* NOTE: -network replaces the old -ircnet flag. */
 static void sig_server_add_fill(IRC_SERVER_SETUP_REC *rec,
 				GHashTable *optlist)
 {
-        IRC_CHATNET_REC *ircnet;
+	IRC_CHATNET_REC *ircnet;
 	char *value;
 
 	value = g_hash_table_lookup(optlist, "network");
@@ -99,7 +99,7 @@ static void cmd_server_list(const char *data)
 		IRC_SERVER_SETUP_REC *rec = tmp->data;
 
 		if (!IS_IRC_SERVER_SETUP(rec))
-                        continue;
+			continue;
 
 		g_string_truncate(str, 0);
 		if (rec->password != NULL)

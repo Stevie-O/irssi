@@ -20,7 +20,7 @@ CODE:
 	perl_api_version_check("Irssi");
 	initialized = TRUE;
 
-        perl_settings_init();
+	perl_settings_init();
 	perl_expando_init();
 
 void
@@ -28,11 +28,11 @@ deinit()
 CODE:
 	if (!initialized) return;
 	perl_expando_deinit();
-        perl_settings_deinit();
+	perl_settings_deinit();
 	initialized = FALSE;
 
 BOOT:
-        irssi_boot(Channel);
+	irssi_boot(Channel);
 	irssi_boot(Core);
 	irssi_boot(Expando);
 	irssi_boot(Ignore);

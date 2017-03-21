@@ -39,16 +39,16 @@ typedef struct _LINE_REC {
 	   (see LINE_CMD_xxxx). Otherwise they specify a color change:
 
 	   Bit:
-            5 - Setting a background color
-            4 - Use "default terminal color"
-            0-3 - Color
+	5 - Setting a background color
+	4 - Use "default terminal color"
+	0-3 - Color
 
 	   DO NOT ADD BLACK WITH \0\0 - this will break things. Use
 	   LINE_CMD_COLOR0 instead. */
 	struct _LINE_REC *prev, *next;
 
 	unsigned char *text;
-        LINE_INFO_REC info;
+	LINE_INFO_REC info;
 } LINE_REC;
 
 typedef struct {
@@ -59,8 +59,8 @@ typedef struct {
 
 typedef struct {
 	GSList *text_chunks;
-        LINE_REC *first_line;
-        int lines_count;
+	LINE_REC *first_line;
+	int lines_count;
 
 	LINE_REC *cur_line;
 	TEXT_CHUNK_REC *cur_text;

@@ -47,29 +47,29 @@ void lag_deinit(void);
 
 static CHATNET_REC *create_chatnet(void)
 {
-        return g_malloc0(sizeof(IRC_CHATNET_REC));
+	return g_malloc0(sizeof(IRC_CHATNET_REC));
 }
 
 static SERVER_SETUP_REC *create_server_setup(void)
 {
-        return g_malloc0(sizeof(IRC_SERVER_SETUP_REC));
+	return g_malloc0(sizeof(IRC_SERVER_SETUP_REC));
 }
 
 static CHANNEL_SETUP_REC *create_channel_setup(void)
 {
-        return g_malloc0(sizeof(CHANNEL_SETUP_REC));
+	return g_malloc0(sizeof(CHANNEL_SETUP_REC));
 }
 
 static SERVER_CONNECT_REC *create_server_connect(void)
 {
-        return g_malloc0(sizeof(IRC_SERVER_CONNECT_REC));
+	return g_malloc0(sizeof(IRC_SERVER_CONNECT_REC));
 }
 
 static void destroy_server_connect(SERVER_CONNECT_REC *conn)
 {
 	IRC_SERVER_CONNECT_REC *ircconn;
 
-        ircconn = IRC_SERVER_CONNECT(conn);
+	ircconn = IRC_SERVER_CONNECT(conn);
 	if (ircconn == NULL)
 		return;
 
@@ -86,11 +86,11 @@ void irc_core_init(void)
 	rec->fullname = "Internet Relay Chat";
 	rec->chatnet = "ircnet";
 
-        rec->case_insensitive = TRUE;
+	rec->case_insensitive = TRUE;
 
 	rec->create_chatnet = create_chatnet;
-        rec->create_server_setup = create_server_setup;
-        rec->create_channel_setup = create_channel_setup;
+	rec->create_server_setup = create_server_setup;
+	rec->create_channel_setup = create_channel_setup;
 	rec->create_server_connect = create_server_connect;
 	rec->destroy_server_connect = destroy_server_connect;
 
@@ -99,15 +99,15 @@ void irc_core_init(void)
 	rec->channel_create =
 		(CHANNEL_REC *(*) (SERVER_REC *, const char *,
 				   const char *, int))
-                irc_channel_create;
+		irc_channel_create;
 	rec->query_create =
 		(QUERY_REC *(*) (const char *, const char *, int))
-                irc_query_create;
+		irc_query_create;
 
 	chat_protocol_register(rec);
-        g_free(rec);
+	g_free(rec);
 
-        irc_session_init();
+	irc_session_init();
 	irc_chatnets_init();
 	irc_servers_init();
 	irc_channels_init();

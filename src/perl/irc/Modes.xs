@@ -9,7 +9,7 @@ modes_join(server, old, mode, channel)
 	Irssi::Irc::Server server
 	char *old
 	char *mode
-        int channel
+	int channel
 PREINIT:
 	char *ret;
 PPCODE:

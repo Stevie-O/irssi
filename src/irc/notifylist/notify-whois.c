@@ -32,7 +32,7 @@ static char *last_notify_nick;
 
 static void event_whois(IRC_SERVER_REC *server, const char *data)
 {
-        char *params, *nick, *user, *host, *realname;
+	char *params, *nick, *user, *host, *realname;
 	NOTIFY_NICK_REC *nickrec;
 	NOTIFYLIST_REC *notify;
 
@@ -50,7 +50,7 @@ static void event_whois(IRC_SERVER_REC *server, const char *data)
 
 	nickrec = notify_nick_find(server, nick);
 	if (nickrec != NULL) {
-                g_free_not_null(last_notify_nick);
+		g_free_not_null(last_notify_nick);
 		last_notify_nick = g_strdup(nick);
 
 		g_free_not_null(nickrec->user);
@@ -79,7 +79,7 @@ static void event_whois_away(IRC_SERVER_REC *server, const char *data)
 	nickrec = notify_nick_find(server, nick);
 	if (nickrec != NULL) {
 		nickrec->awaymsg = g_strdup(awaymsg);
-                nickrec->away = TRUE;
+		nickrec->away = TRUE;
 	}
 
 	g_free(params);
@@ -121,7 +121,7 @@ static void event_whois_end(IRC_SERVER_REC *server, const char *data)
 				    rec->realname != NULL ? rec->realname : "??",
 				    rec->awaymsg);
 		}
-                rec->away_ok = away_ok;
+		rec->away_ok = away_ok;
 	}
 }
 

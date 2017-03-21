@@ -25,7 +25,7 @@ typedef struct SBAR_ITEM_REC SBAR_ITEM_REC;
 
 typedef struct {
 	char *name;
-        GSList *config_bars;
+	GSList *config_bars;
 	GSList *bars;
 } STATUSBAR_GROUP_REC;
 
@@ -45,13 +45,13 @@ typedef struct {
 	STATUSBAR_CONFIG_REC *config;
 
 	MAIN_WINDOW_REC *parent_window; /* if config->type == STATUSBAR_TYPE_WINDOW */
-        GSList *items;
+	GSList *items;
 
 	char *color; /* background color */
 	int real_ypos; /* real Y-position in screen at the moment */
 
 	unsigned int dirty:1;
-        int dirty_xpos; /* -1 = only redraw some items, >= 0 = redraw all items after from xpos */
+	int dirty_xpos; /* -1 = only redraw some items, >= 0 = redraw all items after from xpos */
 } STATUSBAR_REC;
 
 typedef struct {
@@ -65,7 +65,7 @@ typedef struct {
 struct SBAR_ITEM_REC {
 	STATUSBAR_REC *bar;
 	SBAR_ITEM_CONFIG_REC *config;
-        STATUSBAR_FUNC func;
+	STATUSBAR_FUNC func;
 
 	/* what item wants */
 	int min_size, max_size;
@@ -73,7 +73,7 @@ struct SBAR_ITEM_REC {
 	/* what item gets */
 	int xpos, size;
 
-        int current_size; /* item size currently in screen */
+	int current_size; /* item size currently in screen */
 	unsigned int dirty:1;
 };
 
@@ -85,8 +85,8 @@ void statusbar_group_destroy(STATUSBAR_GROUP_REC *rec);
 STATUSBAR_GROUP_REC *statusbar_group_find(const char *name);
 
 STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
-                                STATUSBAR_CONFIG_REC *config,
-                                MAIN_WINDOW_REC *parent_window);
+				STATUSBAR_CONFIG_REC *config,
+				MAIN_WINDOW_REC *parent_window);
 void statusbar_destroy(STATUSBAR_REC *bar);
 STATUSBAR_REC *statusbar_find(STATUSBAR_GROUP_REC *group, const char *name,
 			      MAIN_WINDOW_REC *window);

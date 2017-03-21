@@ -10,7 +10,7 @@ static void printformat_perl(TEXT_DEST_REC *dest, char *format, char **arglist)
 	formatnum = format_find_tag(module, format);
 	if (formatnum < 0) {
 		die("printformat(): unregistered format '%s'", format);
-                g_free(module);
+		g_free(module);
 		return;
 	}
 
@@ -90,22 +90,22 @@ PREINIT:
 	int len, n, fpos;
 CODE:
 
-        if (!SvROK(formats))
-        	croak("formats is not a reference");
+	if (!SvROK(formats))
+		croak("formats is not a reference");
 
 	av = (AV *) SvRV(formats);
 	if (SvTYPE(av) != SVt_PVAV)
-        	croak("formats is not a reference to a list");
+		croak("formats is not a reference to a list");
 
 	len = av_len(av)+1;
 	if (len == 0 || (len & 1) != 0)
-        	croak("formats list is invalid - not divisible by 2 (%d)", len);
+		croak("formats list is invalid - not divisible by 2 (%d)", len);
 
 	formatrecs = g_new0(FORMAT_REC, len/2+2);
 	formatrecs[0].tag = g_strdup(perl_get_package());
 	formatrecs[0].def = g_strdup("Perl script");
 
-        for (fpos = 1, n = 0; n < len; n++, fpos++) {
+	for (fpos = 1, n = 0; n < len; n++, fpos++) {
 		key = SvPV_nolen(*av_fetch(av, n, 0)); n++;
 		value = SvPV_nolen(*av_fetch(av, n, 0));
 
@@ -131,7 +131,7 @@ CODE:
 		arglist[n-2] = SvPV_nolen(ST(n));
 	}
 
-        printformat_perl(&dest, format, arglist);
+	printformat_perl(&dest, format, arglist);
 
 void
 abstracts_register(abstracts)
@@ -141,14 +141,14 @@ PREINIT:
 	char *key, *value;
 	int i, len;
 CODE:
-        if (!SvROK(abstracts))
-        	croak("abstracts is not a reference to list");
+	if (!SvROK(abstracts))
+		croak("abstracts is not a reference to list");
 	av = (AV *) SvRV(abstracts);
 	len = av_len(av)+1;
 	if (len == 0 || (len & 1) != 0)
-        	croak("abstracts list is invalid - not divisible by 2 (%d)", len);
+		croak("abstracts list is invalid - not divisible by 2 (%d)", len);
 
-        for (i = 0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		key = SvPV_nolen(*av_fetch(av, i, 0)); i++;
 		value = SvPV_nolen(*av_fetch(av, i, 0));
 
@@ -180,7 +180,7 @@ CODE:
 		arglist[n-4] = SvPV_nolen(ST(n));
 	}
 
-        printformat_perl(&dest, format, arglist);
+	printformat_perl(&dest, format, arglist);
 
 #*******************************
 MODULE = Irssi::UI::Themes  PACKAGE = Irssi::UI::Window
@@ -202,7 +202,7 @@ CODE:
 		arglist[n-3] = SvPV_nolen(ST(n));
 	}
 
-        printformat_perl(&dest, format, arglist);
+	printformat_perl(&dest, format, arglist);
 
 #*******************************
 MODULE = Irssi::UI::Themes  PACKAGE = Irssi::Windowitem
@@ -224,7 +224,7 @@ CODE:
 		arglist[n-3] = SvPV_nolen(ST(n));
 	}
 
-        printformat_perl(&dest, format, arglist);
+	printformat_perl(&dest, format, arglist);
 
 #*******************************
 MODULE = Irssi::UI::Themes  PACKAGE = Irssi::UI::Theme  PREFIX = theme_
@@ -234,7 +234,7 @@ void
 theme_format_expand(theme, format, flags=0)
 	Irssi::UI::Theme theme
 	char *format
-        int flags
+	int flags
 PREINIT:
 	char *ret;
 PPCODE:

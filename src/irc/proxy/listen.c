@@ -121,7 +121,7 @@ static void remove_client(CLIENT_REC *rec)
 }
 
 static void proxy_redirect_event(CLIENT_REC *client, const char *command,
-                                 int count, const char *arg, int remote)
+				int count, const char *arg, int remote)
 {
 	char *str;
 
@@ -164,7 +164,7 @@ static void grab_who(CLIENT_REC *client, const char *channel)
 }
 
 static void handle_client_connect_cmd(CLIENT_REC *client,
-                                      const char *cmd, const char *args)
+				const char *cmd, const char *args)
 {
 	const char *password;
 
@@ -231,7 +231,7 @@ static void handle_client_connect_cmd(CLIENT_REC *client,
 }
 
 static void handle_client_cmd(CLIENT_REC *client, char *cmd, char *args,
-                              const char *data)
+			const char *data)
 {
 	GSList *tmp;
 	if (!client->connected) {
@@ -492,10 +492,10 @@ static void sig_server_event(IRC_SERVER_REC *server, const char *line,
 			     const char *nick, const char *address)
 {
 	GSList *tmp;
-        void *client;
-        const char *signal;
+	void *client;
+	const char *signal;
 	char *event, *args;
-        int redirected;
+	int redirected;
 
 	g_return_if_fail(line != NULL);
 	if (!IS_IRC_SERVER(server))
@@ -518,18 +518,18 @@ static void sig_server_event(IRC_SERVER_REC *server, const char *line,
 	}
 
 	if (signal != NULL) {
-                server_redirect_get_signal(server, nick, event, args);
+		server_redirect_get_signal(server, nick, event, args);
 		if (sscanf(signal+6, "%p", &client) == 1) {
 			/* send it to specific client only */
 			if (g_slist_find(proxy_clients, client) != NULL)
 				net_sendbuffer_send(((CLIENT_REC *) client)->handle, next_line->str, next_line->len);
 			g_free(event);
-                        signal_stop();
+			signal_stop();
 			return;
 		}
 	}
 
-        if (g_strcmp0(event, "event privmsg") == 0 &&
+	if (g_strcmp0(event, "event privmsg") == 0 &&
 	    strstr(args, " :\001") != NULL &&
 	    strstr(args, " :\001ACTION") == NULL) {
 		/* CTCP - either answer ourself or forward it to one client */
@@ -537,8 +537,8 @@ static void sig_server_event(IRC_SERVER_REC *server, const char *line,
 	        	CLIENT_REC *rec = tmp->data;
 
 			if (rec->want_ctcp == 1) {
-                        	/* only CTCP for the chatnet where client is connected to will be forwarded */
-                        	if (strstr(rec->proxy_address, server->connrec->chatnet) != NULL) {
+				/* only CTCP for the chatnet where client is connected to will be forwarded */
+				if (strstr(rec->proxy_address, server->connrec->chatnet) != NULL) {
 					net_sendbuffer_send(rec->handle,
 							    next_line->str, next_line->len);
 					signal_stop();
@@ -558,7 +558,7 @@ static void sig_server_event(IRC_SERVER_REC *server, const char *line,
 	}
 
 	/* send the data to clients.. */
-        proxy_outdata_all(server, "%s", next_line->str);
+	proxy_outdata_all(server, "%s", next_line->str);
 
 	g_free(event);
 }
@@ -588,7 +588,7 @@ static void event_connected(IRC_SERVER_REC *server)
 }
 
 static void proxy_server_disconnected(CLIENT_REC *client,
-                                      IRC_SERVER_REC *server)
+				IRC_SERVER_REC *server)
 {
 	GSList *tmp;
 
@@ -615,7 +615,7 @@ static void sig_server_disconnected(IRC_SERVER_REC *server)
 		CLIENT_REC *rec = tmp->data;
 
 		if (rec->connected && rec->server == server) {
-                        proxy_server_disconnected(rec, server);
+			proxy_server_disconnected(rec, server);
 			rec->server = NULL;
 		}
 	}
@@ -644,7 +644,7 @@ static void event_nick(IRC_SERVER_REC *server, const char *data,
 }
 
 static void sig_message_own_public(IRC_SERVER_REC *server, const char *msg,
-                                   const char *target)
+				const char *target)
 {
 	if (!IS_IRC_SERVER(server))
 		return;
@@ -654,7 +654,7 @@ static void sig_message_own_public(IRC_SERVER_REC *server, const char *msg,
 }
 
 static void sig_message_own_private(IRC_SERVER_REC *server, const char *msg,
-                                   const char *target, const char *origtarget)
+				const char *target, const char *origtarget)
 {
 	if (!IS_IRC_SERVER(server))
 		return;
@@ -664,7 +664,7 @@ static void sig_message_own_private(IRC_SERVER_REC *server, const char *msg,
 }
 
 static void sig_message_own_action(IRC_SERVER_REC *server, const char *msg,
-                                   const char *target)
+				const char *target)
 {
 	if (!IS_IRC_SERVER(server))
 		return;

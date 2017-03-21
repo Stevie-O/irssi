@@ -48,7 +48,7 @@ void session_set_binary(const char *path)
 void session_upgrade(void)
 {
 	if (session_args == NULL)
-                return;
+		return;
 
 	execv(session_args[0], session_args);
 	fprintf(stderr, "exec failed: %s: %s\n",
@@ -69,13 +69,13 @@ static void cmd_upgrade(const char *data)
 		cmd_return_error(CMDERR_PROGRAM_NOT_FOUND);
 
 	/* save the session */
-        session_file = g_strdup_printf("%s/session", get_irssi_dir());
+	session_file = g_strdup_printf("%s/session", get_irssi_dir());
 	session = config_open(session_file, 0600);
-        unlink(session_file);
+	unlink(session_file);
 
 	signal_emit("session save", 1, session);
-        config_write(session, NULL, -1);
-        config_close(session);
+	config_write(session, NULL, -1);
+	config_close(session);
 
 	/* data may contain some other program as well, like
 	   /UPGRADE /usr/bin/screen irssi */
@@ -83,8 +83,8 @@ static void cmd_upgrade(const char *data)
 			      binary, session_file, get_irssi_dir(), get_irssi_config());
 	g_free(binary);
 	g_free(session_file);
-        session_args = g_strsplit(str, " ", -1);
-        g_free(str);
+	session_args = g_strsplit(str, " ", -1);
+	g_free(str);
 
 	signal_emit("gui exit", 0);
 }
@@ -110,10 +110,10 @@ static void session_save_channel_nicks(CHANNEL_REC *channel, CONFIG_REC *config,
 	GSList *tmp, *nicks;
 
 	node = config_node_section(config, node, "nicks", NODE_TYPE_LIST);
-        nicks = nicklist_getnicks(channel);
+	nicks = nicklist_getnicks(channel);
 	for (tmp = nicks; tmp != NULL; tmp = tmp->next)
 		session_save_nick(channel, tmp->data, config, node);
-        g_slist_free(nicks);
+	g_slist_free(nicks);
 }
 
 static void session_save_channel(CHANNEL_REC *channel, CONFIG_REC *config,
@@ -179,8 +179,8 @@ static void session_save_server(SERVER_REC *server, CONFIG_REC *config,
 	server->handle = NULL;
 
 	server->connection_lost = TRUE;
-        server->no_reconnect = TRUE;
-        server_disconnect(server);
+	server->no_reconnect = TRUE;
+	server_disconnect(server);
 }
 
 static void session_restore_channel_nicks(CHANNEL_REC *channel,
@@ -201,7 +201,7 @@ static void session_restore_channel_nicks(CHANNEL_REC *channel,
 
 static void session_restore_channel(SERVER_REC *server, CONFIG_NODE *node)
 {
-        CHANNEL_REC *channel;
+	CHANNEL_REC *channel;
 	const char *name, *visible_name;
 
 	name = config_node_get_str(node, "name", NULL);
@@ -213,8 +213,8 @@ static void session_restore_channel(SERVER_REC *server, CONFIG_NODE *node)
 	channel->topic = g_strdup(config_node_get_str(node, "topic", NULL));
 	channel->topic_by = g_strdup(config_node_get_str(node, "topic_by", NULL));
 	channel->topic_time = config_node_get_int(node, "topic_time", 0);
-        channel->key = g_strdup(config_node_get_str(node, "key", NULL));
-        channel->session_rejoin = TRUE;
+	channel->key = g_strdup(config_node_get_str(node, "key", NULL));
+	channel->session_rejoin = TRUE;
 
 	signal_emit("session restore channel", 2, channel, node);
 }
@@ -239,9 +239,9 @@ static void session_restore_server(CONFIG_NODE *node)
 	SERVER_CONNECT_REC *conn;
 	SERVER_REC *server;
 	const char *chat_type, *address, *chatnet, *password, *nick;
-        int port, handle;
+	int port, handle;
 
-        chat_type = config_node_get_str(node, "chat_type", NULL);
+	chat_type = config_node_get_str(node, "chat_type", NULL);
 	address = config_node_get_str(node, "address", NULL);
 	port = config_node_get_int(node, "port", 0);
 	chatnet = config_node_get_str(node, "chatnet", NULL);
@@ -277,28 +277,28 @@ static void sig_session_save(CONFIG_REC *config)
 {
 	CONFIG_NODE *node;
 	GSList *tmp;
-        GString *str;
+	GString *str;
 
-        /* save servers */
+	/* save servers */
 	node = config_node_traverse(config, "(servers", TRUE);
 	while (servers != NULL)
 		session_save_server(servers->data, config, node);
 
 	/* save pids */
-        str = g_string_new(NULL);
+	str = g_string_new(NULL);
 	for (tmp = pidwait_get_pids(); tmp != NULL; tmp = tmp->next)
-                g_string_append_printf(str, "%d ", GPOINTER_TO_INT(tmp->data));
-        config_node_set_str(config, config->mainnode, "pids", str->str);
-        g_string_free(str, TRUE);
+		g_string_append_printf(str, "%d ", GPOINTER_TO_INT(tmp->data));
+	config_node_set_str(config, config->mainnode, "pids", str->str);
+	g_string_free(str, TRUE);
 }
 
 static void sig_session_restore(CONFIG_REC *config)
 {
 	CONFIG_NODE *node;
-        GSList *tmp;
-        char **pids, **pid;
+	GSList *tmp;
+	char **pids, **pid;
 
-        /* restore servers */
+	/* restore servers */
 	node = config_node_traverse(config, "(servers", FALSE);
 	if (node != NULL) {
 		tmp = config_node_first(node->value);
@@ -309,8 +309,8 @@ static void sig_session_restore(CONFIG_REC *config)
 	/* restore pids (so we don't leave zombies) */
 	pids = g_strsplit(config_node_get_str(config->mainnode, "pids", ""), " ", -1);
 	for (pid = pids; *pid != NULL; pid++)
-                pidwait_add(atoi(*pid));
-        g_strfreev(pids);
+		pidwait_add(atoi(*pid));
+	g_strfreev(pids);
 }
 
 static void sig_init_finished(void)
@@ -325,7 +325,7 @@ static void sig_init_finished(void)
 		return;
 
 	config_parse(session);
-        signal_emit("session restore", 1, session);
+	signal_emit("session restore", 1, session);
 	config_close(session);
 
 	unlink(session_file);
@@ -359,7 +359,7 @@ void session_deinit(void)
 {
 	g_free_not_null(irssi_binary);
 
-        command_unbind("upgrade", (SIGNAL_FUNC) cmd_upgrade);
+	command_unbind("upgrade", (SIGNAL_FUNC) cmd_upgrade);
 
 	signal_remove("session save", (SIGNAL_FUNC) sig_session_save);
 	signal_remove("session restore", (SIGNAL_FUNC) sig_session_restore);

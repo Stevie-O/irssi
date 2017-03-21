@@ -32,7 +32,7 @@
 
 typedef struct {
 	char *name;
-        int refcount;
+	int refcount;
 } CTCP_CMD_REC;
 
 static GSList *ctcp_cmds;
@@ -45,10 +45,10 @@ static CTCP_CMD_REC *ctcp_cmd_find(const char *name)
 		CTCP_CMD_REC *rec = tmp->data;
 
 		if (g_ascii_strcasecmp(rec->name, name) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 void ctcp_register(const char *name)
@@ -79,7 +79,7 @@ void ctcp_unregister(const char *name)
 
 	rec = ctcp_cmd_find(name);
 	if (rec != NULL && --rec->refcount == 0)
-                ctcp_cmd_destroy(rec);
+		ctcp_cmd_destroy(rec);
 }
 
 static void ctcp_queue_clean(IRC_SERVER_REC *server)
@@ -137,7 +137,7 @@ static void ctcp_ping(IRC_SERVER_REC *server, const char *data,
 		   length, but even if it did, the CTCP flooder would still
 		   be able to at least slow down your possibility to send
 		   messages to server. */
-                return;
+		return;
 	}
 
 	str = g_strdup_printf("NOTICE %s :\001PING %s\001", nick, data);
@@ -154,7 +154,7 @@ static void ctcp_send_parsed_reply(IRC_SERVER_REC *server, const char *nick,
 	g_return_if_fail(nick != NULL);
 
 	if (*args == '\0')
-                return;
+		return;
 
 	pstr = parse_special_string(args, SERVER(server), NULL, "", NULL, 0);
 	str = g_strdup_printf("NOTICE %s :\001%s %s\001", nick, cmd, pstr);
@@ -180,7 +180,7 @@ static void ctcp_time(IRC_SERVER_REC *server, const char *data,
 	g_return_if_fail(server != NULL);
 	g_return_if_fail(nick != NULL);
 
-        reply = my_asctime(time(NULL));
+	reply = my_asctime(time(NULL));
 	str = g_strdup_printf("NOTICE %s :\001TIME %s\001", nick, reply);
 	ctcp_send_reply(server, str);
 	g_free(str);
@@ -200,18 +200,18 @@ static void ctcp_clientinfo(IRC_SERVER_REC *server, const char *data,
 			    const char *nick)
 {
 	GString *str;
-        GSList *tmp;
+	GSList *tmp;
 
 	g_return_if_fail(server != NULL);
 	g_return_if_fail(nick != NULL);
 
 	str = g_string_new(NULL);
-        g_string_printf(str, "NOTICE %s :\001CLIENTINFO", nick);
+	g_string_printf(str, "NOTICE %s :\001CLIENTINFO", nick);
 	for (tmp = ctcp_cmds; tmp != NULL; tmp = tmp->next) {
 		CTCP_CMD_REC *rec = tmp->data;
 
-                g_string_append_c(str, ' ');
-                g_string_append(str, rec->name);
+		g_string_append_c(str, ' ');
+		g_string_append(str, rec->name);
 	}
 	g_string_append_c(str, '\001');
 
@@ -225,10 +225,10 @@ static void ctcp_msg(IRC_SERVER_REC *server, const char *data,
 	char *args, *str;
 
 	if (g_ascii_strncasecmp(data, "ACTION ", 7) == 0) {
-                /* special treatment for actions */
+		/* special treatment for actions */
 		signal_emit("ctcp action", 5, server, data+7,
 			    nick, addr, target);
-                return;
+		return;
 	}
 
 	if (ignore_check(SERVER(server), nick, addr, target, data, MSGLEVEL_CTCPS))
@@ -320,7 +320,7 @@ static void sig_disconnected(IRC_SERVER_REC *server)
 		return;
 
 	g_slist_free(server->ctcpqueue);
-        server->ctcpqueue = NULL;
+	server->ctcpqueue = NULL;
 }
 
 void ctcp_init(void)
@@ -343,11 +343,11 @@ void ctcp_init(void)
 	signal_add("ctcp msg userinfo", (SIGNAL_FUNC) ctcp_userinfo);
 	signal_add("ctcp msg clientinfo", (SIGNAL_FUNC) ctcp_clientinfo);
 
-        ctcp_register("ping");
-        ctcp_register("version");
-        ctcp_register("time");
-        ctcp_register("userinfo");
-        ctcp_register("clientinfo");
+	ctcp_register("ping");
+	ctcp_register("version");
+	ctcp_register("time");
+	ctcp_register("userinfo");
+	ctcp_register("clientinfo");
 }
 
 void ctcp_deinit(void)

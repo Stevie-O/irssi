@@ -36,7 +36,7 @@ QUERY_REC *irc_query_create(const char *server_tag,
 	rec = g_new0(QUERY_REC, 1);
 	rec->chat_type = IRC_PROTOCOL;
 	rec->name = g_strdup(nick);
-        rec->server_tag = g_strdup(server_tag);
+	rec->server_tag = g_strdup(server_tag);
 	query_init(rec, automatic);
 	return rec;
 }
@@ -76,7 +76,7 @@ static void check_query_changes(IRC_SERVER_REC *server, const char *nick,
 
 	if (address != NULL && (query->address == NULL ||
 				g_strcmp0(query->address, address) != 0)) {
-                /* host changed */
+		/* host changed */
 		query_change_address(query, address);
 	}
 }
@@ -85,13 +85,13 @@ static void ctcp_action(IRC_SERVER_REC *server, const char *msg,
 			const char *nick, const char *address,
 			const char *target)
 {
-        check_query_changes(server, nick, address, target);
+	check_query_changes(server, nick, address, target);
 }
 
 static void event_nick(SERVER_REC *server, const char *data,
 		       const char *orignick)
 {
-        QUERY_REC *query;
+	QUERY_REC *query;
 	char *params, *nick;
 
 	query = query_find(server, orignick);

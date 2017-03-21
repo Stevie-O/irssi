@@ -28,7 +28,7 @@ static void cache_remove(CONFIG_REC *rec, CONFIG_NODE *node)
 	if (path != NULL) {
 		g_hash_table_remove(rec->cache, path);
 		g_hash_table_remove(rec->cache_nodes, node);
-                g_free(path);
+		g_free(path);
 	}
 }
 
@@ -37,7 +37,7 @@ void config_node_remove(CONFIG_REC *rec, CONFIG_NODE *parent, CONFIG_NODE *node)
 	g_return_if_fail(node != NULL);
 
 	if (parent == NULL)
-                parent = rec->mainnode;
+		parent = rec->mainnode;
 
 	rec->modifycounter++;
 	cache_remove(rec, node);
@@ -56,7 +56,7 @@ void config_node_remove(CONFIG_REC *rec, CONFIG_NODE *parent, CONFIG_NODE *node)
 		break;
 	}
 	g_free_not_null(node->key);
-        g_free(node);
+	g_free(node);
 }
 
 void config_node_list_remove(CONFIG_REC *rec, CONFIG_NODE *node, int index)
@@ -76,7 +76,7 @@ void config_node_clear(CONFIG_REC *rec, CONFIG_NODE *node)
 	g_return_if_fail(is_node_list(node));
 
 	while (node->value != NULL)
-                config_node_remove(rec, node, ((GSList *) node->value)->data);
+		config_node_remove(rec, node, ((GSList *) node->value)->data);
 }
 
 void config_nodes_remove_all(CONFIG_REC *rec)
@@ -101,7 +101,7 @@ void config_node_set_str(CONFIG_REC *rec, CONFIG_NODE *parent, const char *key, 
 	node = no_key ? NULL : config_node_find(parent, key);
 
 	if (value == NULL) {
-                /* remove the key */
+		/* remove the key */
 		if (node != NULL) config_node_remove(rec, parent, node);
 		return;
 	}
@@ -115,7 +115,7 @@ void config_node_set_str(CONFIG_REC *rec, CONFIG_NODE *parent, const char *key, 
 	if (node != NULL) {
 		if (g_strcmp0(node->value, value) == 0)
 			return;
-                g_free(node->value);
+		g_free(node->value);
 	} else {
 		node = g_new0(CONFIG_NODE, 1);
 		parent->value = g_slist_append(parent->value, node);
@@ -172,5 +172,5 @@ void config_node_add_list(CONFIG_REC *rec, CONFIG_NODE *node, char **array)
 	char **tmp;
 
 	for (tmp = array; *tmp != NULL; tmp++)
-                config_node_set_str(rec, node, NULL, *tmp);
+		config_node_set_str(rec, node, NULL, *tmp);
 }

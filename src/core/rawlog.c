@@ -39,7 +39,7 @@ RAWLOG_REC *rawlog_create(void)
 	RAWLOG_REC *rec;
 
 	rec = g_new0(RAWLOG_REC, 1);
-        return rec;
+	return rec;
 }
 
 void rawlog_destroy(RAWLOG_REC *rawlog)
@@ -107,9 +107,9 @@ static void rawlog_dump(RAWLOG_REC *rawlog, int f)
 
 	for (tmp = rawlog->lines; ret != -1 && tmp != NULL; tmp = tmp->next) {
 		ret = write(f, tmp->data, strlen((char *) tmp->data));
-                if (ret != -1)
-                        ret = write(f, "\n", 1);
-        }
+		if (ret != -1)
+			ret = write(f, "\n", 1);
+	}
 
 	if (ret == -1) {
 		g_warning("rawlog write() failed: %s", strerror(errno));
@@ -120,7 +120,7 @@ void rawlog_open(RAWLOG_REC *rawlog, const char *fname)
 {
 	char *path;
 
-        g_return_if_fail(rawlog != NULL);
+	g_return_if_fail(rawlog != NULL);
 	g_return_if_fail(fname != NULL);
 
 	if (rawlog->logging)
@@ -149,9 +149,9 @@ void rawlog_save(RAWLOG_REC *rawlog, const char *fname)
 	char *path, *dir;
 	int f;
 
-        dir = g_path_get_dirname(fname);
-        g_mkdir_with_parents(dir, log_dir_create_mode);
-        g_free(dir);
+	dir = g_path_get_dirname(fname);
+	g_mkdir_with_parents(dir, log_dir_create_mode);
+	g_free(dir);
 
 	path = convert_home(fname);
 	f = open(path, O_WRONLY | O_APPEND | O_CREAT, log_file_create_mode);
@@ -175,10 +175,10 @@ static void read_settings(void)
 {
 	rawlog_set_size(settings_get_int("rawlog_lines"));
 	log_file_create_mode = octal2dec(settings_get_int("log_create_mode"));
-        log_dir_create_mode = log_file_create_mode;
-        if (log_file_create_mode & 0400) log_dir_create_mode |= 0100;
-        if (log_file_create_mode & 0040) log_dir_create_mode |= 0010;
-        if (log_file_create_mode & 0004) log_dir_create_mode |= 0001;
+	log_dir_create_mode = log_file_create_mode;
+	if (log_file_create_mode & 0400) log_dir_create_mode |= 0100;
+	if (log_file_create_mode & 0040) log_dir_create_mode |= 0010;
+	if (log_file_create_mode & 0004) log_dir_create_mode |= 0001;
 
 }
 

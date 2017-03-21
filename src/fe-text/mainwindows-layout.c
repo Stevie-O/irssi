@@ -31,9 +31,9 @@
 static void sig_layout_window_save(WINDOW_REC *window, CONFIG_NODE *node)
 {
 	WINDOW_REC *active;
-        GUI_WINDOW_REC *gui;
+	GUI_WINDOW_REC *gui;
 
-        gui = WINDOW_GUI(window);
+	gui = WINDOW_GUI(window);
 	if (gui->sticky) {
 		iconfig_node_set_bool(node, "sticky", TRUE);
 		active = gui->parent->active;
@@ -42,15 +42,15 @@ static void sig_layout_window_save(WINDOW_REC *window, CONFIG_NODE *node)
 	}
 
 	if (gui->use_scroll)
-                iconfig_node_set_bool(node, "scroll", gui->scroll);
+		iconfig_node_set_bool(node, "scroll", gui->scroll);
 }
 
 static void sig_layout_window_restore(WINDOW_REC *window, CONFIG_NODE *node)
 {
 	WINDOW_REC *parent;
-        GUI_WINDOW_REC *gui;
+	GUI_WINDOW_REC *gui;
 
-        gui = WINDOW_GUI(window);
+	gui = WINDOW_GUI(window);
 
 	parent = window_find_refnum(config_node_get_int(node, "parent", -1));
 	if (parent != NULL)
@@ -61,15 +61,15 @@ static void sig_layout_window_restore(WINDOW_REC *window, CONFIG_NODE *node)
 	if (config_node_get_str(node, "scroll", NULL) != NULL) {
 		gui->use_scroll = TRUE;
 		gui->scroll = config_node_get_bool(node, "scroll", TRUE);
-                textbuffer_view_set_scroll(gui->view, gui->scroll);
+		textbuffer_view_set_scroll(gui->view, gui->scroll);
 	}
 }
 
 static void main_window_save(MAIN_WINDOW_REC *window, CONFIG_NODE *node)
 {
-        char num[MAX_INT_STRLEN];
+	char num[MAX_INT_STRLEN];
 
-        ltoa(num, window->active->refnum);
+	ltoa(num, window->active->refnum);
 	node = iconfig_node_section(node, num, NODE_TYPE_BLOCK);
 
 	iconfig_node_set_int(node, "first_line", window->first_line);
@@ -98,23 +98,23 @@ static GSList *get_sorted_windows_config(CONFIG_NODE *node)
 {
 	GSList *tmp, *output;
 
-        output = NULL;
+	output = NULL;
 	tmp = config_node_first(node->value);
 	for (; tmp != NULL; tmp = config_node_next(tmp)) {
 		output = g_slist_insert_sorted(output, tmp->data,
 					       (GCompareFunc) window_node_cmp);
 	}
 
-        return output;
+	return output;
 }
 
 static void sig_layout_restore(void)
 {
-        MAIN_WINDOW_REC *lower_window;
-        WINDOW_REC *window;
+	MAIN_WINDOW_REC *lower_window;
+	WINDOW_REC *window;
 	CONFIG_NODE *node;
 	GSList *tmp, *sorted_config;
-        int avail_height, height, *heights;
+	int avail_height, height, *heights;
 	int i, lower_size, windows_count, diff;
 
 	node = iconfig_node_traverse("mainwindows", FALSE);
@@ -123,17 +123,17 @@ static void sig_layout_restore(void)
 	sorted_config = get_sorted_windows_config(node);
 	if (sorted_config == NULL) return;
 
-        windows_count = g_slist_length(sorted_config);
+	windows_count = g_slist_length(sorted_config);
 
-        /* calculate the saved terminal height */
+	/* calculate the saved terminal height */
 	avail_height = term_height -
 		screen_reserved_top - screen_reserved_bottom;
 	height = 0;
-        heights = g_new0(int, windows_count);
+	heights = g_new0(int, windows_count);
 	for (i = 0, tmp = sorted_config; tmp != NULL; tmp = tmp->next, i++) {
 		CONFIG_NODE *node = tmp->data;
 
-                heights[i] = config_node_get_int(node, "lines", 0);
+		heights[i] = config_node_get_int(node, "lines", 0);
 		height += heights[i];
 	}
 
@@ -141,7 +141,7 @@ static void sig_layout_restore(void)
 		/* we can fit only one window to screen -
 		   give it all the height we can */
 		windows_count = 1;
-                heights[0] = avail_height;
+		heights[0] = avail_height;
 	} else if (height != avail_height) {
 		/* Terminal's height is different from the saved one.
 		   Resize the windows so they fit to screen. */
@@ -149,21 +149,21 @@ static void sig_layout_restore(void)
 		       windows_count*(WINDOW_MIN_SIZE+1) > avail_height) {
 			/* all windows can't fit into screen,
 			   remove the lowest ones */
-                        windows_count--;
+			windows_count--;
 		}
 
-                /* try to keep the windows' size about the same in percents */
+		/* try to keep the windows' size about the same in percents */
 		for (i = 0; i < windows_count; i++) {
 			int size = avail_height*heights[i]/height;
 			if (size < WINDOW_MIN_SIZE+1)
-                                size = WINDOW_MIN_SIZE+1;
+				size = WINDOW_MIN_SIZE+1;
 			heights[i] = size;
 		}
 
 		/* give/remove the last bits */
-                height = 0;
+		height = 0;
 		for (i = 0; i < windows_count; i++)
-                        height += heights[i];
+			height += heights[i];
 
 		diff = height < avail_height ? 1 : -1;
 		for (i = 0; height != avail_height; i++) {
@@ -188,15 +188,15 @@ static void sig_layout_restore(void)
 			    GINT_TO_POINTER(0));
 
 		window = window_create(NULL, TRUE);
-                window_set_refnum(window, atoi(node->key));
+		window_set_refnum(window, atoi(node->key));
 
 		if (lower_size > 0)
 			mainwindow_set_size(lower_window, lower_size, FALSE);
 
 		window_set_active(window);
-                active_mainwin = WINDOW_MAIN(window);
+		active_mainwin = WINDOW_MAIN(window);
 
-                lower_window = WINDOW_MAIN(window);
+		lower_window = WINDOW_MAIN(window);
 		lower_size = heights[i];
 		if (lower_size < WINDOW_MIN_SIZE+1)
 			lower_size = WINDOW_MIN_SIZE+1;

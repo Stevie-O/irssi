@@ -41,7 +41,7 @@ static void save_ips(IPADDR *ip4, IPADDR *ip6,
 	if (ip4->family == 0)
 		g_free_and_null(*save_ip4);
 	else {
-                if (*save_ip4 == NULL)
+		if (*save_ip4 == NULL)
 			*save_ip4 = g_new(IPADDR, 1);
 		memcpy(*save_ip4, ip4, sizeof(IPADDR));
 	}
@@ -49,7 +49,7 @@ static void save_ips(IPADDR *ip4, IPADDR *ip6,
 	if (ip6->family == 0)
 		g_free_and_null(*save_ip6);
 	else {
-                if (*save_ip6 == NULL)
+		if (*save_ip6 == NULL)
 			*save_ip6 = g_new(IPADDR, 1);
 		memcpy(*save_ip6, ip6, sizeof(IPADDR));
 	}
@@ -57,22 +57,22 @@ static void save_ips(IPADDR *ip4, IPADDR *ip6,
 
 static void get_source_host_ip(void)
 {
-        const char *hostname;
+	const char *hostname;
 	IPADDR ip4, ip6;
 
 	if (source_host_ok)
 		return;
 
 	/* FIXME: This will block! */
-        hostname = settings_get_str("hostname");
+	hostname = settings_get_str("hostname");
 	source_host_ok = *hostname != '\0' &&
 		net_gethostbyname(hostname, &ip4, &ip6) == 0;
 
 	if (source_host_ok)
 		save_ips(&ip4, &ip6, &source_host_ip4, &source_host_ip6);
 	else {
-                g_free_and_null(source_host_ip4);
-                g_free_and_null(source_host_ip6);
+		g_free_and_null(source_host_ip4);
+		g_free_and_null(source_host_ip6);
 	}
 }
 
@@ -84,7 +84,7 @@ static void conn_set_ip(SERVER_CONNECT_REC *conn, const char *own_host,
 	if (*own_ip4 == NULL && *own_ip6 == NULL) {
 		/* resolve the IP */
 		if (net_gethostbyname(own_host, &ip4, &ip6) == 0)
-                        save_ips(&ip4, &ip6, own_ip4, own_ip6);
+			save_ips(&ip4, &ip6, own_ip4, own_ip6);
 	}
 
 	server_connect_own_ip_save(conn, *own_ip4, *own_ip6);
@@ -159,11 +159,11 @@ static void server_setup_fill_server(SERVER_CONNECT_REC *conn,
 
 	sserver->last_connect = time(NULL);
 
-        if (sserver->no_proxy)
+	if (sserver->no_proxy)
 		g_free_and_null(conn->proxy);
 
 	if (sserver->family != 0 && conn->family == 0)
-                conn->family = sserver->family;
+		conn->family = sserver->family;
 	if (sserver->port > 0 && conn->port <= 0)
 		conn->port = sserver->port;
 
@@ -202,11 +202,11 @@ static void server_setup_fill_chatnet(SERVER_CONNECT_REC *conn,
 		conn->nick = g_strdup(chatnet->nick);;
 	}
 	if (chatnet->username != NULL) {
-                g_free(conn->username);
+		g_free(conn->username);
 		conn->username = g_strdup(chatnet->username);;
 	}
 	if (chatnet->realname != NULL) {
-                g_free(conn->realname);
+		g_free(conn->realname);
 		conn->realname = g_strdup(chatnet->realname);;
 	}
 	if (chatnet->own_host != NULL) {
@@ -222,7 +222,7 @@ create_addr_conn(int chat_type, const char *address, int port,
 		 const char *chatnet, const char *password,
 		 const char *nick)
 {
-        CHAT_PROTOCOL_REC *proto;
+	CHAT_PROTOCOL_REC *proto;
 	SERVER_CONNECT_REC *conn;
 	SERVER_SETUP_REC *sserver;
 	CHATNET_REC *chatnetrec;
@@ -234,17 +234,17 @@ create_addr_conn(int chat_type, const char *address, int port,
 		if (chat_type < 0)
 			chat_type = sserver->chat_type;
 		else if (chat_type != sserver->chat_type)
-                        sserver = NULL;
+			sserver = NULL;
 	}
 
 	proto = chat_type >= 0 ? chat_protocol_find_id(chat_type) :
-                chat_protocol_get_default();
+		chat_protocol_get_default();
 
 	conn = proto->create_server_connect();
 	server_connect_ref(conn);
 
 	conn->chat_type = proto->id;
-        if (chatnet != NULL && *chatnet != '\0')
+	if (chatnet != NULL && *chatnet != '\0')
 		conn->chatnet = g_strdup(chatnet);
 
 	/* fill in the defaults */
@@ -318,11 +318,11 @@ server_create_conn(int chat_type, const char *dest, int port,
 		   const char *nick)
 {
 	SERVER_CONNECT_REC *rec;
-        CHATNET_REC *chatrec;
+	CHATNET_REC *chatrec;
 
 	g_return_val_if_fail(dest != NULL, NULL);
 
-        chatrec = chatnet_find(dest);
+	chatrec = chatnet_find(dest);
 	if (chatrec != NULL) {
 		rec = create_chatnet_conn(chatrec->name, port, password, nick);
 		/* If rec is NULL the chatnet has no url to connect to */
@@ -388,7 +388,7 @@ static SERVER_SETUP_REC *server_setup_read(CONFIG_NODE *node)
 
 	chatnetrec = chatnet == NULL ? NULL : chatnet_find(chatnet);
 	if (chatnetrec == NULL && chatnet != NULL) {
-                /* chat network not found, create it. */
+		/* chat network not found, create it. */
 		chatnetrec = chat_protocol_get_default()->create_chatnet();
 		chatnetrec->chat_type = chat_protocol_get_default()->id;
 		chatnetrec->name = g_strdup(chatnet);
@@ -399,7 +399,7 @@ static SERVER_SETUP_REC *server_setup_read(CONFIG_NODE *node)
 
 	rec = CHAT_PROTOCOL(chatnetrec)->create_server_setup();
 	rec->type = module_get_uniq_id("SERVER SETUP", 0);
-        rec->chat_type = CHAT_PROTOCOL(chatnetrec)->id;
+	rec->chat_type = CHAT_PROTOCOL(chatnetrec)->id;
 	rec->chatnet = chatnetrec == NULL ? NULL : g_strdup(chatnetrec->name);
 	rec->family = g_ascii_strcasecmp(family, "inet6") == 0 ? AF_INET6 :
 		(g_ascii_strcasecmp(family, "inet") == 0 ? AF_INET : 0);
@@ -499,7 +499,7 @@ static void server_setup_save(SERVER_SETUP_REC *rec)
 		/* Create a brand-new server record */
 		node = iconfig_node_section(parent_node, NULL, NODE_TYPE_BLOCK);
 
-        iconfig_node_clear(node);
+	iconfig_node_clear(node);
 	iconfig_node_set_str(node, "address", rec->address);
 	iconfig_node_set_str(node, "chatnet", rec->chatnet);
 
@@ -624,7 +624,7 @@ static void read_settings(void)
 {
 	if (old_source_host == NULL ||
 	    g_strcmp0(old_source_host, settings_get_str("hostname")) != 0) {
-                g_free_not_null(old_source_host);
+		g_free_not_null(old_source_host);
 		old_source_host = g_strdup(settings_get_str("hostname"));
 
 		source_host_ok = FALSE;
@@ -647,14 +647,14 @@ void servers_setup_init(void)
 	settings_add_str("proxy", "proxy_string_after", "");
 	settings_add_str("proxy", "proxy_password", "");
 
-        setupservers = NULL;
+	setupservers = NULL;
 	source_host_ip4 = source_host_ip6 = NULL;
-        old_source_host = NULL;
+	old_source_host = NULL;
 	read_settings();
 
 	signal_add("setup changed", (SIGNAL_FUNC) read_settings);
 	signal_add("setup reread", (SIGNAL_FUNC) read_servers);
-        signal_add("irssi init read settings", (SIGNAL_FUNC) read_servers);
+	signal_add("irssi init read settings", (SIGNAL_FUNC) read_servers);
 }
 
 void servers_setup_deinit(void)
@@ -668,7 +668,7 @@ void servers_setup_deinit(void)
 
 	signal_remove("setup changed", (SIGNAL_FUNC) read_settings);
 	signal_remove("setup reread", (SIGNAL_FUNC) read_servers);
-        signal_remove("irssi init read settings", (SIGNAL_FUNC) read_servers);
+	signal_remove("irssi init read settings", (SIGNAL_FUNC) read_servers);
 
 	module_uniq_destroy("SERVER SETUP");
 }

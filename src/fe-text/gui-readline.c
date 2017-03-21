@@ -48,7 +48,7 @@ typedef void (*ENTRY_REDIRECT_ENTRY_FUNC) (const char *line, void *data, SERVER_
 
 typedef struct {
 	SIGNAL_FUNC func;
-        int flags;
+	int flags;
 	void *data;
 } ENTRY_REDIRECT_REC;
 
@@ -93,7 +93,7 @@ void input_listen_init(int handle)
 void input_listen_deinit(void)
 {
 	g_source_remove(readtag);
-        readtag = -1;
+	readtag = -1;
 }
 
 static void handle_key_redirect(int key)
@@ -116,7 +116,7 @@ static void handle_entry_redirect(const char *line)
 	ENTRY_REDIRECT_ENTRY_FUNC func;
 	void *data;
 
-        gui_entry_set_hidden(active_entry, FALSE);
+	gui_entry_set_hidden(active_entry, FALSE);
 
 	func = (ENTRY_REDIRECT_ENTRY_FUNC) redir->func;
 	data = redir->data;
@@ -142,7 +142,7 @@ static int get_scroll_count(void)
 	else if (count < 0)
 		count = active_mainwin->height-active_mainwin->statusbar_lines+count;
 	else if (count < 1)
-                count = 1.0/count;
+		count = 1.0/count;
 
 	if (*str == '/') {
 		count = (active_mainwin->height-active_mainwin->statusbar_lines)/count;
@@ -394,7 +394,7 @@ static void insert_paste_prompt(void)
 static void sig_gui_key_pressed(gpointer keyp)
 {
 	GTimeVal now;
-        unichar key;
+	unichar key;
 	char str[20];
 	int ret;
 
@@ -405,17 +405,17 @@ static void sig_gui_key_pressed(gpointer keyp)
 		return;
 	}
 
-        g_get_current_time(&now);
+	g_get_current_time(&now);
 
 	if (key < 32) {
 		/* control key */
-                str[0] = '^';
+		str[0] = '^';
 		str[1] = (char)key+'@';
-                str[2] = '\0';
+		str[2] = '\0';
 	} else if (key == 127) {
-                str[0] = '^';
+		str[0] = '^';
 		str[1] = '?';
-                str[2] = '\0';
+		str[2] = '\0';
 	} else if (!active_entry->utf8) {
 		if (key <= 0xff) {
 			str[0] = (char)key;
@@ -426,7 +426,7 @@ static void sig_gui_key_pressed(gpointer keyp)
 			str[2] = '\0';
 		}
 	} else {
-                /* need to convert to utf8 */
+		/* need to convert to utf8 */
 		str[g_unichar_to_utf8(key, str)] = '\0';
 	}
 
@@ -501,7 +501,7 @@ static void key_send_line(void)
 		gui_entry_set_text(active_entry, "");
 	command_history_clear_pos(active_win);
 
-        g_free(str);
+	g_free(str);
 }
 
 static void key_combo(void)
@@ -511,12 +511,12 @@ static void key_combo(void)
 static void key_backward_history(void)
 {
 	const char *text;
-        char *line;
+	char *line;
 
 	line = gui_entry_get_text(active_entry);
 	text = command_history_prev(active_win, line);
 	gui_entry_set_text(active_entry, text);
-        g_free(line);
+	g_free(line);
 }
 
 static void key_forward_history(void)
@@ -527,12 +527,12 @@ static void key_forward_history(void)
 	line = gui_entry_get_text(active_entry);
 	text = command_history_next(active_win, line);
 	gui_entry_set_text(active_entry, text);
-        g_free(line);
+	g_free(line);
 }
 
 static void key_beginning_of_line(void)
 {
-        gui_entry_set_pos(active_entry, 0);
+	gui_entry_set_pos(active_entry, 0);
 }
 
 static void key_end_of_line(void)
@@ -597,7 +597,7 @@ static void key_yank_from_cutbuffer(void)
 {
 	char *cutbuffer;
 
-        cutbuffer = gui_entry_get_cutbuffer(active_entry);
+	cutbuffer = gui_entry_get_cutbuffer(active_entry);
 	if (cutbuffer != NULL) {
 		gui_entry_insert_text(active_entry, cutbuffer);
 		active_entry->yank_preceded = TRUE;
@@ -785,7 +785,7 @@ static void paste_bracketed_middle()
 static void sig_input(void)
 {
 	if (!active_entry) {
-                /* no active entry yet - wait until we have it */
+		/* no active entry yet - wait until we have it */
 		return;
 	}
 
@@ -873,7 +873,7 @@ static void key_completion(int erase, int backward)
 	char *text, *line;
 	int pos;
 
-        text = gui_entry_get_text_and_pos(active_entry, &pos);
+	text = gui_entry_get_text_and_pos(active_entry, &pos);
 	line = word_complete(active_win, text, &pos, erase, backward);
 	g_free(text);
 
@@ -886,17 +886,17 @@ static void key_completion(int erase, int backward)
 
 static void key_word_completion_backward(void)
 {
-        key_completion(FALSE, TRUE);
+	key_completion(FALSE, TRUE);
 }
 
 static void key_word_completion(void)
 {
-        key_completion(FALSE, FALSE);
+	key_completion(FALSE, FALSE);
 }
 
 static void key_erase_completion(void)
 {
-        key_completion(TRUE, FALSE);
+	key_completion(TRUE, FALSE);
 }
 
 static void key_check_replaces(void)
@@ -904,7 +904,7 @@ static void key_check_replaces(void)
 	char *text, *line;
 	int pos;
 
-        text = gui_entry_get_text_and_pos(active_entry, &pos);
+	text = gui_entry_get_text_and_pos(active_entry, &pos);
 	line = auto_word_complete(text, &pos);
 	g_free(text);
 
@@ -1049,7 +1049,7 @@ static void key_next_window_item(void)
 
 static void key_escape(void)
 {
-        escape_next_key = TRUE;
+	escape_next_key = TRUE;
 }
 
 static void key_insert_text(const char *data)
@@ -1059,12 +1059,12 @@ static void key_insert_text(const char *data)
 	str = parse_special_string(data, active_win->active_server,
 				   active_win->active, "", NULL, 0);
 	gui_entry_insert_text(active_entry, str);
-        g_free(str);
+	g_free(str);
 }
 
 static void key_sig_stop(void)
 {
-        term_stop();
+	term_stop();
 }
 
 static void sig_window_auto_changed(void)
@@ -1074,10 +1074,10 @@ static void sig_window_auto_changed(void)
 	if (active_entry == NULL)
 		return;
 
-        text = gui_entry_get_text(active_entry);
+	text = gui_entry_get_text(active_entry);
 	command_history_next(active_win, text);
 	gui_entry_set_text(active_entry, "");
-        g_free(text);
+	g_free(text);
 }
 
 static void sig_gui_entry_redirect(SIGNAL_FUNC func, const char *entry,
@@ -1112,17 +1112,17 @@ void gui_readline_init(void)
 	char *key, data[MAX_INT_STRLEN];
 	int n;
 
-        escape_next_key = FALSE;
+	escape_next_key = FALSE;
 	redir = NULL;
 	paste_entry = NULL;
 	paste_entry_pos = 0;
 	paste_buffer = g_array_new(FALSE, FALSE, sizeof(unichar));
 	paste_buffer_rest = g_array_new(FALSE, FALSE, sizeof(unichar));
-        paste_old_prompt = NULL;
+	paste_old_prompt = NULL;
 	paste_timeout_id = -1;
 	paste_bracketed_mode = FALSE;
 	g_get_current_time(&last_keypress);
-        input_listen_init(STDIN_FILENO);
+	input_listen_init(STDIN_FILENO);
 
 	settings_add_bool("lookandfeel", "term_appkey_mode", TRUE);
 	settings_add_str("history", "scroll_page_count", "/2");
@@ -1132,10 +1132,10 @@ void gui_readline_init(void)
 	   keycodes. this must be larger to allow them to work. */
 	settings_add_int("misc", "paste_verify_line_count", 5);
 	settings_add_bool("misc", "paste_join_multiline", TRUE);
-        setup_changed();
+	setup_changed();
 
 	keyboard = keyboard_create(NULL);
-        key_configure_freeze();
+	key_configure_freeze();
 
 	key_bind("key", NULL, " ", "space", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "^M", "return", (SIGNAL_FUNC) key_combo);
@@ -1144,13 +1144,13 @@ void gui_readline_init(void)
 	key_bind("key", NULL, "^?", "backspace", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "^I", "tab", (SIGNAL_FUNC) key_combo);
 
-        /* meta */
+	/* meta */
 	key_bind("key", NULL, "^[", "meta", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "meta-[", "meta2", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "meta-O", "meta2", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "meta-[O", "meta2", (SIGNAL_FUNC) key_combo);
 
-        /* arrow keys */
+	/* arrow keys */
 	key_bind("key", NULL, "meta2-A", "up", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "meta2-B", "down", (SIGNAL_FUNC) key_combo);
 	key_bind("key", NULL, "meta2-C", "right", (SIGNAL_FUNC) key_combo);
@@ -1216,11 +1216,11 @@ void gui_readline_init(void)
 	key_bind("end_of_line", "Move the cursor to the end of the line", "end", NULL, (SIGNAL_FUNC) key_end_of_line);
 	key_bind("end_of_line", NULL, "^E", NULL, (SIGNAL_FUNC) key_end_of_line);
 
-        /* history */
+	/* history */
 	key_bind("backward_history", "Go back one line in the history", "up", NULL, (SIGNAL_FUNC) key_backward_history);
 	key_bind("forward_history", "Go forward one line in the history", "down", NULL, (SIGNAL_FUNC) key_forward_history);
 
-        /* line editing */
+	/* line editing */
 	key_bind("backspace", "Delete the previous character", "backspace", NULL, (SIGNAL_FUNC) key_backspace);
 	key_bind("delete_character", "Delete the current character", "delete", NULL, (SIGNAL_FUNC) key_delete_character);
 	key_bind("delete_character", NULL, "^D", NULL, (SIGNAL_FUNC) key_delete_character);
@@ -1240,14 +1240,14 @@ void gui_readline_init(void)
 	key_bind("downcase_word", "Downcase the current word", NULL, NULL, (SIGNAL_FUNC) key_downcase_word);
 	key_bind("upcase_word", "Upcase the current word", NULL, NULL, (SIGNAL_FUNC) key_upcase_word);
 
-        /* line transmitting */
+	/* line transmitting */
 	key_bind("send_line", "Execute the input line", "return", NULL, (SIGNAL_FUNC) key_send_line);
 	key_bind("word_completion_backward", "", NULL, NULL, (SIGNAL_FUNC) key_word_completion_backward);
 	key_bind("word_completion", "Complete the current word", "tab", NULL, (SIGNAL_FUNC) key_word_completion);
 	key_bind("erase_completion", "Remove the completion added by word_completion", "meta-k", NULL, (SIGNAL_FUNC) key_erase_completion);
 	key_bind("check_replaces", "Check word replaces", NULL, NULL, (SIGNAL_FUNC) key_check_replaces);
 
-        /* window managing */
+	/* window managing */
 	key_bind("previous_window", "Go to the previous window", "^P", NULL, (SIGNAL_FUNC) key_previous_window);
 	key_bind("next_window", "Go to the next window", "^N", NULL, (SIGNAL_FUNC) key_next_window);
 	key_bind("upper_window", "Go to the split window above", "mup", NULL, (SIGNAL_FUNC) key_upper_window);
@@ -1266,15 +1266,15 @@ void gui_readline_init(void)
 	key_bind("scroll_start", "Scroll to the beginning of the window", "chome", NULL, (SIGNAL_FUNC) key_scroll_start);
 	key_bind("scroll_end", "Scroll to the end of the window", "cend", NULL, (SIGNAL_FUNC) key_scroll_end);
 
-        /* inserting special input characters to line.. */
+	/* inserting special input characters to line.. */
 	key_bind("escape_char", "Insert the next character exactly as-is to input line", NULL, NULL, (SIGNAL_FUNC) key_escape);
 	key_bind("insert_text", "Append text to line", NULL, NULL, (SIGNAL_FUNC) key_insert_text);
 
-        /* autoreplaces */
+	/* autoreplaces */
 	key_bind("multi", NULL, "return", "check_replaces;send_line", NULL);
 	key_bind("multi", NULL, "space", "check_replaces;insert_text  ", NULL);
 
-        /* moving between windows */
+	/* moving between windows */
 	for (n = 0; changekeys[n] != '\0'; n++) {
 		key = g_strdup_printf("meta-%c", changekeys[n]);
 		ltoa(data, n+1);
@@ -1282,10 +1282,10 @@ void gui_readline_init(void)
 		g_free(key);
 	}
 
-        /* misc */
+	/* misc */
 	key_bind("stop_irc", "Send SIGSTOP to client", "^Z", NULL, (SIGNAL_FUNC) key_sig_stop);
 
-        key_configure_thaw();
+	key_configure_thaw();
 
 	signal_add("window changed automatic", (SIGNAL_FUNC) sig_window_auto_changed);
 	signal_add("gui entry redirect", (SIGNAL_FUNC) sig_gui_entry_redirect);
@@ -1295,9 +1295,9 @@ void gui_readline_init(void)
 
 void gui_readline_deinit(void)
 {
-        input_listen_deinit();
+	input_listen_deinit();
 
-        key_configure_freeze();
+	key_configure_freeze();
 
 	key_unbind("paste_start", (SIGNAL_FUNC) key_paste_start);
 
@@ -1359,10 +1359,10 @@ void gui_readline_deinit(void)
 	key_unbind("change_window", (SIGNAL_FUNC) key_change_window);
 	key_unbind("stop_irc", (SIGNAL_FUNC) key_sig_stop);
 	keyboard_destroy(keyboard);
-        g_array_free(paste_buffer, TRUE);
-        g_array_free(paste_buffer_rest, TRUE);
+	g_array_free(paste_buffer, TRUE);
+	g_array_free(paste_buffer_rest, TRUE);
 
-        key_configure_thaw();
+	key_configure_thaw();
 
 	signal_remove("window changed automatic", (SIGNAL_FUNC) sig_window_auto_changed);
 	signal_remove("gui entry redirect", (SIGNAL_FUNC) sig_gui_entry_redirect);

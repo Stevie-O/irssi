@@ -2,7 +2,7 @@
 #define __GUI_ENTRY_H
 
 typedef struct {
-        int cutbuffer_len;
+	int cutbuffer_len;
 	unichar *cutbuffer;
 } GUI_ENTRY_CUTBUFFER_REC;
 
@@ -12,10 +12,10 @@ typedef struct {
 
 	GSList *kill_ring;
 
-        /* all as shorts, not chars */
+	/* all as shorts, not chars */
 	int xpos, ypos, width; /* entry position in screen */
 	int pos, scrstart, scrpos; /* cursor position */
-        int hidden; /* print the chars as spaces in input line (useful for passwords) */
+	int hidden; /* print the chars as spaces in input line (useful for passwords) */
 
 	int promptlen;
 	char *prompt;

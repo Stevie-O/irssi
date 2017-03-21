@@ -59,7 +59,7 @@ void statusbar_item_register(const char *name, const char *value,
 						 name, &hkey, &hvalue)) {
 			g_hash_table_remove(sbar_item_defs, name);
 			g_free(hkey);
-                        g_free(hvalue);
+			g_free(hvalue);
 		}
 		g_hash_table_insert(sbar_item_defs,
 				    g_strdup(name), g_strdup(value));
@@ -82,7 +82,7 @@ void statusbar_item_unregister(const char *name)
 					 name, &key, &value)) {
 		g_hash_table_remove(sbar_item_defs, key);
 		g_free(key);
-                g_free(value);
+		g_free(value);
 	}
 
 	if (g_hash_table_lookup_extended(sbar_item_funcs,
@@ -105,7 +105,7 @@ STATUSBAR_GROUP_REC *statusbar_group_create(const char *name)
 	rec = g_new0(STATUSBAR_GROUP_REC, 1);
 	rec->name = g_strdup(name);
 
-        statusbar_groups = g_slist_append(statusbar_groups, rec);
+	statusbar_groups = g_slist_append(statusbar_groups, rec);
 	return rec;
 }
 
@@ -116,10 +116,10 @@ void statusbar_group_destroy(STATUSBAR_GROUP_REC *rec)
 	while (rec->bars != NULL)
 		statusbar_destroy(rec->bars->data);
 	while (rec->config_bars != NULL)
-                statusbar_config_destroy(rec, rec->config_bars->data);
+		statusbar_config_destroy(rec, rec->config_bars->data);
 
-        g_free(rec->name);
-        g_free(rec);
+	g_free(rec->name);
+	g_free(rec);
 }
 
 STATUSBAR_GROUP_REC *statusbar_group_find(const char *name)
@@ -130,10 +130,10 @@ STATUSBAR_GROUP_REC *statusbar_group_find(const char *name)
 		STATUSBAR_GROUP_REC *rec = tmp->data;
 
 		if (g_strcmp0(rec->name, name) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 static int sbar_item_cmp(SBAR_ITEM_REC *item1, SBAR_ITEM_REC *item2)
@@ -161,17 +161,17 @@ static int statusbar_shrink_to_min(GSList *items, int size, int max_width)
 
 		if (size <= max_width) {
 			rec->size += max_width-size;
-                        break;
+			break;
 		}
 
 		if (rec->size == 0) {
 			/* min_size was 0, item removed.
 			   remove the marginal too */
-                        size--;
+			size--;
 		}
 	}
 
-        return size;
+	return size;
 }
 
 /* shink the items in statusbar, even if their size gets smaller than
@@ -186,12 +186,12 @@ static void statusbar_shrink_forced(GSList *items, int size, int max_width)
 
 		if (size-rec->size > max_width) {
 			/* remove the whole item */
-                        size -= rec->size;
+			size -= rec->size;
 			rec->size = 0;
 		} else {
 			/* shrink the item */
 			rec->size -= size-max_width;
-                        break;
+			break;
 		}
 	}
 }
@@ -199,9 +199,9 @@ static void statusbar_shrink_forced(GSList *items, int size, int max_width)
 static void statusbar_resize_items(STATUSBAR_REC *bar, int max_width)
 {
 	GSList *tmp, *prior_sorted;
-        int width;
+	int width;
 
-        /* first give items their max. size */
+	/* first give items their max. size */
 	prior_sorted = NULL;
 	width = 0;
 	for (tmp = bar->items; tmp != NULL; tmp = tmp->next) {
@@ -242,17 +242,17 @@ static void statusbar_resize_items(STATUSBAR_REC *bar, int max_width)
 
 static void statusbar_calc_item_positions(STATUSBAR_REC *bar)
 {
-        WINDOW_REC *old_active_win;
+	WINDOW_REC *old_active_win;
 	GSList *tmp, *right_items;
 	int xpos, rxpos;
 
 	old_active_win = active_win;
-        if (bar->parent_window != NULL)
+	if (bar->parent_window != NULL)
 		active_win = bar->parent_window->active;
 
 	statusbar_resize_items(bar, term_width);
 
-        /* left-aligned items */
+	/* left-aligned items */
 	xpos = 0;
 	for (tmp = bar->items; tmp != NULL; tmp = tmp->next) {
 		SBAR_ITEM_REC *rec = tmp->data;
@@ -260,11 +260,11 @@ static void statusbar_calc_item_positions(STATUSBAR_REC *bar)
 		if (!rec->config->right_alignment &&
 		    (rec->size > 0 || rec->current_size > 0)) {
 			if (SBAR_ITEM_REDRAW_NEEDED(bar, rec, xpos)) {
-                                /* redraw the item */
+				/* redraw the item */
 				rec->dirty = TRUE;
 				if (bar->dirty_xpos == -1 ||
 				    xpos < bar->dirty_xpos) {
-                                        irssi_set_dirty();
+					irssi_set_dirty();
 					bar->dirty = TRUE;
 					bar->dirty_xpos = xpos;
 				}
@@ -277,12 +277,12 @@ static void statusbar_calc_item_positions(STATUSBAR_REC *bar)
 
 	/* right-aligned items - first copy them to a new list backwards,
 	   easier to draw them in right order */
-        right_items = NULL;
+	right_items = NULL;
 	for (tmp = bar->items; tmp != NULL; tmp = tmp->next) {
 		SBAR_ITEM_REC *rec = tmp->data;
 
 		if (rec->config->right_alignment) {
-                        if (rec->size > 0)
+			if (rec->size > 0)
 				right_items = g_slist_prepend(right_items, rec);
 			else if (rec->current_size > 0 &&
 				 (bar->dirty_xpos == -1 ||
@@ -291,7 +291,7 @@ static void statusbar_calc_item_positions(STATUSBAR_REC *bar)
 				   to begin from the item's old xpos */
 				irssi_set_dirty();
 				bar->dirty = TRUE;
-                                bar->dirty_xpos = rec->xpos;
+				bar->dirty_xpos = rec->xpos;
 			}
 		}
 	}
@@ -312,7 +312,7 @@ static void statusbar_calc_item_positions(STATUSBAR_REC *bar)
 			rec->xpos = rxpos;
 		}
 	}
-        g_slist_free(right_items);
+	g_slist_free(right_items);
 
 	active_win = old_active_win;
 }
@@ -326,7 +326,7 @@ void statusbar_redraw(STATUSBAR_REC *bar, int force)
 		if (force) {
 			irssi_set_dirty();
 			bar->dirty = TRUE;
-                        bar->dirty_xpos = 0;
+			bar->dirty_xpos = 0;
 		}
 		statusbar_calc_item_positions(bar);
 	} else if (active_statusbar_group != NULL) {
@@ -338,12 +338,12 @@ void statusbar_redraw(STATUSBAR_REC *bar, int force)
 
 void statusbar_item_redraw(SBAR_ITEM_REC *item)
 {
-        WINDOW_REC *old_active_win;
+	WINDOW_REC *old_active_win;
 
 	g_return_if_fail(item != NULL);
 
 	old_active_win = active_win;
-        if (item->bar->parent_window != NULL)
+	if (item->bar->parent_window != NULL)
 		active_win = item->bar->parent_window->active;
 
 	item->func(item, TRUE);
@@ -370,15 +370,15 @@ void statusbar_items_redraw(const char *name)
 static void statusbars_recalc_ypos(STATUSBAR_REC *bar)
 {
 	GSList *tmp, *bar_group;
-        int ypos;
+	int ypos;
 
 	/* get list of statusbars with same type and placement,
 	   sorted by position */
-        bar_group = NULL;
+	bar_group = NULL;
 	tmp = bar->config->type == STATUSBAR_TYPE_ROOT ? bar->group->bars :
-                bar->parent_window->statusbars;
+		bar->parent_window->statusbars;
 
-        for (; tmp != NULL; tmp = tmp->next) {
+	for (; tmp != NULL; tmp = tmp->next) {
 		STATUSBAR_REC *rec = tmp->data;
 
 		if (rec->config->type == bar->config->type &&
@@ -395,7 +395,7 @@ static void statusbars_recalc_ypos(STATUSBAR_REC *bar)
 		return;
 	}
 
-        /* get the Y-position for the first statusbar */
+	/* get the Y-position for the first statusbar */
 	if (bar->config->type == STATUSBAR_TYPE_ROOT) {
 		ypos = bar->config->placement == STATUSBAR_TOP ? 0 :
 			term_height - g_slist_length(bar_group);
@@ -406,17 +406,17 @@ static void statusbars_recalc_ypos(STATUSBAR_REC *bar)
 			(g_slist_length(bar_group)-1);
 	}
 
-        /* set the Y-positions */
+	/* set the Y-positions */
 	while (bar_group != NULL) {
 		bar = bar_group->data;
 
 		if (bar->real_ypos != ypos) {
 			bar->real_ypos = ypos;
-                        statusbar_redraw(bar, TRUE);
+			statusbar_redraw(bar, TRUE);
 		}
 
-                ypos++;
-                bar_group = g_slist_remove(bar_group, bar_group->data);
+		ypos++;
+		bar_group = g_slist_remove(bar_group, bar_group->data);
 	}
 }
 
@@ -430,7 +430,7 @@ static void sig_terminal_resized(void)
 		if (bar->config->type == STATUSBAR_TYPE_ROOT &&
 		    bar->config->placement == STATUSBAR_BOTTOM) {
 			statusbars_recalc_ypos(bar);
-                        break;
+			break;
 		}
 	}
 }
@@ -444,28 +444,28 @@ static void mainwindow_recalc_ypos(MAIN_WINDOW_REC *window, int placement)
 
 		if (bar->config->placement == placement) {
 			statusbars_recalc_ypos(bar);
-                        break;
+			break;
 		}
 	}
 }
 
 static void sig_mainwindow_resized(MAIN_WINDOW_REC *window)
 {
-        mainwindow_recalc_ypos(window, STATUSBAR_TOP);
-        mainwindow_recalc_ypos(window, STATUSBAR_BOTTOM);
+	mainwindow_recalc_ypos(window, STATUSBAR_TOP);
+	mainwindow_recalc_ypos(window, STATUSBAR_BOTTOM);
 }
 
 STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
-                                STATUSBAR_CONFIG_REC *config,
-                                MAIN_WINDOW_REC *parent_window)
+				STATUSBAR_CONFIG_REC *config,
+				MAIN_WINDOW_REC *parent_window)
 {
 	STATUSBAR_REC *bar;
 	THEME_REC *theme;
-        GSList *tmp;
+	GSList *tmp;
 	char *name, *value;
 
-        g_return_val_if_fail(group != NULL, NULL);
-        g_return_val_if_fail(config != NULL, NULL);
+	g_return_val_if_fail(group != NULL, NULL);
+	g_return_val_if_fail(config != NULL, NULL);
 	g_return_val_if_fail(config->type != STATUSBAR_TYPE_WINDOW ||
 			     parent_window != NULL, NULL);
 
@@ -474,14 +474,14 @@ STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
 
 	bar->group = group;
 
-        bar->config = config;
-        bar->parent_window = parent_window;
+	bar->config = config;
+	bar->parent_window = parent_window;
 
 	irssi_set_dirty();
 	bar->dirty = TRUE;
-        bar->dirty_xpos = 0;
+	bar->dirty_xpos = 0;
 
-        signal_remove("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
+	signal_remove("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
 	signal_remove("mainwindow resized", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_remove("mainwindow moved", (SIGNAL_FUNC) sig_mainwindow_resized);
 
@@ -489,7 +489,7 @@ STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
 		/* top/bottom of the screen */
 		mainwindows_reserve_lines(config->placement == STATUSBAR_TOP,
 					  config->placement == STATUSBAR_BOTTOM);
-                theme = current_theme;
+		theme = current_theme;
 	} else {
 		/* top/bottom of the window */
 		parent_window->statusbars =
@@ -502,17 +502,17 @@ STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
 			parent_window->active->theme : current_theme;
 	}
 
-        signal_add("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
+	signal_add("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
 	signal_add("mainwindow resized", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_add("mainwindow moved", (SIGNAL_FUNC) sig_mainwindow_resized);
 
-        /* get background color from sb_background abstract */
-        name = g_strdup_printf("{sb_%s_bg}", config->name);
+	/* get background color from sb_background abstract */
+	name = g_strdup_printf("{sb_%s_bg}", config->name);
 	value = theme_format_expand(theme, name);
 	g_free(name);
 
 	if (*value == '\0') {
-                /* try with the statusbar group name */
+		/* try with the statusbar group name */
 		g_free(value);
 
 		name = g_strdup_printf("{sb_%s_bg}", group->name);
@@ -522,26 +522,26 @@ STATUSBAR_REC *statusbar_create(STATUSBAR_GROUP_REC *group,
 		if (*value == '\0') {
 			/* fallback to default statusbar background
 			   (also provides backwards compatibility..) */
-                        g_free(value);
+			g_free(value);
 			value = theme_format_expand(theme, "{sb_background}");
 		}
 	}
 
 	if (*value == '\0') {
-                g_free(value);
+		g_free(value);
 		value = g_strdup("%8");
 	}
 	bar->color = g_strconcat("%n", value, NULL);
 	g_free(value);
 
-        statusbars_recalc_ypos(bar);
-        signal_emit("statusbar created", 1, bar);
+	statusbars_recalc_ypos(bar);
+	signal_emit("statusbar created", 1, bar);
 
-        /* create the items to statusbar */
+	/* create the items to statusbar */
 	for (tmp = config->items; tmp != NULL; tmp = tmp->next) {
 		SBAR_ITEM_CONFIG_REC *rec = tmp->data;
 
-                statusbar_item_create(bar, rec);
+		statusbar_item_create(bar, rec);
 	}
 	return bar;
 }
@@ -558,12 +558,12 @@ void statusbar_destroy(STATUSBAR_REC *bar)
 			g_slist_remove(bar->parent_window->statusbars, bar);
 	}
 
-        signal_emit("statusbar destroyed", 1, bar);
+	signal_emit("statusbar destroyed", 1, bar);
 
 	while (bar->items != NULL)
 		statusbar_item_destroy(bar->items->data);
 
-        g_free(bar->color);
+	g_free(bar->color);
 
 	if (bar->config->type != STATUSBAR_TYPE_WINDOW ||
 	    bar->parent_window != NULL)
@@ -590,14 +590,14 @@ void statusbar_recreate_items(STATUSBAR_REC *bar)
 	while (bar->items != NULL)
 		statusbar_item_destroy(bar->items->data);
 
-        /* create */
+	/* create */
 	for (tmp = bar->config->items; tmp != NULL; tmp = tmp->next) {
 		SBAR_ITEM_CONFIG_REC *rec = tmp->data;
 
-                statusbar_item_create(bar, rec);
+		statusbar_item_create(bar, rec);
 	}
 
-        statusbar_redraw(bar, TRUE);
+	statusbar_redraw(bar, TRUE);
 }
 
 void statusbars_recreate_items(void)
@@ -618,10 +618,10 @@ STATUSBAR_REC *statusbar_find(STATUSBAR_GROUP_REC *group, const char *name,
 
 		if (rec->parent_window == window &&
 		    g_strcmp0(rec->config->name, name) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 static const char *statusbar_item_get_value(SBAR_ITEM_REC *item)
@@ -634,7 +634,7 @@ static const char *statusbar_item_get_value(SBAR_ITEM_REC *item)
 					    item->config->name);
 	}
 
-        return value;
+	return value;
 }
 
 static GString *finalize_string(const char *str, const char *color)
@@ -683,7 +683,7 @@ void statusbar_item_default_handler(SBAR_ITEM_REC *item, int get_size_only,
 
 	if (active_win == NULL) {
 		server = NULL;
-                wiitem = NULL;
+		wiitem = NULL;
 	} else {
 		server = active_win->active_server != NULL ?
 			active_win->active_server : active_win->connect_server;
@@ -700,11 +700,11 @@ void statusbar_item_default_handler(SBAR_ITEM_REC *item, int get_size_only,
 	/* expand $variables */
 	tmpstr2 = parse_special_string(tmpstr, server, wiitem, data, NULL,
 				       (escape_vars ? PARSE_FLAG_ESCAPE_VARS : 0 ));
-        g_free(tmpstr);
+	g_free(tmpstr);
 
 	/* remove color codes (not %formats) */
 	tmpstr = strip_codes(tmpstr2);
-        g_free(tmpstr2);
+	g_free(tmpstr2);
 
 	if (get_size_only) {
 		item->min_size = item->max_size = format_get_length(tmpstr);
@@ -712,9 +712,9 @@ void statusbar_item_default_handler(SBAR_ITEM_REC *item, int get_size_only,
 		GString *out;
 
 		if (item->size < item->min_size) {
-                        /* they're forcing us smaller than minimum size.. */
+			/* they're forcing us smaller than minimum size.. */
 			len = format_real_length(tmpstr, item->size);
-                        tmpstr[len] = '\0';
+			tmpstr[len] = '\0';
 		}
 		out = finalize_string(tmpstr, item->bar->color);
 		/* make sure the str is big enough to fill the
@@ -755,7 +755,7 @@ static void statusbar_update_item(void)
 
 static void statusbar_update_server(SERVER_REC *server)
 {
-        SERVER_REC *item_server;
+	SERVER_REC *item_server;
 	GSList *items;
 
 	items = g_hash_table_lookup(sbar_signal_items,
@@ -776,7 +776,7 @@ static void statusbar_update_server(SERVER_REC *server)
 
 static void statusbar_update_window(WINDOW_REC *window)
 {
-        WINDOW_REC *item_window;
+	WINDOW_REC *item_window;
 	GSList *items;
 
 	items = g_hash_table_lookup(sbar_signal_items,
@@ -796,7 +796,7 @@ static void statusbar_update_window(WINDOW_REC *window)
 
 static void statusbar_update_window_item(WI_ITEM_REC *wiitem)
 {
-        WI_ITEM_REC *item_wi;
+	WI_ITEM_REC *item_wi;
 	GSList *items;
 
 	items = g_hash_table_lookup(sbar_signal_items,
@@ -818,10 +818,10 @@ static void statusbar_update_window_item(WI_ITEM_REC *wiitem)
 static void statusbar_item_default_signals(SBAR_ITEM_REC *item)
 {
 	SIGNAL_FUNC func;
-        GSList *list;
+	GSList *list;
 	const char *value;
-        void *signal_id;
-        int *signals, *pos;
+	void *signal_id;
+	int *signals, *pos;
 
 	value = statusbar_item_get_value(item);
 	if (value == NULL)
@@ -833,7 +833,7 @@ static void statusbar_item_default_signals(SBAR_ITEM_REC *item)
 
 	for (pos = signals; *pos != -1; pos += 2) {
 		/* update signal -> item mappings */
-                signal_id = GINT_TO_POINTER(*pos);
+		signal_id = GINT_TO_POINTER(*pos);
 		list = g_hash_table_lookup(sbar_signal_items, signal_id);
 		if (list == NULL) {
 			switch (pos[1]) {
@@ -850,8 +850,8 @@ static void statusbar_item_default_signals(SBAR_ITEM_REC *item)
 				func = (SIGNAL_FUNC) statusbar_update_window_item;
 				break;
 			default:
-                                func = NULL;
-                                break;
+				func = NULL;
+				break;
 			}
 			if (func != NULL) {
 				signal_add_full_id(MODULE_NAME,
@@ -864,20 +864,20 @@ static void statusbar_item_default_signals(SBAR_ITEM_REC *item)
 			list = g_slist_append(list, item);
 		g_hash_table_insert(sbar_signal_items, signal_id, list);
 
-                /* update item -> signal mappings */
+		/* update item -> signal mappings */
 		list = g_hash_table_lookup(sbar_item_signals, item);
-                if (g_slist_find(list, signal_id) == NULL)
+		if (g_slist_find(list, signal_id) == NULL)
 			list = g_slist_append(list, signal_id);
 		g_hash_table_insert(sbar_item_signals, item, list);
 	}
-        g_free(signals);
+	g_free(signals);
 }
 
 SBAR_ITEM_REC *statusbar_item_create(STATUSBAR_REC *bar,
 				     SBAR_ITEM_CONFIG_REC *config)
 {
 	SBAR_ITEM_REC *rec;
-        GSList *items;
+	GSList *items;
 
 	g_return_val_if_fail(bar != NULL, NULL);
 	g_return_val_if_fail(config != NULL, NULL);
@@ -896,13 +896,13 @@ SBAR_ITEM_REC *statusbar_item_create(STATUSBAR_REC *bar,
 
 	items = g_hash_table_lookup(named_sbar_items, config->name);
 	items = g_slist_append(items, rec);
-        g_hash_table_insert(named_sbar_items, config->name, items);
+	g_hash_table_insert(named_sbar_items, config->name, items);
 
 	irssi_set_dirty();
 	rec->dirty = TRUE;
 	bar->dirty = TRUE;
 
-        signal_emit("statusbar item created", 1, rec);
+	signal_emit("statusbar item created", 1, rec);
 	return rec;
 }
 
@@ -918,7 +918,7 @@ static void statusbar_item_remove_signal(SBAR_ITEM_REC *item, int signal_id)
 {
 	GSList *list;
 
-        /* update signal -> item hash */
+	/* update signal -> item hash */
 	list = g_hash_table_lookup(sbar_signal_items,
 				   GINT_TO_POINTER(signal_id));
 	list = g_slist_remove(list, item);
@@ -928,7 +928,7 @@ static void statusbar_item_remove_signal(SBAR_ITEM_REC *item, int signal_id)
 	} else {
 		g_hash_table_remove(sbar_signal_items,
 				    GINT_TO_POINTER(signal_id));
-                statusbar_signal_remove(signal_id);
+		statusbar_signal_remove(signal_id);
 	}
 }
 
@@ -944,16 +944,16 @@ void statusbar_item_destroy(SBAR_ITEM_REC *item)
 	list = g_slist_remove(list, item);
 	if (list == NULL)
 		g_hash_table_remove(named_sbar_items, item->config->name);
-        else
+	else
 		g_hash_table_insert(named_sbar_items, item->config->name, list);
 
-        signal_emit("statusbar item destroyed", 1, item);
+	signal_emit("statusbar item destroyed", 1, item);
 
 	list = g_hash_table_lookup(sbar_item_signals, item);
-        g_hash_table_remove(sbar_item_signals, item);
+	g_hash_table_remove(sbar_item_signals, item);
 
 	while (list != NULL) {
-                statusbar_item_remove_signal(item, GPOINTER_TO_INT(list->data));
+		statusbar_item_remove_signal(item, GPOINTER_TO_INT(list->data));
 		list = g_slist_remove(list, list->data);
 	}
 
@@ -962,12 +962,12 @@ void statusbar_item_destroy(SBAR_ITEM_REC *item)
 
 static void statusbar_redraw_needed_items(STATUSBAR_REC *bar)
 {
-        WINDOW_REC *old_active_win;
+	WINDOW_REC *old_active_win;
 	GSList *tmp;
 	char *str;
 
 	old_active_win = active_win;
-        if (bar->parent_window != NULL)
+	if (bar->parent_window != NULL)
 		active_win = bar->parent_window->active;
 
 	if (bar->dirty_xpos >= 0) {
@@ -982,13 +982,13 @@ static void statusbar_redraw_needed_items(STATUSBAR_REC *bar)
 		if (rec->dirty ||
 		    (bar->dirty_xpos != -1 &&
 		     rec->xpos >= bar->dirty_xpos)) {
-                        rec->current_size = rec->size;
+			rec->current_size = rec->size;
 			rec->func(rec, FALSE);
 			rec->dirty = FALSE;
 		}
 	}
 
-        active_win = old_active_win;
+	active_win = old_active_win;
 }
 
 void statusbar_redraw_dirty(void)
@@ -1004,7 +1004,7 @@ void statusbar_redraw_dirty(void)
 		STATUSBAR_REC *rec = tmp->data;
 
 		if (rec->dirty) {
-                        statusbar_redraw_needed_items(rec);
+			statusbar_redraw_needed_items(rec);
 			rec->dirty = FALSE;
 			rec->dirty_xpos = -1;
 		}
@@ -1026,18 +1026,18 @@ static void statusbars_remove_unvisible(MAIN_WINDOW_REC *window)
 		STATUSBAR_REC *bar = tmp->data;
 
 		next = tmp->next;
-                if (!STATUSBAR_IS_VISIBLE(bar->config, window))
-                        statusbar_destroy(bar);
+		if (!STATUSBAR_IS_VISIBLE(bar->config, window))
+			statusbar_destroy(bar);
 	}
 }
 
 static void statusbars_add_visible(MAIN_WINDOW_REC *window)
 {
 	STATUSBAR_GROUP_REC *group;
-        STATUSBAR_REC *bar;
+	STATUSBAR_REC *bar;
 	GSList *tmp;
 
-        group = active_statusbar_group;
+	group = active_statusbar_group;
 	for (tmp = group->config_bars; tmp != NULL; tmp = tmp->next) {
 		STATUSBAR_CONFIG_REC *config = tmp->data;
 
@@ -1070,42 +1070,42 @@ static void sig_window_changed(void)
 		MAIN_WINDOW_REC *rec = tmp->data;
 
 		statusbars_remove_unvisible(rec);
-                statusbars_add_visible(rec);
+		statusbars_add_visible(rec);
 	}
 }
 
 static void sig_gui_window_created(WINDOW_REC *window)
 {
-        statusbars_add_visible(WINDOW_MAIN(window));
+	statusbars_add_visible(WINDOW_MAIN(window));
 }
 
 static void statusbar_item_def_destroy(void *key, void *value)
 {
 	g_free(key);
-        g_free(value);
+	g_free(value);
 }
 
 static void statusbar_signal_item_destroy(void *key, GSList *value)
 {
 	while (value != NULL) {
 		statusbar_signal_remove(GPOINTER_TO_INT(value->data));
-                value->data = g_slist_remove(value, value->data);
+		value->data = g_slist_remove(value, value->data);
 	}
 }
 
 static void statusbar_item_signal_destroy(void *key, GSList *value)
 {
-        g_slist_free(value);
+	g_slist_free(value);
 }
 
 void statusbars_create_window_bars(void)
 {
-        g_slist_foreach(mainwindows, (GFunc) statusbars_add_visible, NULL);
+	g_slist_foreach(mainwindows, (GFunc) statusbars_add_visible, NULL);
 }
 
 void statusbar_init(void)
 {
-        statusbar_need_recreate_items = FALSE;
+	statusbar_need_recreate_items = FALSE;
 	statusbar_groups = NULL;
 	active_statusbar_group = NULL;
 	sbar_item_defs = g_hash_table_new((GHashFunc) g_str_hash,
@@ -1119,7 +1119,7 @@ void statusbar_init(void)
 	named_sbar_items = g_hash_table_new((GHashFunc) g_str_hash,
 					    (GCompareFunc) g_str_equal);
 
-        signal_add("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
+	signal_add("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
 	signal_add("mainwindow resized", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_add("mainwindow moved", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_add("gui window created", (SIGNAL_FUNC) sig_gui_window_created);
@@ -1150,7 +1150,7 @@ void statusbar_deinit(void)
 	g_hash_table_destroy(sbar_item_signals);
 	g_hash_table_destroy(named_sbar_items);
 
-        signal_remove("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
+	signal_remove("terminal resized", (SIGNAL_FUNC) sig_terminal_resized);
 	signal_remove("mainwindow resized", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_remove("mainwindow moved", (SIGNAL_FUNC) sig_mainwindow_resized);
 	signal_remove("gui window created", (SIGNAL_FUNC) sig_gui_window_created);

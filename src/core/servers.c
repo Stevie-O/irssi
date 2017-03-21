@@ -110,7 +110,7 @@ static char *server_create_tag(SERVER_CONNECT_REC *conn)
 		server_create_address_tag(conn->address);
 
 	if (conn->tag != NULL && server_find_tag(conn->tag) == NULL &&
-            server_find_lookup_tag(conn->tag) == NULL &&
+	server_find_lookup_tag(conn->tag) == NULL &&
 	    strncmp(conn->tag, tag, strlen(tag)) == 0) {
 		/* use the existing tag if it begins with the same ID -
 		   this is useful when you have several connections to
@@ -206,7 +206,7 @@ static void server_real_connect(SERVER_REC *server, IPADDR *ip,
 	const char *errmsg;
 	char *errmsg2;
 	char ipaddr[MAX_IP_LEN];
-        int port;
+	int port;
 
 	g_return_if_fail(ip != NULL || unix_socket != NULL);
 
@@ -259,7 +259,7 @@ static void server_real_connect(SERVER_REC *server, IPADDR *ip,
 static void server_connect_callback_readpipe(SERVER_REC *server)
 {
 	RESOLVED_IP_REC iprec;
-        IPADDR *ip;
+	IPADDR *ip;
 	const char *errormsg;
 	char *servername = NULL;
 
@@ -278,7 +278,7 @@ static void server_connect_callback_readpipe(SERVER_REC *server)
 
 	/* figure out if we should use IPv4 or v6 address */
 	if (iprec.error != 0) {
-                /* error */
+		/* error */
 		ip = NULL;
 	} else if (server->connrec->family == AF_INET) {
 		/* force IPv4 connection */
@@ -384,7 +384,7 @@ void server_connect_init(SERVER_REC *server)
 int server_start_connect(SERVER_REC *server)
 {
 	const char *connect_address;
-        int fd[2];
+	int fd[2];
 
 	g_return_val_if_fail(server != NULL, FALSE);
 	if (!server->connrec->unix_socket && server->connrec->port <= 0)
@@ -524,7 +524,7 @@ int server_unref(SERVER_REC *server)
 		return TRUE;
 	}
 
-        MODULE_DATA_DEINIT(server);
+	MODULE_DATA_DEINIT(server);
 	server_connect_unref(server->connrec);
 	if (server->rawlog != NULL) rawlog_destroy(server->rawlog);
 	g_free(server->version);
@@ -534,7 +534,7 @@ int server_unref(SERVER_REC *server)
 
 	server->type = 0;
 	g_free(server);
-        return FALSE;
+	return FALSE;
 }
 
 SERVER_REC *server_find_tag(const char *tag)
@@ -591,7 +591,7 @@ SERVER_REC *server_find_chatnet(const char *chatnet)
 
 void server_connect_ref(SERVER_CONNECT_REC *conn)
 {
-        conn->refcount++;
+	conn->refcount++;
 }
 
 void server_connect_unref(SERVER_CONNECT_REC *conn)
@@ -605,7 +605,7 @@ void server_connect_unref(SERVER_CONNECT_REC *conn)
 			  conn->tag, conn->refcount);
 	}
 
-        CHAT_PROTOCOL(conn)->destroy_server_connect(conn);
+	CHAT_PROTOCOL(conn)->destroy_server_connect(conn);
 
 	if (conn->connect_handle != NULL)
 		net_disconnect(conn->connect_handle);
@@ -712,16 +712,16 @@ static void disconnect_servers(GSList *servers, int chat_type)
 	for (tmp = servers; tmp != NULL; tmp = next) {
 		SERVER_REC *rec = tmp->data;
 
-                next = tmp->next;
-                if (rec->chat_type == chat_type)
+		next = tmp->next;
+		if (rec->chat_type == chat_type)
 			server_disconnect(rec);
 	}
 }
 
 static void sig_chat_protocol_deinit(CHAT_PROTOCOL_REC *proto)
 {
-        disconnect_servers(servers, proto->id);
-        disconnect_servers(lookup_servers, proto->id);
+	disconnect_servers(servers, proto->id);
+	disconnect_servers(lookup_servers, proto->id);
 }
 
 void servers_init(void)

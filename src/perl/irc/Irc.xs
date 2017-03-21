@@ -76,7 +76,7 @@ static void perl_dcc_fill_hash(HV *hv, DCC_REC *dcc)
 
 static void perl_dcc_chat_fill_hash(HV *hv, CHAT_DCC_REC *dcc)
 {
-        perl_dcc_fill_hash(hv, (DCC_REC *) dcc);
+	perl_dcc_fill_hash(hv, (DCC_REC *) dcc);
 
 	(void) hv_store(hv, "id", 2, new_pv(dcc->id), 0);
 	(void) hv_store(hv, "mirc_ctcp", 9, newSViv(dcc->mirc_ctcp), 0);
@@ -85,7 +85,7 @@ static void perl_dcc_chat_fill_hash(HV *hv, CHAT_DCC_REC *dcc)
 
 static void perl_dcc_file_fill_hash(HV *hv, FILE_DCC_REC *dcc)
 {
-        perl_dcc_fill_hash(hv, (DCC_REC *) dcc);
+	perl_dcc_fill_hash(hv, (DCC_REC *) dcc);
 
 	(void) hv_store(hv, "size", 4, newSViv(dcc->size), 0);
 	(void) hv_store(hv, "skipped", 7, newSViv(dcc->skipped), 0);
@@ -93,7 +93,7 @@ static void perl_dcc_file_fill_hash(HV *hv, FILE_DCC_REC *dcc)
 
 static void perl_dcc_get_fill_hash(HV *hv, GET_DCC_REC *dcc)
 {
-        perl_dcc_file_fill_hash(hv, (FILE_DCC_REC *) dcc);
+	perl_dcc_file_fill_hash(hv, (FILE_DCC_REC *) dcc);
 
 	(void) hv_store(hv, "get_type", 8, newSViv(dcc->get_type), 0);
 	(void) hv_store(hv, "file", 4, new_pv(dcc->file), 0);
@@ -102,7 +102,7 @@ static void perl_dcc_get_fill_hash(HV *hv, GET_DCC_REC *dcc)
 
 static void perl_dcc_send_fill_hash(HV *hv, SEND_DCC_REC *dcc)
 {
-        perl_dcc_file_fill_hash(hv, (FILE_DCC_REC *) dcc);
+	perl_dcc_file_fill_hash(hv, (FILE_DCC_REC *) dcc);
 
 	(void) hv_store(hv, "file_quoted", 11, newSViv(dcc->file_quoted), 0);
 	(void) hv_store(hv, "waitforend", 10, newSViv(dcc->waitforend), 0);
@@ -111,8 +111,8 @@ static void perl_dcc_send_fill_hash(HV *hv, SEND_DCC_REC *dcc)
 
 static void perl_netsplit_fill_hash(HV *hv, NETSPLIT_REC *netsplit)
 {
-        AV *av;
-        GSList *tmp;
+	AV *av;
+	GSList *tmp;
 
 	(void) hv_store(hv, "nick", 4, new_pv(netsplit->nick), 0);
 	(void) hv_store(hv, "address", 7, new_pv(netsplit->address), 0);
@@ -221,7 +221,7 @@ CODE:
 	irssi_add_object(module_get_uniq_id_str("DCC", "SERVER"),
 			 0, "Irssi::Irc::Dcc::Server",
 			 (PERL_OBJECT_FUNC) perl_dcc_send_fill_hash);
-        irssi_add_plains(irc_plains);
+	irssi_add_plains(irc_plains);
 	perl_eval_pv("@Irssi::Irc::Dcc::Chat::ISA = qw(Irssi::Irc::Dcc);\n"
 		     "@Irssi::Irc::Dcc::Get::ISA = qw(Irssi::Irc::Dcc);\n"
 		     "@Irssi::Irc::Dcc::Send::ISA = qw(Irssi::Irc::Dcc);\n"

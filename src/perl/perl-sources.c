@@ -29,7 +29,7 @@
 #include "misc.h"
 
 typedef struct {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 	int tag;
 	int refcount;
 	int once; /* run only once */
@@ -42,7 +42,7 @@ static GSList *perl_sources;
 
 static void perl_source_ref(PERL_SOURCE_REC *rec)
 {
-        rec->refcount++;
+	rec->refcount++;
 }
 
 static int perl_source_unref(PERL_SOURCE_REC *rec)
@@ -50,8 +50,8 @@ static int perl_source_unref(PERL_SOURCE_REC *rec)
 	if (--rec->refcount != 0)
 		return TRUE;
 
-        SvREFCNT_dec(rec->data);
-        SvREFCNT_dec(rec->func);
+	SvREFCNT_dec(rec->data);
+	SvREFCNT_dec(rec->func);
 	g_free(rec);
 	return FALSE;
 }
@@ -77,13 +77,13 @@ static int perl_source_event(PERL_SOURCE_REC *rec)
 	XPUSHs(sv_mortalcopy(rec->data));
 	PUTBACK;
 
-        perl_source_ref(rec);
+	perl_source_ref(rec);
 	perl_call_sv(rec->func, G_EVAL|G_DISCARD);
 
 	if (SvTRUE(ERRSV)) {
-                char *error = g_strdup(SvPV_nolen(ERRSV));
+		char *error = g_strdup(SvPV_nolen(ERRSV));
 		signal_emit("script error", 2, rec->script, error);
-                g_free(error);
+		g_free(error);
 	}
 
 	if (perl_source_unref(rec) && rec->once)
@@ -97,13 +97,13 @@ static int perl_source_event(PERL_SOURCE_REC *rec)
 
 int perl_timeout_add(int msecs, SV *func, SV *data, int once)
 {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 	PERL_SOURCE_REC *rec;
 	const char *pkg;
 
-        pkg = perl_get_package();
+	pkg = perl_get_package();
 	script = perl_script_find_package(pkg);
-        g_return_val_if_fail(script != NULL, -1);
+	g_return_val_if_fail(script != NULL, -1);
 
 	rec = g_new0(PERL_SOURCE_REC, 1);
 	perl_source_ref(rec);
@@ -120,19 +120,19 @@ int perl_timeout_add(int msecs, SV *func, SV *data, int once)
 
 int perl_input_add(int source, int condition, SV *func, SV *data, int once)
 {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 	PERL_SOURCE_REC *rec;
-        const char *pkg;
+	const char *pkg;
 
-        pkg = perl_get_package();
+	pkg = perl_get_package();
 	script = perl_script_find_package(pkg);
-        g_return_val_if_fail(script != NULL, -1);
+	g_return_val_if_fail(script != NULL, -1);
 
 	rec = g_new0(PERL_SOURCE_REC, 1);
 	perl_source_ref(rec);
 
 	rec->once = once;
-        rec->script =script;
+	rec->script =script;
 	rec->func = perl_func_sv_inc(func, pkg);
 	rec->data = SvREFCNT_inc(data);
 
@@ -165,7 +165,7 @@ void perl_source_remove_script(PERL_SCRIPT_REC *script)
 		PERL_SOURCE_REC *rec = tmp->data;
 
 		next = tmp->next;
-                if (rec->script == script)
+		if (rec->script == script)
 			perl_source_destroy(rec);
 	}
 }

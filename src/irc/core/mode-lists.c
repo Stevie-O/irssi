@@ -105,7 +105,7 @@ void banlist_remove(IRC_CHANNEL_REC *channel, const char *ban, const char *nick)
 static void channel_destroyed(IRC_CHANNEL_REC *channel)
 {
 	if (!IS_IRC_CHANNEL(channel))
-                return;
+		return;
 
 	banlist_free(channel->banlist);
 }

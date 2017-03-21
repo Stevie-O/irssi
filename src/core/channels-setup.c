@@ -37,7 +37,7 @@ static int compare_channel_setup (CONFIG_NODE *node, CHANNEL_SETUP_REC *channel)
 	name = config_node_get_str(node, "name", NULL);
 	chatnet = config_node_get_str(node, "chatnet", NULL);
 
-	if (g_strcmp0(name, channel->name) != 0 || 
+	if (g_strcmp0(name, channel->name) != 0 ||
 	    g_strcmp0(chatnet, channel->chatnet) != 0)
 		return 1;
 
@@ -61,7 +61,7 @@ static void channel_setup_save(CHANNEL_SETUP_REC *channel)
 		/* Create a brand-new channel record */
 		node = iconfig_node_section(parent_node, NULL, NODE_TYPE_BLOCK);
 
-        iconfig_node_clear(node);
+	iconfig_node_clear(node);
 	iconfig_node_set_str(node, "name", channel->name);
 	iconfig_node_set_str(node, "chatnet", channel->chatnet);
 	if (channel->autojoin)
@@ -133,8 +133,8 @@ void channel_setup_remove_chatnet(const char *chatnet)
 
 void channel_setup_remove(CHANNEL_SETUP_REC *channel)
 {
-        channel_config_remove(channel);
-        channel_setup_destroy(channel);
+	channel_config_remove(channel);
+	channel_setup_destroy(channel);
 }
 
 CHANNEL_SETUP_REC *channel_setup_find(const char *channel,
@@ -158,13 +158,13 @@ CHANNEL_SETUP_REC *channel_setup_find(const char *channel,
 static CHANNEL_SETUP_REC *channel_setup_read(CONFIG_NODE *node)
 {
 	CHANNEL_SETUP_REC *rec;
-        CHATNET_REC *chatnetrec;
+	CHATNET_REC *chatnetrec;
 	char *channel, *chatnet;
 
 	g_return_val_if_fail(node != NULL, NULL);
 
 	channel = config_node_get_str(node, "name", NULL);
-        chatnet = config_node_get_str(node, "chatnet", NULL);
+	chatnet = config_node_get_str(node, "chatnet", NULL);
 
 	chatnetrec = chatnet == NULL ? NULL : chatnet_find(chatnet);
 	if (channel == NULL || chatnetrec == NULL) {
@@ -206,11 +206,11 @@ static void channels_read_config(void)
 
 void channels_setup_init(void)
 {
-        setupchannels = NULL;
+	setupchannels = NULL;
 	source_host_ok = FALSE;
 
-        signal_add("setup reread", (SIGNAL_FUNC) channels_read_config);
-        signal_add("irssi init read settings", (SIGNAL_FUNC) channels_read_config);
+	signal_add("setup reread", (SIGNAL_FUNC) channels_read_config);
+	signal_add("irssi init read settings", (SIGNAL_FUNC) channels_read_config);
 }
 
 void channels_setup_deinit(void)
@@ -218,6 +218,6 @@ void channels_setup_deinit(void)
 	while (setupchannels != NULL)
 		channel_setup_destroy(setupchannels->data);
 
-        signal_remove("setup reread", (SIGNAL_FUNC) channels_read_config);
-        signal_remove("irssi init read settings", (SIGNAL_FUNC) channels_read_config);
+	signal_remove("setup reread", (SIGNAL_FUNC) channels_read_config);
+	signal_remove("irssi init read settings", (SIGNAL_FUNC) channels_read_config);
 }

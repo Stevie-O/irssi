@@ -62,7 +62,7 @@ enum {
 
 typedef struct {
 	int current_query_type; /* query type that is currently being asked */
-        GSList *current_queries; /* All channels that are currently being queried */
+	GSList *current_queries; /* All channels that are currently being queried */
 
 	GSList *queries[CHANNEL_QUERIES]; /* All queries that need to be asked from server */
 } SERVER_QUERY_REC;
@@ -76,7 +76,7 @@ static void sig_connected(IRC_SERVER_REC *server)
 		return;
 
 	rec = g_new0(SERVER_QUERY_REC, 1);
-        server->chanqueries = rec;
+	server->chanqueries = rec;
 }
 
 static void sig_disconnected(IRC_SERVER_REC *server)
@@ -93,10 +93,10 @@ static void sig_disconnected(IRC_SERVER_REC *server)
 
 	for (n = 0; n < CHANNEL_QUERIES; n++)
 		g_slist_free(rec->queries[n]);
-        g_slist_free(rec->current_queries);
+	g_slist_free(rec->current_queries);
 	g_free(rec);
 
-        server->chanqueries = NULL;
+	server->chanqueries = NULL;
 }
 
 /* Add channel to query list */
@@ -173,35 +173,35 @@ static void query_send(IRC_SERVER_REC *server, int query)
 
 	rec = server->chanqueries;
 
-        /* get the list of channels to query */
+	/* get the list of channels to query */
 	onlyone = (server->no_multi_who && query == CHANNEL_QUERY_WHO) ||
 		(server->no_multi_mode && CHANNEL_IS_MODE_QUERY(query));
 
 	if (onlyone) {
-                chans = rec->queries[query];
+		chans = rec->queries[query];
 		rec->queries[query] =
 			g_slist_remove_link(rec->queries[query], chans);
 
 		chanrec = chans->data;
 		chanstr_commas = g_strdup(chanrec->name);
 		chanstr = g_strdup(chanrec->name);
-                count = 1;
+		count = 1;
 	} else {
 		char *chanstr_spaces;
 
 		chans = rec->queries[query];
-                count = g_slist_length(chans);
+		count = g_slist_length(chans);
 
 		if (count > server->max_query_chans) {
 			GSList *lastchan;
 
 			lastchan = g_slist_nth(rec->queries[query],
 					       server->max_query_chans-1);
-                        count = server->max_query_chans;
+			count = server->max_query_chans;
 			rec->queries[query] = lastchan->next;
 			lastchan->next = NULL;
 		} else {
-                        rec->queries[query] = NULL;
+			rec->queries[query] = NULL;
 		}
 
 		chanstr_commas = gslistptr_to_string(chans, G_STRUCT_OFFSET(IRC_CHANNEL_REC, name), ",");
@@ -212,7 +212,7 @@ static void query_send(IRC_SERVER_REC *server, int query)
 	}
 
 	rec->current_query_type = query;
-        rec->current_queries = chans;
+	rec->current_queries = chans;
 
 	switch (query) {
 	case CHANNEL_QUERY_MODE:
@@ -223,7 +223,7 @@ static void query_send(IRC_SERVER_REC *server, int query)
 		server_redirect_event(server, "mode channel", count,
 				      chanstr, -1, "chanquery abort",
 				      "event 324", "chanquery mode",
-                                      "event 329", "event 329",
+				"event 329", "event 329",
 				      "", "chanquery abort", NULL);
 		break;
 
@@ -253,7 +253,7 @@ static void query_send(IRC_SERVER_REC *server, int query)
 		break;
 
 	default:
-                cmd = NULL;
+		cmd = NULL;
 	}
 
 	irc_send_cmd(server, cmd);
@@ -266,13 +266,13 @@ static void query_send(IRC_SERVER_REC *server, int query)
 static void query_check(IRC_SERVER_REC *server)
 {
 	SERVER_QUERY_REC *rec;
-        int query;
+	int query;
 
 	g_return_if_fail(server != NULL);
 
 	rec = server->chanqueries;
 	if (rec->current_queries != NULL)
-                return; /* old queries haven't been answered yet */
+		return; /* old queries haven't been answered yet */
 
 	if (server->max_query_chans > 1 && !server->no_multi_who && !server->no_multi_mode && !channels_have_all_names(server)) {
 		/* all channels haven't sent /NAMES list yet */
@@ -287,7 +287,7 @@ static void query_check(IRC_SERVER_REC *server)
 		return;
 	}
 
-        query_send(server, query);
+	query_send(server, query);
 }
 
 /* if there's no more queries in queries in buffer, send the sync signal */
@@ -316,13 +316,13 @@ static void query_current_error(IRC_SERVER_REC *server)
 {
 	SERVER_QUERY_REC *rec;
 	GSList *tmp;
-        int query, abort_query;
+	int query, abort_query;
 
 	rec = server->chanqueries;
 
 	/* fix the thing that went wrong - or if it was already fixed,
 	   then all we can do is abort. */
-        abort_query = FALSE;
+	abort_query = FALSE;
 
 	query = rec->current_query_type;
 	if (query == CHANNEL_QUERY_WHO) {
@@ -332,8 +332,8 @@ static void query_current_error(IRC_SERVER_REC *server)
 			server->no_multi_who = TRUE;
 	} else {
 		if (server->no_multi_mode)
-                        abort_query = TRUE;
-                else
+			abort_query = TRUE;
+		else
 			server->no_multi_mode = TRUE;
 	}
 
@@ -352,7 +352,7 @@ static void query_current_error(IRC_SERVER_REC *server)
 	g_slist_free(rec->current_queries);
 	rec->current_queries = NULL;
 
-        query_check(server);
+	query_check(server);
 }
 
 static void sig_channel_joined(IRC_CHANNEL_REC *channel)
@@ -383,9 +383,9 @@ static void channel_got_query(IRC_CHANNEL_REC *chanrec, int query_type)
 
 	rec = chanrec->server->chanqueries;
 	if (query_type != rec->current_query_type)
-                return; /* shouldn't happen */
+		return; /* shouldn't happen */
 
-        /* got the query for channel.. */
+	/* got the query for channel.. */
 	rec->current_queries =
 		g_slist_remove(rec->current_queries, chanrec);
 	channel_checksync(chanrec);
@@ -409,7 +409,7 @@ static void event_channel_mode(IRC_SERVER_REC *server, const char *data,
 		if (chanrec->key != NULL && strchr(mode, 'k') == NULL) {
 			/* we joined the channel with a key,
 			   but it didn't have +k mode.. */
-                        parse_channel_modes(chanrec, NULL, "-k", TRUE);
+			parse_channel_modes(chanrec, NULL, "-k", TRUE);
 		}
 		parse_channel_modes(chanrec, nick, mode, FALSE);
 		channel_got_query(chanrec, CHANNEL_QUERY_MODE);
@@ -420,10 +420,10 @@ static void event_channel_mode(IRC_SERVER_REC *server, const char *data,
 
 static void event_end_of_who(IRC_SERVER_REC *server, const char *data)
 {
-        SERVER_QUERY_REC *rec;
-        GSList *tmp, *next;
+	SERVER_QUERY_REC *rec;
+	GSList *tmp, *next;
 	char *params, *channel, **channels;
-        int failed, multiple;
+	int failed, multiple;
 
 	g_return_if_fail(data != NULL);
 
@@ -431,12 +431,12 @@ static void event_end_of_who(IRC_SERVER_REC *server, const char *data)
 	multiple = strchr(channel, ',') != NULL;
 	channels = g_strsplit(channel, ",", -1);
 
-        failed = FALSE;
+	failed = FALSE;
 	rec = server->chanqueries;
 	for (tmp = rec->current_queries; tmp != NULL; tmp = next) {
 		IRC_CHANNEL_REC *chanrec = tmp->data;
 
-                next = tmp->next;
+		next = tmp->next;
 		if (strarray_find(channels, chanrec->name) == -1)
 			continue;
 
@@ -460,10 +460,10 @@ static void event_end_of_who(IRC_SERVER_REC *server, const char *data)
 	if (failed) {
 		/* server didn't understand multiple WHO replies,
 		   send them again separately */
-                query_current_error(server);
+		query_current_error(server);
 	}
 
-        g_free(params);
+	g_free(params);
 }
 
 static void event_end_of_banlist(IRC_SERVER_REC *server, const char *data)

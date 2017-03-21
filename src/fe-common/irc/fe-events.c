@@ -184,7 +184,7 @@ static void event_kill(IRC_SERVER_REC *server, const char *data,
 	reason = strstr(path, " (");
 	if (reason == NULL || reason[strlen(reason)-1] != ')') {
 		/* weird server, maybe it didn't give path */
-                reason = path;
+		reason = path;
 		path = "";
 	} else {
 		/* reason inside (...) */
@@ -334,7 +334,7 @@ static void event_connected(IRC_SERVER_REC *server)
 
 	g_return_if_fail(server != NULL);
 
-        nick = server->connrec->nick;
+	nick = server->connrec->nick;
 	if (g_ascii_strcasecmp(server->nick, nick) == 0)
 		return;
 
@@ -366,7 +366,7 @@ static void event_ban_type_changed(void *ban_typep)
 	if (ban_type == 0) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
 			    IRCTXT_BANTYPE, "Error, using Normal");
-                return;
+		return;
 	}
 
 	if (ban_type == (IRC_MASK_USER|IRC_MASK_DOMAIN)) {
@@ -432,7 +432,7 @@ static void event_received(IRC_SERVER_REC *server, const char *data,
 	}
 
 	/* numeric event. */
-        signal_emit("default event numeric", 4, server, data, nick, addr);
+	signal_emit("default event numeric", 4, server, data, nick, addr);
 }
 
 void fe_events_init(void)

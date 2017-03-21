@@ -1,6 +1,6 @@
 /*
  channel-rejoin.c : rejoin to channel if it's "temporarily unavailable"
-                    this has nothing to do with autorejoin if kicked
+		this has nothing to do with autorejoin if kicked
 
     Copyright (C) 2000 Timo Sirainen
 
@@ -56,10 +56,10 @@ static REJOIN_REC *rejoin_find(IRC_SERVER_REC *server, const char *channel)
 	g_return_val_if_fail(channel != NULL, NULL);
 
 	for (tmp = server->rejoin_channels; tmp != NULL; tmp = tmp->next) {
-                REJOIN_REC *rec = tmp->data;
+		REJOIN_REC *rec = tmp->data;
 
 		if (g_ascii_strcasecmp(rec->channel, channel) == 0)
-                        return rec;
+			return rec;
 	}
 
 	return NULL;
@@ -202,7 +202,7 @@ static void server_rejoin_channels(IRC_SERVER_REC *server)
 	channels = g_string_new(NULL);
 	keys = g_string_new(NULL);
 
-        use_keys = FALSE;
+	use_keys = FALSE;
 	for (tmp = server->rejoin_channels; tmp != NULL; tmp = next) {
 		REJOIN_REC *rec = tmp->data;
 		next = tmp->next;
@@ -220,13 +220,13 @@ static void server_rejoin_channels(IRC_SERVER_REC *server)
 			g_string_append(keys, "x,");
 		else {
 			g_string_append_printf(keys, "%s,", rec->key);
-                        use_keys = TRUE;
+			use_keys = TRUE;
 		}
 	}
 
 	if (channels->len > 0) {
-                g_string_truncate(channels, channels->len-1);
-                g_string_truncate(keys, keys->len-1);
+		g_string_truncate(channels, channels->len-1);
+		g_string_truncate(keys, keys->len-1);
 
 		if (use_keys) g_string_append_printf(channels, " %s", keys->str);
 		server->channels_join(SERVER(server), channels->str, TRUE);
@@ -252,7 +252,7 @@ static int sig_rejoin(void)
 
 static void cmd_rmrejoins(const char *data, IRC_SERVER_REC *server)
 {
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	while (server->rejoin_channels != NULL)
 		rejoin_destroy(server, server->rejoin_channels->data);

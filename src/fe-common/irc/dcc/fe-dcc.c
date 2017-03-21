@@ -62,7 +62,7 @@ static void dcc_request(DCC_REC *dcc)
 	g_return_if_fail(dcc != NULL);
 
 	if (dcc->port < 1024) {
-                /* warn about connecting to lowports */
+		/* warn about connecting to lowports */
 		service = net_getservbyport(dcc->port);
 
 		printformat(dcc->server, NULL, MSGLEVEL_DCC,
@@ -91,8 +91,8 @@ static void dcc_error_connect(DCC_REC *dcc)
 {
 	g_return_if_fail(dcc != NULL);
 
-        printformat(dcc->server, NULL, MSGLEVEL_DCC,
-                    IRCTXT_DCC_CONNECT_ERROR, dcc->addrstr, dcc->port);
+	printformat(dcc->server, NULL, MSGLEVEL_DCC,
+		IRCTXT_DCC_CONNECT_ERROR, dcc->addrstr, dcc->port);
 }
 
 static void dcc_error_unknown_type(const char *type)

@@ -66,24 +66,24 @@ void irc_send_cmd_full(IRC_SERVER_REC *server, const char *cmd,
 		strncpy(str, cmd, 510);
 		if (len > 510) len = 510;
 		str[len] = '\0';
-                cmd = str;
+		cmd = str;
 	}
 
 	if (send_now) {
 		rawlog_output(server->rawlog, cmd);
 		server_redirect_command(server, cmd, server->redirect_next);
-                server->redirect_next = NULL;
+		server->redirect_next = NULL;
 	}
 
 	if (!raw) {
-                /* Add CR+LF to command */
+		/* Add CR+LF to command */
 		str[len++] = 13;
 		str[len++] = 10;
 		str[len] = '\0';
 	}
 
 	if (send_now) {
-                irc_server_send_data(server, cmd, len);
+		irc_server_send_data(server, cmd, len);
 	} else {
 
 		/* add to queue */
@@ -99,7 +99,7 @@ void irc_send_cmd_full(IRC_SERVER_REC *server, const char *cmd,
 							  server->redirect_next);
 		}
 	}
-        server->redirect_next = NULL;
+	server->redirect_next = NULL;
 }
 
 /* Send command to IRC server */
@@ -108,12 +108,12 @@ void irc_send_cmd(IRC_SERVER_REC *server, const char *cmd)
 	GTimeVal now;
 	int send_now;
 
-        g_get_current_time(&now);
+	g_get_current_time(&now);
 	send_now = g_timeval_cmp(&now, &server->wait_cmd) >= 0 &&
 		(server->cmdcount < server->max_cmds_at_once ||
 		 server->cmd_queue_speed <= 0);
 
-        irc_send_cmd_full(server, cmd, send_now, FALSE, FALSE);
+	irc_send_cmd_full(server, cmd, send_now, FALSE, FALSE);
 }
 
 /* Send command to IRC server */
@@ -137,7 +137,7 @@ void irc_send_cmd_now(IRC_SERVER_REC *server, const char *cmd)
 {
 	g_return_if_fail(cmd != NULL);
 
-        irc_send_cmd_full(server, cmd, TRUE, TRUE, FALSE);
+	irc_send_cmd_full(server, cmd, TRUE, TRUE, FALSE);
 }
 
 /* Send command to server putting it at the beginning of the queue of
@@ -147,7 +147,7 @@ void irc_send_cmd_first(IRC_SERVER_REC *server, const char *cmd)
 {
 	g_return_if_fail(cmd != NULL);
 
-        irc_send_cmd_full(server, cmd, FALSE, TRUE, FALSE);
+	irc_send_cmd_full(server, cmd, FALSE, TRUE, FALSE);
 }
 
 static char *split_nicks(const char *cmd, char **pre, char **nicks, char **post, int arg)
@@ -192,7 +192,7 @@ void irc_send_cmd_split(IRC_SERVER_REC *server, const char *cmd,
 
 	str = split_nicks(cmd, &pre, &nicks, &post, nickarg);
 	if (nicks == NULL) {
-                /* no nicks given? */
+		/* no nicks given? */
 		g_free(str);
 		return;
 	}
@@ -284,7 +284,7 @@ char *event_get_params(const char *data, int count, ...)
 static void irc_server_event(IRC_SERVER_REC *server, const char *line,
 			     const char *nick, const char *address)
 {
-        const char *signal;
+	const char *signal;
 	char *event, *args;
 
 	g_return_if_fail(line != NULL);
@@ -296,14 +296,14 @@ static void irc_server_event(IRC_SERVER_REC *server, const char *line,
 	while (*args == ' ') args++;
 	ascii_strdown(event);
 
-        /* check if event needs to be redirected */
+	/* check if event needs to be redirected */
 	signal = server_redirect_get_signal(server, nick, event, args);
 	if (signal == NULL)
 		signal = event;
-        else
+	else
 		rawlog_redirect(server->rawlog, signal);
 
-        /* emit it */
+	/* emit it */
 	current_server_event = event+6;
 	if (!signal_emit(signal, 4, server, args, nick, address))
 		signal_emit_id(signal_default_event, 4, server, line, nick, address);

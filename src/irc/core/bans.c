@@ -45,7 +45,7 @@ char *ban_get_mask(IRC_CHANNEL_REC *channel, const char *nick, int ban_type)
 {
 	NICK_REC *rec;
 	char *str, *user, *host;
-        int size;
+	int size;
 
 	g_return_val_if_fail(IS_IRC_CHANNEL(channel), NULL);
 	g_return_val_if_fail(nick != NULL, NULL);
@@ -65,14 +65,14 @@ char *ban_get_mask(IRC_CHANNEL_REC *channel, const char *nick, int ban_type)
 	/* there's a limit of 10 characters in user mask. so, banning
 	   someone with user mask of 10 characters gives us "*1234567890",
 	   which is one too much.. so, remove the first character after "*"
-           so we'll get "*234567890" */
+	so we'll get "*234567890" */
 	user = strchr(str, '!');
 	if (user == NULL) return str;
 
 	host = strchr(++user, '@');
 	if (host == NULL) return str;
 
-        size = (int) (host-user);
+	size = (int) (host-user);
 	if (size >= 10) {
 		/* too long user mask */
 		g_memmove(user+1, user+(size-9), strlen(user+(size-9))+1);
@@ -108,7 +108,7 @@ char *ban_get_masks(IRC_CHANNEL_REC *channel, const char *nicks, int ban_type)
 
 	ret = str->str;
 	g_string_free(str, FALSE);
-        return ret;
+	return ret;
 }
 
 void ban_set(IRC_CHANNEL_REC *channel, const char *bans, int ban_type)
@@ -122,7 +122,7 @@ void ban_set(IRC_CHANNEL_REC *channel, const char *bans, int ban_type)
 
 	masks = ban_get_masks(channel, bans, ban_type);
 	channel_set_singlemode(channel, masks, "+b");
-        g_free(masks);
+	g_free(masks);
 }
 
 void ban_remove(IRC_CHANNEL_REC *channel, const char *bans)
@@ -131,20 +131,20 @@ void ban_remove(IRC_CHANNEL_REC *channel, const char *bans)
 	GSList *tmp;
 	BAN_REC *rec;
 	char **ban, **banlist;
-        int found;
+	int found;
 
 	g_return_if_fail(bans != NULL);
 
 	str = g_string_new(NULL);
 	banlist = g_strsplit(bans, " ", -1);
 	for (ban = banlist; *ban != NULL; ban++) {
-                found = FALSE;
+		found = FALSE;
 		for (tmp = channel->banlist; tmp != NULL; tmp = tmp->next) {
 			rec = tmp->data;
 
 			if (match_wildcards(*ban, rec->ban)) {
 				g_string_append_printf(str, "%s ", rec->ban);
-                                found = TRUE;
+				found = TRUE;
 			}
 		}
 
@@ -190,7 +190,7 @@ static void command_set_ban(const char *data, IRC_SERVER_REC *server,
 	if (*nicks == '\0') {
 		if (g_strcmp0(data, "*") != 0)
 			cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
-                /* /BAN * or /UNBAN * - ban/unban everyone */
+		/* /BAN * or /UNBAN * - ban/unban everyone */
 		nicks = (char *) data;
 	}
 
@@ -211,7 +211,7 @@ static int parse_custom_ban(const char *type)
 	char **list;
 	int n, ban_type;
 
-        ban_type = 0;
+	ban_type = 0;
 	list = g_strsplit(type, " ", -1);
 	for (n = 0; list[n] != NULL; n++) {
 		if (i_toupper(list[n][0]) == 'N')
@@ -225,7 +225,7 @@ static int parse_custom_ban(const char *type)
 	}
 	g_strfreev(list);
 
-        return ban_type;
+	return ban_type;
 }
 
 static int parse_ban_type(const char *type)
@@ -244,25 +244,25 @@ static int parse_ban_type(const char *type)
 		return BAN_TYPE_DOMAIN;
 	if (i_toupper(type[0]) == 'C') {
 		pos = strchr(type, ' ');
-                if (pos != NULL)
+		if (pos != NULL)
 			return parse_custom_ban(pos+1);
 	}
 
-        return 0;
+	return 0;
 }
 
 /* SYNTAX: BAN [-normal | -user | -host | -domain | -custom <type>] <nicks/masks> */
 static void cmd_ban(const char *data, IRC_SERVER_REC *server, void *item)
 {
 	GHashTable *optlist;
-        const char *custom_type;
+	const char *custom_type;
 	char *ban;
-        int ban_type;
+	int ban_type;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
-	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS | 
+	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS |
 			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 			    "ban", &optlist, &ban))
 		return;
@@ -277,9 +277,9 @@ static void cmd_ban(const char *data, IRC_SERVER_REC *server, void *item)
 		ban_type = BAN_TYPE_DOMAIN;
 	else {
 		custom_type = g_hash_table_lookup(optlist, "custom");
-                if (custom_type != NULL)
+		if (custom_type != NULL)
 			ban_type = parse_custom_ban(custom_type);
-                else
+		else
 			ban_type = default_ban_type;
 	}
 
@@ -295,9 +295,9 @@ static void cmd_unban(const char *data, IRC_SERVER_REC *server, void *item)
 	char *ban;
 	void *free_arg;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
-	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS | 
+	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS |
 			    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 			    "unban", &optlist, &ban))
 		return;
@@ -329,14 +329,14 @@ static void read_settings(void)
 	}
 
 	if (default_ban_type <= 0)
-                default_ban_type = IRC_MASK_USER|IRC_MASK_DOMAIN;
+		default_ban_type = IRC_MASK_USER|IRC_MASK_DOMAIN;
 
 	default_ban_type_str = g_strdup(settings_get_str("ban_type"));
 }
 
 void bans_init(void)
 {
-        default_ban_type_str = NULL;
+	default_ban_type_str = NULL;
 	settings_add_str("misc", "ban_type", "normal");
 
 	command_bind_irc("ban", NULL, (SIGNAL_FUNC) cmd_ban);
@@ -344,8 +344,8 @@ void bans_init(void)
 	command_set_options("ban", "normal user host domain +custom");
 	command_set_options("unban", "first last");
 
-        read_settings();
-        signal_add("setup changed", (SIGNAL_FUNC) read_settings);
+	read_settings();
+	signal_add("setup changed", (SIGNAL_FUNC) read_settings);
 }
 
 void bans_deinit(void)

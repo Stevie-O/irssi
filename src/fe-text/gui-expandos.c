@@ -29,7 +29,7 @@ static char *expando_idletime(SERVER_REC *server, void *item, int *free_ret)
 {
 	int diff;
 
-        *free_ret = TRUE;
+	*free_ret = TRUE;
 	diff = (int) (time(NULL) - get_idle_time());
 	return g_strdup_printf("%d", diff);
 }

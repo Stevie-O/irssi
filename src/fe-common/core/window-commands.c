@@ -56,7 +56,7 @@ static void window_print_binds(WINDOW_REC *win)
 static void window_print_items(WINDOW_REC *win)
 {
 	GSList *tmp;
-        const char *type;
+	const char *type;
 
 	printformat_window(win, MSGLEVEL_CLIENTCRAP,
 			   TXT_WINDOW_INFO_ITEMS_HEADER);
@@ -77,12 +77,12 @@ static void window_print_items(WINDOW_REC *win)
 
 static void cmd_window_info(WINDOW_REC *win)
 {
-        char *levelstr;
+	char *levelstr;
 
 	printformat_window(win, MSGLEVEL_CLIENTCRAP,
 			   TXT_WINDOW_INFO_HEADER);
 
-        /* Window reference number + sticky status */
+	/* Window reference number + sticky status */
 	if (!win->sticky_refnum) {
 		printformat_window(win, MSGLEVEL_CLIENTCRAP,
 				   TXT_WINDOW_INFO_REFNUM, win->refnum);
@@ -91,13 +91,13 @@ static void cmd_window_info(WINDOW_REC *win)
 				   TXT_WINDOW_INFO_REFNUM_STICKY, win->refnum);
 	}
 
-        /* Window name */
+	/* Window name */
 	if (win->name != NULL) {
 		printformat_window(win, MSGLEVEL_CLIENTCRAP,
 				   TXT_WINDOW_INFO_NAME, win->name);
 	}
 
-        /* Window width / height */
+	/* Window width / height */
 	printformat_window(win, MSGLEVEL_CLIENTCRAP, TXT_WINDOW_INFO_SIZE,
 			   win->width, win->height);
 
@@ -113,14 +113,14 @@ static void cmd_window_info(WINDOW_REC *win)
 				   TXT_WINDOW_INFO_HISTORY, win->history_name);
 	}
 
-        /* Window level */
+	/* Window level */
 	levelstr = win->level == 0 ?
 		g_strdup("NONE") : bits2level(win->level);
 	printformat_window(win, MSGLEVEL_CLIENTCRAP, TXT_WINDOW_INFO_LEVEL,
 			   levelstr);
 	g_free(levelstr);
 
-        /* Active window server + sticky status */
+	/* Active window server + sticky status */
 	if (win->servertag == NULL) {
 		printformat_window(win, MSGLEVEL_CLIENTCRAP,
 				   TXT_WINDOW_INFO_SERVER,
@@ -129,29 +129,29 @@ static void cmd_window_info(WINDOW_REC *win)
 	} else {
 		if (win->active_server != NULL &&
 		    g_strcmp0(win->active_server->tag, win->servertag) != 0)
-                        g_warning("Active server isn't the sticky server!");
+			g_warning("Active server isn't the sticky server!");
 
 		printformat_window(win, MSGLEVEL_CLIENTCRAP,
 				   TXT_WINDOW_INFO_SERVER_STICKY,
 				   win->servertag);
 	}
 
-        /* Window theme + error status */
+	/* Window theme + error status */
 	if (win->theme_name != NULL) {
 		printformat_window(win, MSGLEVEL_CLIENTCRAP,
 				   TXT_WINDOW_INFO_THEME, win->theme_name,
 				   win->theme != NULL ? "" : "(not loaded)");
 	}
 
-        /* Bound items in window */
+	/* Bound items in window */
 	if (win->bound_items != NULL)
-                window_print_binds(win);
+		window_print_binds(win);
 
-        /* Item */
+	/* Item */
 	if (win->items != NULL)
-                window_print_items(win);
+		window_print_items(win);
 
-        signal_emit("window print info", 1, win);
+	signal_emit("window print info", 1, win);
 
 	printformat_window(win, MSGLEVEL_CLIENTCRAP,
 			   TXT_WINDOW_INFO_FOOTER);
@@ -159,13 +159,13 @@ static void cmd_window_info(WINDOW_REC *win)
 
 static void cmd_window(const char *data, void *server, WI_ITEM_REC *item)
 {
-        while (*data == ' ') data++;
+	while (*data == ' ') data++;
 
 	if (*data == '\0')
-                cmd_window_info(active_win);
+		cmd_window_info(active_win);
 	else if (is_numeric(data, 0))
-                signal_emit("command window refnum", 3, data, server, item);
-        else
+		signal_emit("command window refnum", 3, data, server, item);
+	else
 		command_runsub("window", data, server, item);
 }
 
@@ -188,9 +188,9 @@ static void cmd_window_new(const char *data, void *server, WI_ITEM_REC *item)
 /* SYNTAX: WINDOW CLOSE [<first> [<last>]] */
 static void cmd_window_close(const char *data)
 {
-        GSList *tmp, *destroys;
+	GSList *tmp, *destroys;
 	char *first, *last;
-        int first_num, last_num;
+	int first_num, last_num;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 2, &first, &last))
@@ -199,14 +199,14 @@ static void cmd_window_close(const char *data)
 	if ((*first != '\0' && !is_numeric(first, '\0')) ||
 	    ((*last != '\0') && !is_numeric(last, '\0'))) {
 		cmd_params_free(free_arg);
-                return;
+		return;
 	}
 
 	first_num = *first == '\0' ? active_win->refnum : atoi(first);
 	last_num = *last == '\0' ? first_num : atoi(last);
 
-        /* get list of windows to destroy */
-        destroys = NULL;
+	/* get list of windows to destroy */
+	destroys = NULL;
 	for (tmp = windows; tmp != NULL; tmp = tmp->next) {
 		WINDOW_REC *rec = tmp->data;
 
@@ -214,7 +214,7 @@ static void cmd_window_close(const char *data)
 			destroys = g_slist_append(destroys, rec);
 	}
 
-        /* really destroy the windows */
+	/* really destroy the windows */
 	while (destroys != NULL) {
 		WINDOW_REC *rec = destroys->data;
 
@@ -227,7 +227,7 @@ static void cmd_window_close(const char *data)
 			}
 		}
 
-                destroys = g_slist_remove(destroys, rec);
+		destroys = g_slist_remove(destroys, rec);
 	}
 
 	cmd_params_free(free_arg);
@@ -254,7 +254,7 @@ static void cmd_window_refnum(const char *data)
  * to break ties between windows with equally high activity.
  */
 static WINDOW_REC *window_highest_activity(WINDOW_REC *window,
-                                           int ignore_refnum)
+					int ignore_refnum)
 {
 	WINDOW_REC *rec, *max_win;
 	GSList *tmp;
@@ -423,11 +423,11 @@ static void cmd_window_immortal(const char *data)
 	if (*data == '\0')
 		set = active_win->immortal;
 	else if (g_ascii_strcasecmp(data, "ON") == 0)
-                set = TRUE;
+		set = TRUE;
 	else if (g_ascii_strcasecmp(data, "OFF") == 0)
-                set = FALSE;
+		set = FALSE;
 	else if (g_ascii_strcasecmp(data, "TOGGLE") == 0)
-                set = !active_win->immortal;
+		set = !active_win->immortal;
 	else {
 		printformat_window(active_win, MSGLEVEL_CLIENTERROR,
 				   TXT_NOT_TOGGLE);
@@ -435,11 +435,11 @@ static void cmd_window_immortal(const char *data)
 	}
 
 	if (set) {
-                window_set_immortal(active_win, TRUE);
+		window_set_immortal(active_win, TRUE);
 		printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
 				   TXT_WINDOW_SET_IMMORTAL);
 	} else {
-                window_set_immortal(active_win, FALSE);
+		window_set_immortal(active_win, FALSE);
 		printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
 				   TXT_WINDOW_UNSET_IMMORTAL);
 	}
@@ -450,7 +450,7 @@ static void cmd_window_server(const char *data)
 {
 	GHashTable *optlist;
 	SERVER_REC *server;
-        char *tag;
+	char *tag;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS,
@@ -486,7 +486,7 @@ static void cmd_window_server(const char *data)
 	} else if (active_win->active == NULL) {
 		window_change_server(active_win, server);
 		if (g_hash_table_lookup(optlist, "sticky") != NULL) {
-                        g_free_not_null(active_win->servertag);
+			g_free_not_null(active_win->servertag);
 			active_win->servertag = g_strdup(server->tag);
 			printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
 					   TXT_SET_SERVER_STICKY, server->tag);
@@ -503,7 +503,7 @@ static void cmd_window_server(const char *data)
 
 static void cmd_window_item(const char *data, void *server, WI_ITEM_REC *item)
 {
-        while (*data == ' ') data++;
+	while (*data == ' ') data++;
 
 	if (is_numeric(data, '\0'))
 		signal_emit("command window item goto", 3, data, server, item);
@@ -542,15 +542,15 @@ static void cmd_window_item_goto(const char *data, SERVER_REC *server)
 		item = window_item_find_window(active_win, server, target);
 	}
 
-        if (item != NULL)
-                window_item_set_active(active_win, item);
+	if (item != NULL)
+		window_item_set_active(active_win, item);
 
 	cmd_params_free(free_arg);
 }
 
 /* SYNTAX: WINDOW ITEM MOVE <number>|<name> */
 static void cmd_window_item_move(const char *data, SERVER_REC *server,
-                                 WI_ITEM_REC *item)
+				WI_ITEM_REC *item)
 {
 	WINDOW_REC *window;
 	void *free_arg;
@@ -559,15 +559,15 @@ static void cmd_window_item_move(const char *data, SERVER_REC *server,
 	if (!cmd_get_params(data, &free_arg, 1, &target))
 		return;
 
-        if (is_numeric(target, '\0')) {
-                /* move current window item to specified window */
-                window = window_find_refnum(atoi(target));
-        } else {
-                /* move specified window item to current window */
-                item = window_item_find(server, target);
-                window = active_win;
-        }
-        if (window != NULL && item != NULL)
+	if (is_numeric(target, '\0')) {
+		/* move current window item to specified window */
+		window = window_find_refnum(atoi(target));
+	} else {
+		/* move specified window item to current window */
+		item = window_item_find(server, target);
+		window = active_win;
+	}
+	if (window != NULL && item != NULL)
 		window_item_set_active(window, item);
 
 	cmd_params_free(free_arg);
@@ -577,9 +577,9 @@ static void cmd_window_item_move(const char *data, SERVER_REC *server,
 static void cmd_window_number(const char *data)
 {
 	GHashTable *optlist;
-        char *refnum;
+	char *refnum;
 	void *free_arg;
-        int num;
+	int num;
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS,
 			    "window number", &optlist, &refnum))
@@ -598,7 +598,7 @@ static void cmd_window_number(const char *data)
 			g_hash_table_lookup(optlist, "sticky") != NULL;
 	}
 
-        cmd_params_free(free_arg);
+	cmd_params_free(free_arg);
 }
 
 /* SYNTAX: WINDOW NAME <name> */
@@ -645,11 +645,11 @@ static void window_refnums_move_left(WINDOW_REC *move_window)
 	WINDOW_REC *window;
 	int refnum, new_refnum;
 
-        new_refnum = windows_refnum_last();
+	new_refnum = windows_refnum_last();
 	for (refnum = move_window->refnum+1; refnum <= new_refnum; refnum++) {
 		window = window_find_refnum(refnum);
 		if (window == NULL) {
-                        new_refnum++;
+			new_refnum++;
 			break;
 		}
 
@@ -666,10 +666,10 @@ static void window_refnums_move_right(WINDOW_REC *move_window)
 	WINDOW_REC *window;
 	int refnum, new_refnum;
 
-        new_refnum = 1;
+	new_refnum = 1;
 	if (window_find_refnum(new_refnum) == NULL) {
 		window_set_refnum(move_window, new_refnum);
-                return;
+		return;
 	}
 
 	/* find the first unused refnum, like if there's windows
@@ -714,7 +714,7 @@ static void cmd_window_move_next(void)
 		return;
 	}
 
-        window_refnums_move_right(active_win);
+	window_refnums_move_right(active_win);
 }
 
 static void active_window_move_to(int new_refnum)
@@ -757,7 +757,7 @@ static void cmd_window_move(const char *data, SERVER_REC *server, WI_ITEM_REC *i
 {
 	if (!is_numeric(data, 0)) {
 		command_runsub("window move", data, server, item);
-                return;
+		return;
 	}
 
 	active_window_move_to(atoi(data));
@@ -783,7 +783,7 @@ static void cmd_window_list(void)
 		g_free(levelstr);
 	}
 	g_slist_free(sorted);
-        printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_WINDOWLIST_FOOTER);
+	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_WINDOWLIST_FOOTER);
 }
 
 /* SYNTAX: WINDOW THEME [-delete] [<name>] */
@@ -791,7 +791,7 @@ static void cmd_window_theme(const char *data)
 {
 	THEME_REC *theme;
 	GHashTable *optlist;
-        char *name;
+	char *name;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS,
@@ -808,7 +808,7 @@ static void cmd_window_theme(const char *data)
 			printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
 					   TXT_WINDOW_THEME_DEFAULT);
 		} else {
-                        theme = active_win->theme;
+			theme = active_win->theme;
 			printformat_window(active_win, MSGLEVEL_CLIENTNOTICE,
 					   TXT_WINDOW_THEME,
 					   theme->name, theme->path);

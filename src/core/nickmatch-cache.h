@@ -5,7 +5,7 @@ typedef void (*NICKMATCH_REBUILD_FUNC) (GHashTable *list,
 					CHANNEL_REC *channel, NICK_REC *nick);
 
 typedef struct {
-        GHashTable *nicks;
+	GHashTable *nicks;
 	NICKMATCH_REBUILD_FUNC func;
 } NICKMATCH_REC;
 
@@ -18,7 +18,7 @@ void nickmatch_deinit(NICKMATCH_REC *rec);
 void nickmatch_rebuild(NICKMATCH_REC *rec);
 
 #define nickmatch_find(rec, nick) \
-        g_hash_table_lookup((rec)->nicks, nick)
+	g_hash_table_lookup((rec)->nicks, nick)
 
 void nickmatch_cache_init(void);
 void nickmatch_cache_deinit(void);

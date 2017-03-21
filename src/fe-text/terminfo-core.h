@@ -24,13 +24,13 @@
 typedef struct _TERM_REC TERM_REC;
 
 struct _TERM_REC {
-        /* Functions */
+	/* Functions */
 	void (*move)(TERM_REC *term, int x, int y);
 	void (*move_relative)(TERM_REC *term, int oldx, int oldy, int x, int y);
 	void (*set_cursor_visible)(TERM_REC *term, int set);
 	void (*scroll)(TERM_REC *term, int y1, int y2, int count);
 
-        void (*clear)(TERM_REC *term);
+	void (*clear)(TERM_REC *term);
 	void (*clrtoeol)(TERM_REC *term);
 	void (*repeat)(TERM_REC *term, char chr, int count);
 
@@ -44,7 +44,7 @@ struct _TERM_REC {
 	void (*set_standout)(TERM_REC *term, int set);
 	void (*set_italic)(TERM_REC *term, int set);
 
-        void (*beep)(TERM_REC *term);
+	void (*beep)(TERM_REC *term);
 
 #ifndef HAVE_TERMINFO
 	char buffer1[1024], buffer2[1024];
@@ -52,13 +52,13 @@ struct _TERM_REC {
 	FILE *in, *out;
 	struct termios tio, old_tio;
 
-        /* Terminal size */
-        int width, height;
+	/* Terminal size */
+	int width, height;
 
-        /* Cursor movement */
+	/* Cursor movement */
 	const char *TI_smcup, *TI_rmcup, *TI_cup;
 	const char *TI_hpa, *TI_vpa, *TI_cub1, *TI_cuf1;
-        const char *TI_civis, *TI_cnorm;
+	const char *TI_civis, *TI_cnorm;
 
 	/* Scrolling */
 	const char *TI_csr, *TI_wind;
@@ -68,7 +68,7 @@ struct _TERM_REC {
 	/* Clearing screen */
 	const char *TI_clear, *TI_ed; /* + *TI_dl, *TI_dl1; */
 
-        /* Clearing to end of line */
+	/* Clearing to end of line */
 	const char *TI_el;
 
 	/* Repeating character */
@@ -83,11 +83,11 @@ struct _TERM_REC {
 	const char *TI_bold, *TI_blink, *TI_rev;
 	const char *TI_setaf, *TI_setab, *TI_setf, *TI_setb;
 
-        /* Colors - generated and dynamically allocated */
+	/* Colors - generated and dynamically allocated */
 	char **TI_fg, **TI_bg, *TI_normal;
 
 	/* Beep */
-        char *TI_bel;
+	char *TI_bel;
 
 	/* Keyboard-transmit mode */
 	const char *TI_smkx;

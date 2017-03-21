@@ -84,12 +84,12 @@ static void print_reconnects(void)
 static SERVER_SETUP_REC *create_server_setup(GHashTable *optlist)
 {
 	CHAT_PROTOCOL_REC *rec;
-        SERVER_SETUP_REC *server;
-        char *chatnet;
+	SERVER_SETUP_REC *server;
+	char *chatnet;
 
 	rec = chat_protocol_find_net(optlist);
 	if (rec == NULL)
-                rec = chat_protocol_get_default();
+		rec = chat_protocol_get_default();
 	else {
 		chatnet = g_hash_table_lookup(optlist, rec->chatnet);
 		if (chatnet_find(chatnet) == NULL) {
@@ -99,14 +99,14 @@ static SERVER_SETUP_REC *create_server_setup(GHashTable *optlist)
 		}
 	}
 
-        server = rec->create_server_setup();
-        server->chat_type = rec->id;
+	server = rec->create_server_setup();
+	server->chat_type = rec->id;
 	return server;
 }
 
 static void cmd_server_add_modify(const char *data, gboolean add)
 {
-        GHashTable *optlist;
+	GHashTable *optlist;
 	SERVER_SETUP_REC *rec;
 	char *addr, *portstr, *password, *value, *chatnet;
 	void *free_arg;
@@ -151,7 +151,7 @@ static void cmd_server_add_modify(const char *data, gboolean add)
 
 	if (g_hash_table_lookup(optlist, "6"))
 		rec->family = AF_INET6;
-        else if (g_hash_table_lookup(optlist, "4"))
+	else if (g_hash_table_lookup(optlist, "4"))
 		rec->family = AF_INET;
 
 	if (g_hash_table_lookup(optlist, "tls") || g_hash_table_lookup(optlist, "ssl"))
@@ -296,7 +296,7 @@ static void cmd_server(const char *data)
 		print_reconnects();
 	}
 
-        signal_stop();
+	signal_stop();
 }
 
 static void cmd_server_connect(const char *data)
@@ -421,7 +421,7 @@ static void sig_chat_protocol_unknown(const char *protocol)
 	g_return_if_fail(protocol != NULL);
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
-                    TXT_UNKNOWN_CHAT_PROTOCOL, protocol);
+		TXT_UNKNOWN_CHAT_PROTOCOL, protocol);
 }
 
 void fe_server_init(void)

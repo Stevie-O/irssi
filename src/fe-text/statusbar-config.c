@@ -37,8 +37,8 @@ statusbar_config_create(STATUSBAR_GROUP_REC *group, const char *name)
 {
 	STATUSBAR_CONFIG_REC *bar;
 
-        g_return_val_if_fail(group != NULL, NULL);
-        g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail(group != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
 
 	bar = g_new0(STATUSBAR_CONFIG_REC, 1);
 	group->config_bars = g_slist_append(group->config_bars, bar);
@@ -59,9 +59,9 @@ statusbar_item_config_create(STATUSBAR_CONFIG_REC *bar, const char *name,
 	rec = g_new0(SBAR_ITEM_CONFIG_REC, 1);
 	bar->items = g_slist_append(bar->items, rec);
 
-        rec->name = g_strdup(name);
+	rec->name = g_strdup(name);
 	rec->priority = priority;
-        rec->right_alignment = right_alignment;
+	rec->right_alignment = right_alignment;
 
 	return rec;
 }
@@ -72,7 +72,7 @@ static void statusbar_config_item_destroy(STATUSBAR_CONFIG_REC *barconfig,
 	barconfig->items = g_slist_remove(barconfig->items, itemconfig);
 
 	g_free(itemconfig->name);
-        g_free(itemconfig);
+	g_free(itemconfig);
 }
 
 void statusbar_config_destroy(STATUSBAR_GROUP_REC *group,
@@ -84,7 +84,7 @@ void statusbar_config_destroy(STATUSBAR_GROUP_REC *group,
 		statusbar_config_item_destroy(config, config->items->data);
 
 	g_free(config->name);
-        g_free(config);
+	g_free(config);
 }
 
 static STATUSBAR_CONFIG_REC *
@@ -96,28 +96,28 @@ statusbar_config_find(STATUSBAR_GROUP_REC *group, const char *name)
 		STATUSBAR_CONFIG_REC *config = tmp->data;
 
 		if (g_strcmp0(config->name, name) == 0)
-                        return config;
+			return config;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 static void statusbar_reset_defaults(void)
 {
 	CONFIG_REC *config;
-        CONFIG_NODE *node;
+	CONFIG_NODE *node;
 
 	while (statusbar_groups != NULL)
 		statusbar_group_destroy(statusbar_groups->data);
 	active_statusbar_group = NULL;
 
-        /* read the default statusbar settings from internal config */
+	/* read the default statusbar settings from internal config */
 	config = config_open(NULL, -1);
 	config_parse_data(config, default_config, "internal");
 	node = config_node_traverse(config, "statusbar", FALSE);
-        if (node != NULL)
+	if (node != NULL)
 		read_statusbar_config_from_node(node);
-        config_close(config);
+	config_close(config);
 }
 
 static void statusbar_read_items(CONFIG_NODE *items)
@@ -145,15 +145,15 @@ static void statusbar_read_item(STATUSBAR_CONFIG_REC *bar, CONFIG_NODE *node)
 static void statusbar_read(STATUSBAR_GROUP_REC *group, CONFIG_NODE *node)
 {
 	STATUSBAR_CONFIG_REC *bar;
-        GSList *tmp;
-        const char *visible_str;
+	GSList *tmp;
+	const char *visible_str;
 
 	bar = statusbar_config_find(group, node->key);
 	if (config_node_get_bool(node, "disabled", FALSE)) {
 		/* disabled, destroy it if it already exists */
 		if (bar != NULL)
 			statusbar_config_destroy(group, bar);
-                return;
+		return;
 	}
 
 	if (bar == NULL) {
@@ -163,24 +163,24 @@ static void statusbar_read(STATUSBAR_GROUP_REC *group, CONFIG_NODE *node)
 		bar->position = 0;
 	}
 
-        visible_str = config_node_get_str(node, "visible", "");
+	visible_str = config_node_get_str(node, "visible", "");
 	if (g_ascii_strcasecmp(visible_str, "active") == 0)
-                bar->visible = STATUSBAR_VISIBLE_ACTIVE;
+		bar->visible = STATUSBAR_VISIBLE_ACTIVE;
 	else if (g_ascii_strcasecmp(visible_str, "inactive") == 0)
 		bar->visible = STATUSBAR_VISIBLE_INACTIVE;
 	else
 		bar->visible = STATUSBAR_VISIBLE_ALWAYS;
 
 	if (g_ascii_strcasecmp(config_node_get_str(node, "type", ""), "window") == 0)
-                bar->type = STATUSBAR_TYPE_WINDOW;
+		bar->type = STATUSBAR_TYPE_WINDOW;
 	if (g_ascii_strcasecmp(config_node_get_str(node, "placement", ""), "top") == 0)
-                bar->placement = STATUSBAR_TOP;
+		bar->placement = STATUSBAR_TOP;
 	bar->position = config_node_get_int(node, "position", 0);
 
 	node = iconfig_node_section(node, "items", -1);
 	if (node != NULL) {
-                /* we're overriding the items - destroy the old */
-                while (bar->items != NULL)
+		/* we're overriding the items - destroy the old */
+		while (bar->items != NULL)
 			statusbar_config_item_destroy(bar, bar->items->data);
 
 		tmp = config_node_first(node->value);
@@ -203,23 +203,23 @@ static void statusbar_read_group(CONFIG_NODE *node)
 			active_statusbar_group = group;
 	}
 
-        tmp = config_node_first(node->value);
+	tmp = config_node_first(node->value);
 	for (; tmp != NULL; tmp = config_node_next(tmp))
 		statusbar_read(group, tmp->data);
 }
 
 static void create_root_statusbars(void)
 {
-        STATUSBAR_REC *bar;
+	STATUSBAR_REC *bar;
 	GSList *tmp;
 
-        tmp = active_statusbar_group->config_bars;
+	tmp = active_statusbar_group->config_bars;
 	for (; tmp != NULL; tmp = tmp->next) {
 		STATUSBAR_CONFIG_REC *rec = tmp->data;
 
 		if (rec->type == STATUSBAR_TYPE_ROOT) {
 			bar = statusbar_create(active_statusbar_group, rec, NULL);
-                        statusbar_redraw(bar, TRUE);
+			statusbar_redraw(bar, TRUE);
 		}
 	}
 }
@@ -233,7 +233,7 @@ static void read_statusbar_config_from_node(CONFIG_NODE *node)
 	if (items != NULL)
 		statusbar_read_items(items);
 
-        tmp = config_node_first(node->value);
+	tmp = config_node_first(node->value);
 	for (; tmp != NULL; tmp = config_node_next(tmp)) {
 		if (tmp->data != items)
 			statusbar_read_group(tmp->data);
@@ -244,14 +244,14 @@ static void read_statusbar_config(void)
 {
 	CONFIG_NODE *node;
 
-        statusbar_reset_defaults();
+	statusbar_reset_defaults();
 
 	node = iconfig_node_traverse("statusbar", FALSE);
 	if (node != NULL)
 		read_statusbar_config_from_node(node);
 
-        create_root_statusbars();
-        statusbars_create_window_bars();
+	create_root_statusbars();
+	statusbars_create_window_bars();
 }
 
 static const char *sbar_get_type(STATUSBAR_CONFIG_REC *rec)
@@ -319,7 +319,7 @@ static void cmd_statusbar_list(void)
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP, TXT_STATUSBAR_LIST_HEADER);
 
-        tmp = active_statusbar_group->config_bars;
+	tmp = active_statusbar_group->config_bars;
 	for (; tmp != NULL; tmp = tmp->next) {
 		STATUSBAR_CONFIG_REC *rec = tmp->data;
 
@@ -336,12 +336,12 @@ static void cmd_statusbar_print_info(const char *name)
 {
 	GSList *tmp;
 
-        tmp = active_statusbar_group->config_bars;
+	tmp = active_statusbar_group->config_bars;
 	for (; tmp != NULL; tmp = tmp->next) {
 		STATUSBAR_CONFIG_REC *rec = tmp->data;
 
 		if (g_ascii_strcasecmp(rec->name, name) == 0) {
-                        statusbar_print(rec);
+			statusbar_print(rec);
 			return;
 		}
 	}
@@ -354,14 +354,14 @@ static void cmd_statusbar_print_info(const char *name)
 static void cmd_statusbar_enable(const char *data, void *server,
 				 void *item, CONFIG_NODE *node)
 {
-        iconfig_node_set_str(node, "disabled", NULL);
+	iconfig_node_set_str(node, "disabled", NULL);
 }
 
 /* SYNTAX: STATUSBAR <name> DISABLE */
 static void cmd_statusbar_disable(const char *data, void *server,
 				  void *item, CONFIG_NODE *node)
 {
-        iconfig_node_set_bool(node, "disabled", TRUE);
+	iconfig_node_set_bool(node, "disabled", TRUE);
 }
 
 /* SYNTAX: STATUSBAR <name> RESET */
@@ -374,7 +374,7 @@ static void cmd_statusbar_reset(const char *data, void *server,
 	parent = iconfig_node_section(parent, active_statusbar_group->name,
 				     NODE_TYPE_BLOCK);
 
-        iconfig_node_set_str(parent, node->key, NULL);
+	iconfig_node_set_str(parent, node->key, NULL);
 }
 
 /* SYNTAX: STATUSBAR <name> TYPE window|root */
@@ -383,7 +383,7 @@ static void cmd_statusbar_type(const char *data, void *server,
 {
 	if (g_ascii_strcasecmp(data, "window") == 0)
 		iconfig_node_set_str(node, "type", "window");
-        else if (g_ascii_strcasecmp(data, "root") == 0)
+	else if (g_ascii_strcasecmp(data, "root") == 0)
 		iconfig_node_set_str(node, "type", "root");
 	else {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
@@ -397,7 +397,7 @@ static void cmd_statusbar_placement(const char *data, void *server,
 {
 	if (g_ascii_strcasecmp(data, "top") == 0)
 		iconfig_node_set_str(node, "placement", "top");
-        else if (g_ascii_strcasecmp(data, "bottom") == 0)
+	else if (g_ascii_strcasecmp(data, "bottom") == 0)
 		iconfig_node_set_str(node, "placement", "bottom");
 	else {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
@@ -407,7 +407,7 @@ static void cmd_statusbar_placement(const char *data, void *server,
 
 /* SYNTAX: STATUSBAR <name> POSITION <num> */
 static void cmd_statusbar_position(const char *data, void *server,
-                                   void *item, CONFIG_NODE *node)
+				void *item, CONFIG_NODE *node)
 {
 	iconfig_node_set_int(node, "position", atoi(data));
 }
@@ -418,9 +418,9 @@ static void cmd_statusbar_visible(const char *data, void *server,
 {
 	if (g_ascii_strcasecmp(data, "always") == 0)
 		iconfig_node_set_str(node, "visible", "always");
-        else if (g_ascii_strcasecmp(data, "active") == 0)
+	else if (g_ascii_strcasecmp(data, "active") == 0)
 		iconfig_node_set_str(node, "visible", "active");
-        else if (g_ascii_strcasecmp(data, "inactive") == 0)
+	else if (g_ascii_strcasecmp(data, "inactive") == 0)
 		iconfig_node_set_str(node, "visible", "inactive");
 	else {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
@@ -431,19 +431,19 @@ static void cmd_statusbar_visible(const char *data, void *server,
 static CONFIG_NODE *statusbar_items_section(CONFIG_NODE *parent)
 {
 	STATUSBAR_CONFIG_REC *bar;
-        CONFIG_NODE *node;
-        GSList *tmp;
+	CONFIG_NODE *node;
+	GSList *tmp;
 
 	node = iconfig_node_section(parent, "items", -1);
 	if (node != NULL)
 		return node;
 
-        /* find the statusbar configuration from memory */
+	/* find the statusbar configuration from memory */
 	bar = statusbar_config_find(active_statusbar_group, parent->key);
 	if (bar == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
 			    TXT_STATUSBAR_NOT_FOUND, parent->key);
-                return NULL;
+		return NULL;
 	}
 
 	/* since items list in config file overrides defaults,
@@ -455,45 +455,45 @@ static CONFIG_NODE *statusbar_items_section(CONFIG_NODE *parent)
 		node = iconfig_node_section(parent, rec->name,
 					   NODE_TYPE_BLOCK);
 		if (rec->priority != 0)
-                        iconfig_node_set_int(node, "priority", rec->priority);
+			iconfig_node_set_int(node, "priority", rec->priority);
 		if (rec->right_alignment)
-                        iconfig_node_set_str(node, "alignment", "right");
+			iconfig_node_set_str(node, "alignment", "right");
 	}
 
-        return parent;
+	return parent;
 }
 
 /* SYNTAX: STATUSBAR <name> ADD [-before | -after <item>]
-           [-priority #] [-alignment left|right] <item> */
+	[-priority #] [-alignment left|right] <item> */
 static void cmd_statusbar_add(const char *data, void *server,
 			      void *item, CONFIG_NODE *node)
 {
-        GHashTable *optlist;
-        char *name, *value;
+	GHashTable *optlist;
+	char *name, *value;
 	void *free_arg;
-        int index;
+	int index;
 
 	node = statusbar_items_section(node);
 	if (node == NULL)
-                return;
+		return;
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS,
 			    "statusbar add", &optlist, &name))
 		return;
 
-        /* get the index */
+	/* get the index */
 	index = -1;
 	value = g_hash_table_lookup(optlist, "before");
 	if (value != NULL) index = config_node_index(node, value);
 	value = g_hash_table_lookup(optlist, "after");
 	if (value != NULL) index = config_node_index(node, value)+1;
 
-        /* create/move item */
+	/* create/move item */
 	node = iconfig_node_section_index(node, name, index, NODE_TYPE_BLOCK);
 
-        /* set the options */
-        value = g_hash_table_lookup(optlist, "priority");
-        if (value != NULL) iconfig_node_set_int(node, "priority", atoi(value));
+	/* set the options */
+	value = g_hash_table_lookup(optlist, "priority");
+	if (value != NULL) iconfig_node_set_int(node, "priority", atoi(value));
 
 	value = g_hash_table_lookup(optlist, "alignment");
 	if (value != NULL) {
@@ -509,9 +509,9 @@ static void cmd_statusbar_add(const char *data, void *server,
 static void cmd_statusbar_remove(const char *data, void *server,
 				 void *item, CONFIG_NODE *node)
 {
-        node = statusbar_items_section(node);
+	node = statusbar_items_section(node);
 	if (node == NULL)
-                return;
+		return;
 
 	if (iconfig_node_section(node, data, -1) != NULL)
 		iconfig_node_set_str(node, data, NULL);
@@ -523,7 +523,7 @@ static void cmd_statusbar_remove(const char *data, void *server,
 
 static void cmd_statusbar(const char *data)
 {
-        CONFIG_NODE *node;
+	CONFIG_NODE *node;
 	char *name, *cmd, *params, *signal;
 	void *free_arg;
 
@@ -533,19 +533,19 @@ static void cmd_statusbar(const char *data)
 
 	if (*name == '\0') {
 		/* list all statusbars */
-                cmd_statusbar_list();
+		cmd_statusbar_list();
 		cmd_params_free(free_arg);
-                return;
+		return;
 	}
 
 	if (*cmd == '\0') {
 		/* print statusbar info */
-                cmd_statusbar_print_info(name);
+		cmd_statusbar_print_info(name);
 		cmd_params_free(free_arg);
-                return;
+		return;
 	}
 
-        /* lookup/create the statusbar node */
+	/* lookup/create the statusbar node */
 	node = iconfig_node_traverse("statusbar", TRUE);
 	node = iconfig_node_section(node, active_statusbar_group->name,
 				   NODE_TYPE_BLOCK);
@@ -558,7 +558,7 @@ static void cmd_statusbar(const char *data)
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
 			    TXT_STATUSBAR_UNKNOWN_COMMAND, cmd);
 	} else {
-                read_statusbar_config();
+		read_statusbar_config();
 	}
 	g_free(signal);
 
@@ -567,20 +567,20 @@ static void cmd_statusbar(const char *data)
 
 void statusbar_config_init(void)
 {
-        read_statusbar_config();
+	read_statusbar_config();
 	signal_add_last("setup reread", (SIGNAL_FUNC) read_statusbar_config);
 	signal_add("theme changed", (SIGNAL_FUNC) read_statusbar_config);
 
-        command_bind("statusbar", NULL, (SIGNAL_FUNC) cmd_statusbar);
-        command_bind("statusbar enable", NULL, (SIGNAL_FUNC) cmd_statusbar_enable);
-        command_bind("statusbar disable", NULL, (SIGNAL_FUNC) cmd_statusbar_disable);
-        command_bind("statusbar reset", NULL, (SIGNAL_FUNC) cmd_statusbar_reset);
-        command_bind("statusbar add", NULL, (SIGNAL_FUNC) cmd_statusbar_add);
-        command_bind("statusbar remove", NULL, (SIGNAL_FUNC) cmd_statusbar_remove);
-        command_bind("statusbar type", NULL, (SIGNAL_FUNC) cmd_statusbar_type);
-        command_bind("statusbar placement", NULL, (SIGNAL_FUNC) cmd_statusbar_placement);
-        command_bind("statusbar position", NULL, (SIGNAL_FUNC) cmd_statusbar_position);
-        command_bind("statusbar visible", NULL, (SIGNAL_FUNC) cmd_statusbar_visible);
+	command_bind("statusbar", NULL, (SIGNAL_FUNC) cmd_statusbar);
+	command_bind("statusbar enable", NULL, (SIGNAL_FUNC) cmd_statusbar_enable);
+	command_bind("statusbar disable", NULL, (SIGNAL_FUNC) cmd_statusbar_disable);
+	command_bind("statusbar reset", NULL, (SIGNAL_FUNC) cmd_statusbar_reset);
+	command_bind("statusbar add", NULL, (SIGNAL_FUNC) cmd_statusbar_add);
+	command_bind("statusbar remove", NULL, (SIGNAL_FUNC) cmd_statusbar_remove);
+	command_bind("statusbar type", NULL, (SIGNAL_FUNC) cmd_statusbar_type);
+	command_bind("statusbar placement", NULL, (SIGNAL_FUNC) cmd_statusbar_placement);
+	command_bind("statusbar position", NULL, (SIGNAL_FUNC) cmd_statusbar_position);
+	command_bind("statusbar visible", NULL, (SIGNAL_FUNC) cmd_statusbar_visible);
 
 	command_set_options("statusbar add", "+before +after +priority +alignment");
 }
@@ -590,14 +590,14 @@ void statusbar_config_deinit(void)
 	signal_remove("setup reread", (SIGNAL_FUNC) read_statusbar_config);
 	signal_remove("theme changed", (SIGNAL_FUNC) read_statusbar_config);
 
-        command_unbind("statusbar", (SIGNAL_FUNC) cmd_statusbar);
-        command_unbind("statusbar enable", (SIGNAL_FUNC) cmd_statusbar_enable);
-        command_unbind("statusbar disable", (SIGNAL_FUNC) cmd_statusbar_disable);
-        command_unbind("statusbar reset", (SIGNAL_FUNC) cmd_statusbar_reset);
-        command_unbind("statusbar add", (SIGNAL_FUNC) cmd_statusbar_add);
-        command_unbind("statusbar remove", (SIGNAL_FUNC) cmd_statusbar_remove);
-        command_unbind("statusbar type", (SIGNAL_FUNC) cmd_statusbar_type);
-        command_unbind("statusbar placement", (SIGNAL_FUNC) cmd_statusbar_placement);
-        command_unbind("statusbar position", (SIGNAL_FUNC) cmd_statusbar_position);
-        command_unbind("statusbar visible", (SIGNAL_FUNC) cmd_statusbar_visible);
+	command_unbind("statusbar", (SIGNAL_FUNC) cmd_statusbar);
+	command_unbind("statusbar enable", (SIGNAL_FUNC) cmd_statusbar_enable);
+	command_unbind("statusbar disable", (SIGNAL_FUNC) cmd_statusbar_disable);
+	command_unbind("statusbar reset", (SIGNAL_FUNC) cmd_statusbar_reset);
+	command_unbind("statusbar add", (SIGNAL_FUNC) cmd_statusbar_add);
+	command_unbind("statusbar remove", (SIGNAL_FUNC) cmd_statusbar_remove);
+	command_unbind("statusbar type", (SIGNAL_FUNC) cmd_statusbar_type);
+	command_unbind("statusbar placement", (SIGNAL_FUNC) cmd_statusbar_placement);
+	command_unbind("statusbar position", (SIGNAL_FUNC) cmd_statusbar_position);
+	command_unbind("statusbar visible", (SIGNAL_FUNC) cmd_statusbar_visible);
 }

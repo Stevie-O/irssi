@@ -5,15 +5,15 @@
 #include "command-history.h"
 
 enum {
-        DATA_LEVEL_NONE = 0,
+	DATA_LEVEL_NONE = 0,
 	DATA_LEVEL_TEXT,
 	DATA_LEVEL_MSG,
-        DATA_LEVEL_HILIGHT
+	DATA_LEVEL_HILIGHT
 };
 
 typedef struct {
 	char *servertag;
-        char *name;
+	char *name;
 	unsigned int sticky:1;
 } WINDOW_BIND_REC;
 
@@ -21,13 +21,13 @@ struct _WINDOW_REC {
 	int refnum;
 	char *name;
 
-        int width, height;
+	int width, height;
 
 	GSList *items;
 	WI_ITEM_REC *active;
 	SERVER_REC *active_server;
 	SERVER_REC *connect_server;
-        char *servertag; /* active_server must be either NULL or have this tag (unless there's items in this window) */
+	char *servertag; /* active_server must be either NULL or have this tag (unless there's items in this window) */
 
 	int level; /* message level */
 	GSList *bound_items; /* list of WINDOW_BIND_RECs */
@@ -46,7 +46,7 @@ struct _WINDOW_REC {
 	time_t last_timestamp; /* When was last timestamp printed */
 	time_t last_line; /* When was last line printed */
 
-        char *theme_name; /* active theme in window, NULL = default */
+	char *theme_name; /* active theme in window, NULL = default */
 	void *theme; /* THEME_REC */
 
 	void *gui_data;

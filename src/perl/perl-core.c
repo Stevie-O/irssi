@@ -74,9 +74,9 @@ static void perl_script_destroy(PERL_SCRIPT_REC *script)
 
 	g_free(script->name);
 	g_free(script->package);
-        g_free_not_null(script->path);
-        g_free_not_null(script->data);
-        g_free(script);
+	g_free_not_null(script->path);
+	g_free_not_null(script->data);
+	g_free(script);
 }
 
 extern void boot_DynaLoader(pTHX_ CV* cv);
@@ -90,9 +90,9 @@ XS(boot_Irssi_Core)
 	PERL_UNUSED_VAR(items);
 
 	irssi_callXS(boot_Irssi, cv, mark);
-        irssi_boot(Irc);
-        irssi_boot(UI);
-        irssi_boot(TextUI);
+	irssi_boot(Irc);
+	irssi_boot(UI);
+	irssi_boot(TextUI);
 	/* Make sure to keep this in line with perl_scripts_deinit below. */
 	XSRETURN_YES;
 }
@@ -117,7 +117,7 @@ void perl_scripts_init(void)
 	char *code, *use_code;
 
 	perl_scripts = NULL;
-        perl_sources_start();
+	perl_sources_start();
 	perl_signals_start();
 
 	my_perl = perl_alloc();
@@ -128,14 +128,14 @@ void perl_scripts_init(void)
 	perl_eval_pv("Irssi::Core::->boot_Irssi_Core(0.9);", TRUE);
 #endif
 
-        perl_common_start();
+	perl_common_start();
 
 	use_code = perl_get_use_list();
-        code = g_strdup_printf(irssi_core_code, PERL_STATIC_LIBS, use_code);
+	code = g_strdup_printf(irssi_core_code, PERL_STATIC_LIBS, use_code);
 	perl_eval_pv(code, TRUE);
 
 	g_free(code);
-        g_free(use_code);
+	g_free(use_code);
 }
 
 /* Destroy all perl scripts and deinitialize perl interpreter */
@@ -145,12 +145,12 @@ void perl_scripts_deinit(void)
 		return;
 
 	/* unload all scripts */
-        while (perl_scripts != NULL)
+	while (perl_scripts != NULL)
 		perl_script_unload(perl_scripts->data);
 
-        signal_emit("perl scripts deinit", 0);
+	signal_emit("perl scripts deinit", 0);
 
-        perl_signals_stop();
+	perl_signals_stop();
 	perl_sources_stop();
 	perl_common_stop();
 
@@ -201,27 +201,27 @@ static char *script_file_get_name(const char *path)
 {
 	char *name;
 
-        name = g_path_get_basename(path);
+	name = g_path_get_basename(path);
 	script_fix_name(name);
-        return name;
+	return name;
 }
 
 static char *script_data_get_name(void)
 {
 	GString *name;
-        char *ret;
+	char *ret;
 	int n;
 
 	name = g_string_new(NULL);
-        n = 1;
+	n = 1;
 	do {
 		g_string_printf(name, "data%d", n);
-                n++;
+		n++;
 	} while (perl_script_find(name->str) != NULL);
 
 	ret = name->str;
-        g_string_free(name, FALSE);
-        return ret;
+	g_string_free(name, FALSE);
+	return ret;
 }
 
 static int perl_script_eval(PERL_SCRIPT_REC *script)
@@ -239,12 +239,12 @@ static int perl_script_eval(PERL_SCRIPT_REC *script)
 	PUTBACK;
 
 	perl_call_pv(script->path != NULL ?
-                              "Irssi::Core::eval_file" :
-                              "Irssi::Core::eval_data",
-                              G_EVAL|G_DISCARD);
+			"Irssi::Core::eval_file" :
+			"Irssi::Core::eval_data",
+			G_EVAL|G_DISCARD);
 	SPAGAIN;
 
-        error = NULL;
+	error = NULL;
 	if (SvTRUE(ERRSV)) {
 		error = SvPV_nolen(ERRSV);
 
@@ -258,14 +258,14 @@ static int perl_script_eval(PERL_SCRIPT_REC *script)
 	FREETMPS;
 	LEAVE;
 
-        return error == NULL;
+	return error == NULL;
 }
 
 /* NOTE: name must not be free'd */
 static PERL_SCRIPT_REC *script_load(char *name, const char *path,
 				    const char *data)
 {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 
 	/* if there's a script with a same name, destroy it */
 	script = perl_script_find(name);
@@ -276,14 +276,14 @@ static PERL_SCRIPT_REC *script_load(char *name, const char *path,
 	script->name = name;
 	script->package = g_strdup_printf("Irssi::Script::%s", name);
 	script->path = g_strdup(path);
-        script->data = g_strdup(data);
+	script->data = g_strdup(data);
 
 	perl_scripts = g_slist_append(perl_scripts, script);
 	signal_emit("script created", 1, script);
 
 	if (!perl_script_eval(script))
-                script = NULL; /* the script is destroyed in "script error" signal */
-        return script;
+		script = NULL; /* the script is destroyed in "script error" signal */
+	return script;
 }
 
 /* Load a perl script, path must be a full path. */
@@ -291,10 +291,10 @@ PERL_SCRIPT_REC *perl_script_load_file(const char *path)
 {
 	char *name;
 
-        g_return_val_if_fail(path != NULL, NULL);
+	g_return_val_if_fail(path != NULL, NULL);
 
-        name = script_file_get_name(path);
-        return script_load(name, path, NULL);
+	name = script_file_get_name(path);
+	return script_load(name, path, NULL);
 }
 
 /* Load a perl script from given data */
@@ -302,7 +302,7 @@ PERL_SCRIPT_REC *perl_script_load_data(const char *data)
 {
 	char *name;
 
-        g_return_val_if_fail(data != NULL, NULL);
+	g_return_val_if_fail(data != NULL, NULL);
 
 	name = script_data_get_name();
 	return script_load(name, NULL, data);
@@ -311,10 +311,10 @@ PERL_SCRIPT_REC *perl_script_load_data(const char *data)
 /* Unload perl script */
 void perl_script_unload(PERL_SCRIPT_REC *script)
 {
-        g_return_if_fail(script != NULL);
+	g_return_if_fail(script != NULL);
 
 	perl_script_destroy_package(script);
-        perl_script_destroy(script);
+	perl_script_destroy(script);
 }
 
 /* Find loaded script by name */
@@ -322,16 +322,16 @@ PERL_SCRIPT_REC *perl_script_find(const char *name)
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
 
 	for (tmp = perl_scripts; tmp != NULL; tmp = tmp->next) {
 		PERL_SCRIPT_REC *rec = tmp->data;
 
 		if (g_strcmp0(rec->name, name) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 /* Find loaded script by package */
@@ -339,16 +339,16 @@ PERL_SCRIPT_REC *perl_script_find_package(const char *package)
 {
 	GSList *tmp;
 
-        g_return_val_if_fail(package != NULL, NULL);
+	g_return_val_if_fail(package != NULL, NULL);
 
 	for (tmp = perl_scripts; tmp != NULL; tmp = tmp->next) {
 		PERL_SCRIPT_REC *rec = tmp->data;
 
 		if (g_strcmp0(rec->package, package) == 0)
-                        return rec;
+			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 /* Returns full path for the script */
@@ -359,7 +359,7 @@ char *perl_script_get_path(const char *name)
 
 	if (g_path_is_absolute(name) || (name[0] == '~' && name[1] == '/')) {
 		/* full path specified */
-                return convert_home(name);
+		return convert_home(name);
 	}
 
 	/* add .pl suffix if it's missing */
@@ -384,13 +384,13 @@ char *perl_script_get_path(const char *name)
 /* If core should handle printing script errors */
 void perl_core_print_script_error(int print)
 {
-        print_script_errors = print;
+	print_script_errors = print;
 }
 
 /* Returns the perl module's API version. */
 int perl_get_api_version(void)
 {
-        return IRSSI_PERL_API_VERSION;
+	return IRSSI_PERL_API_VERSION;
 }
 
 void perl_scripts_autorun(void)
@@ -400,7 +400,7 @@ void perl_scripts_autorun(void)
 	struct stat statbuf;
 	char *path, *fname;
 
-        /* run *.pl scripts from ~/.irssi/scripts/autorun/ */
+	/* run *.pl scripts from ~/.irssi/scripts/autorun/ */
 	path = g_strdup_printf("%s/scripts/autorun", get_irssi_dir());
 	dirp = opendir(path);
 	if (dirp == NULL) {
@@ -430,12 +430,12 @@ static void sig_script_error(PERL_SCRIPT_REC *script, const char *error)
 				      script == NULL ? "??" : script->name);
 		signal_emit("gui dialog", 2, "error", str);
 		signal_emit("gui dialog", 2, "error", error);
-                g_free(str);
+		g_free(str);
 	}
 
 	if (script != NULL) {
 		perl_script_unload(script);
-                signal_stop();
+		signal_stop();
 	}
 }
 
@@ -443,7 +443,7 @@ static void sig_autorun(void)
 {
 	signal_remove("irssi init finished", (SIGNAL_FUNC) sig_autorun);
 
-        perl_scripts_autorun();
+	perl_scripts_autorun();
 }
 
 void perl_core_init(void)
@@ -452,12 +452,12 @@ void perl_core_init(void)
 	char **argv = perl_args;
 
 	PERL_SYS_INIT3(&argc, &argv, &environ);
-        print_script_errors = 1;
+	print_script_errors = 1;
 	settings_add_str("perl", "perl_use_lib", PERL_USE_LIB);
 
 	/*PL_perl_destruct_level = 1; - this crashes with some people.. */
 	perl_signals_init();
-        signal_add_last("script error", (SIGNAL_FUNC) sig_script_error);
+	signal_add_last("script error", (SIGNAL_FUNC) sig_script_error);
 
 	perl_scripts_init();
 
@@ -473,7 +473,7 @@ void perl_core_init(void)
 
 void perl_core_deinit(void)
 {
-        perl_scripts_deinit();
+	perl_scripts_deinit();
 	perl_signals_deinit();
 
 	signal_remove("script error", (SIGNAL_FUNC) sig_script_error);

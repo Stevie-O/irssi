@@ -174,7 +174,7 @@ static void send_message(SERVER_REC *server, const char *target,
 	char *str;
 	char *recoded;
 
-        ircserver = IRC_SERVER(server);
+	ircserver = IRC_SERVER(server);
 	g_return_if_fail(ircserver != NULL);
 	g_return_if_fail(target != NULL);
 	g_return_if_fail(msg != NULL);
@@ -240,20 +240,20 @@ static void server_init(IRC_SERVER_REC *server)
 	irc_send_cmd_now(server, "CAP LS");
 
 	if (conn->password != NULL && *conn->password != '\0') {
-                /* send password */
+		/* send password */
 		cmd = g_strdup_printf("PASS %s", conn->password);
 		irc_send_cmd_now(server, cmd);
 		g_free(cmd);
 	}
 
-        /* send nick */
+	/* send nick */
 	cmd = g_strdup_printf("NICK %s", conn->nick);
 	irc_send_cmd_now(server, cmd);
 	g_free(cmd);
 
 	/* send user/realname */
 	address = server->connrec->address;
-        ptr = strrchr(address, ':');
+	ptr = strrchr(address, ':');
 	if (ptr != NULL) {
 		/* IPv6 address .. doesn't work here, use the string after
 		   the last : char */
@@ -306,7 +306,7 @@ SERVER_REC *irc_server_init_connect(SERVER_CONNECT_REC *conn)
 
 	ircconn = (IRC_SERVER_CONNECT_REC *) conn;
 	server->connrec = ircconn;
-        server_connect_ref(conn);
+	server_connect_ref(conn);
 
 	if (server->connrec->port <= 0) {
 		server->connrec->port =
@@ -332,7 +332,7 @@ SERVER_REC *irc_server_init_connect(SERVER_CONNECT_REC *conn)
 
 	modes_server_init(server);
 
-        server_connect_init((SERVER_REC *) server);
+	server_connect_init((SERVER_REC *) server);
 	return (SERVER_REC *) server;
 }
 
@@ -341,7 +341,7 @@ void irc_server_connect(SERVER_REC *server)
 	g_return_if_fail(server != NULL);
 
 	if (!server_start_connect(server)) {
-                server_connect_unref(server->connrec);
+		server_connect_unref(server->connrec);
 		g_free(server);
 	}
 }
@@ -350,14 +350,14 @@ void irc_server_connect(SERVER_REC *server)
 static int command_has_target(const char *cmd, const char *target)
 {
 	const char *p;
-        int len;
+	int len;
 
-        /* just assume the command is in form "<command> <target> <data>" */
-        p = strchr(cmd, ' ');
+	/* just assume the command is in form "<command> <target> <data>" */
+	p = strchr(cmd, ' ');
 	if (p == NULL) return FALSE;
 	p++;
 
-        len = strlen(target);
+	len = strlen(target);
 	return strncmp(p, target, len) == 0 && p[len] == ' ';
 }
 
@@ -365,33 +365,33 @@ static int command_has_target(const char *cmd, const char *target)
 void irc_server_purge_output(IRC_SERVER_REC *server, const char *target)
 {
 	GSList *tmp, *next, *link;
-        REDIRECT_REC *redirect;
+	REDIRECT_REC *redirect;
 	char *cmd;
 
 	if (target != NULL && *target == '\0')
-                target = NULL;
+		target = NULL;
 
 	for (tmp = server->cmdqueue; tmp != NULL; tmp = next) {
 		next = tmp->next->next;
 		cmd = tmp->data;
-                redirect = tmp->next->data;
+		redirect = tmp->next->data;
 
 		if ((target == NULL || command_has_target(cmd, target)) &&
 		    g_ascii_strncasecmp(cmd, "PONG ", 5) != 0) {
-                        /* remove the redirection */
-                        link = tmp->next;
+			/* remove the redirection */
+			link = tmp->next;
 			server->cmdqueue =
 				g_slist_remove_link(server->cmdqueue, link);
-                        g_slist_free_1(link);
+			g_slist_free_1(link);
 
 			if (redirect != NULL)
-                                server_redirect_destroy(redirect);
+				server_redirect_destroy(redirect);
 
-                        /* remove the command */
+			/* remove the command */
 			server->cmdqueue =
 				g_slist_remove(server->cmdqueue, cmd);
-                        g_free(cmd);
-                        server->cmdcount--;
+			g_free(cmd);
+			server->cmdcount--;
 		}
 	}
 }
@@ -412,7 +412,7 @@ static void sig_connected(IRC_SERVER_REC *server)
 	server->splits = g_hash_table_new((GHashFunc) g_istr_hash,
 					  (GCompareFunc) g_istr_equal);
 
-        if (!server->session_reconnect)
+	if (!server->session_reconnect)
 		server_init(server);
 }
 
@@ -432,7 +432,7 @@ static void sig_disconnected(IRC_SERVER_REC *server)
 	for (tmp = server->cmdqueue; tmp != NULL; tmp = tmp->next->next) {
 		g_free(tmp->data);
 		if (tmp->next->data != NULL)
-                        server_redirect_destroy(tmp->next->data);
+			server_redirect_destroy(tmp->next->data);
 	}
 	g_slist_free(server->cmdqueue);
 	server->cmdqueue = NULL;
@@ -507,7 +507,7 @@ void irc_server_send_away(IRC_SERVER_REC *server, const char *reason)
 
 	if (*reason != '\0' || server->usermode_away) {
 		g_free_and_null(server->away_reason);
-                if (*reason != '\0') {
+		if (*reason != '\0') {
 			server->away_reason = g_strdup(reason);
 			reason = recoded = recode_out(SERVER(server), reason, NULL);
 			irc_send_cmdv(server, "AWAY :%s", reason);
@@ -544,7 +544,7 @@ void irc_server_send_data(IRC_SERVER_REC *server, const char *data, int len)
 static int server_cmd_timeout(IRC_SERVER_REC *server, GTimeVal *now)
 {
 	REDIRECT_REC *redirect;
-        GSList *link;
+	GSList *link;
 	long usecs;
 	char *cmd;
 	int len;
@@ -565,18 +565,18 @@ static int server_cmd_timeout(IRC_SERVER_REC *server, GTimeVal *now)
 	server->cmdcount--;
 	if (server->cmdqueue == NULL) return 1;
 
-        /* get command */
+	/* get command */
 	cmd = server->cmdqueue->data;
-        redirect = server->cmdqueue->next->data;
+	redirect = server->cmdqueue->next->data;
 
 	/* send command */
 	len = strlen(cmd);
 	irc_server_send_data(server, cmd, len);
 
 	/* add to rawlog without [CR+]LF */
-        if (len > 2 && cmd[len-2] == '\r')
+	if (len > 2 && cmd[len-2] == '\r')
 		cmd[len-2] = '\0';
-        else if (cmd[len-1] == '\n')
+	else if (cmd[len-1] == '\n')
 		cmd[len-1] = '\0';
 	rawlog_output(server->rawlog, cmd);
 	server_redirect_command(server, cmd, redirect);
@@ -585,9 +585,9 @@ static int server_cmd_timeout(IRC_SERVER_REC *server, GTimeVal *now)
 	server->cmdqueue = g_slist_remove(server->cmdqueue, cmd);
 	g_free(cmd);
 
-        link = server->cmdqueue;
+	link = server->cmdqueue;
 	server->cmdqueue = g_slist_remove_link(server->cmdqueue, link);
-        g_slist_free_1(link);
+	g_slist_free_1(link);
 	return 1;
 }
 
@@ -856,7 +856,7 @@ static void event_motd(IRC_SERVER_REC *server, const char *data, const char *fro
 
 	   Oh, and looks like it also doesn't answer anything to PINGs,
 	   disable lag checking. */
-        server->disable_lag = TRUE;
+	server->disable_lag = TRUE;
 	event_connected(server, data, from);
 }
 
@@ -872,7 +872,7 @@ static void event_channels_formed(IRC_SERVER_REC *server, const char *data)
 	g_return_if_fail(server != NULL);
 
 	params = event_get_params(data, 2, NULL, &channels);
-        server->channels_formed = atoi(channels);
+	server->channels_formed = atoi(channels);
 	g_free(params);
 }
 
@@ -913,7 +913,7 @@ static void event_server_banned(IRC_SERVER_REC *server, const char *data)
 {
 	g_return_if_fail(server != NULL);
 
-        server->banned = TRUE;
+	server->banned = TRUE;
 }
 
 static void event_error(IRC_SERVER_REC *server, const char *data)
@@ -935,7 +935,7 @@ static void event_ping(IRC_SERVER_REC *server, const char *data)
 	str = *target == '\0' ? g_strconcat("PONG :", origin, NULL) :
 		g_strdup_printf("PONG %s :%s", target, origin);
 	irc_send_cmd_now(server, str);
-        g_free(str);
+	g_free(str);
 	g_free(params);
 }
 
@@ -1056,7 +1056,7 @@ void irc_servers_deinit(void)
 
 	signal_remove("server connected", (SIGNAL_FUNC) sig_connected);
 	signal_remove("server disconnected", (SIGNAL_FUNC) sig_disconnected);
-        signal_remove("server quit", (SIGNAL_FUNC) sig_server_quit);
+	signal_remove("server quit", (SIGNAL_FUNC) sig_server_quit);
 	signal_remove("event 001", (SIGNAL_FUNC) event_connected);
 	signal_remove("event 004", (SIGNAL_FUNC) event_server_info);
 	signal_remove("event 005", (SIGNAL_FUNC) event_isupport);

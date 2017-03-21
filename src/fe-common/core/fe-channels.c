@@ -101,7 +101,7 @@ static void signal_window_item_changed(WINDOW_REC *window, WI_ITEM_REC *item)
 		printformat(item->server, item->visible_name,
 			    MSGLEVEL_CLIENTNOTICE,
 			    TXT_TALKING_IN, item->visible_name);
-                signal_stop();
+		signal_stop();
 	}
 }
 
@@ -116,7 +116,7 @@ static void sig_channel_joined(CHANNEL_REC *channel)
 static void cmd_join(const char *data, SERVER_REC *server)
 {
 	WINDOW_REC *window;
-        CHANNEL_REC *channel;
+	CHANNEL_REC *channel;
 	GHashTable *optlist;
 	char *pdata;
 	int invite;
@@ -251,7 +251,7 @@ static void cmd_channel(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 static void cmd_channel_add_modify(const char *data, gboolean add)
 {
 	GHashTable *optlist;
-        CHATNET_REC *chatnetrec;
+	CHATNET_REC *chatnetrec;
 	CHANNEL_SETUP_REC *rec;
 	char *botarg, *botcmdarg, *chatnet, *channel, *password;
 	void *free_arg;
@@ -308,7 +308,7 @@ static void cmd_channel_add_modify(const char *data, gboolean add)
 }
 
 /* SYNTAX: CHANNEL ADD|MODIFY [-auto | -noauto] [-bots <masks>] [-botcmd <command>]
-                              <channel> <network> [<password>] */
+			<channel> <network> [<password>] */
 static void cmd_channel_add(const char *data)
 {
 	cmd_channel_add_modify(data, TRUE);
@@ -343,7 +343,7 @@ static void cmd_channel_remove(const char *data)
 
 static int get_nick_length(void *data)
 {
-        return string_width(((NICK_REC *) data)->nick, -1);
+	return string_width(((NICK_REC *) data)->nick, -1);
 }
 
 static void display_sorted_nicks(CHANNEL_REC *channel, GSList *nicklist)
@@ -484,7 +484,7 @@ void fe_channels_nicklist(CHANNEL_REC *channel, int flags)
 		if (nick->op) {
 			ops++;
 			if ((flags & CHANNEL_NICKLIST_FLAG_OPS) == 0)
-                                continue;
+				continue;
 		} else if (nick->halfop) {
 			halfops++;
 			if ((flags & CHANNEL_NICKLIST_FLAG_HALFOPS) == 0)
@@ -507,7 +507,7 @@ void fe_channels_nicklist(CHANNEL_REC *channel, int flags)
 	sorted = g_slist_sort_with_data(sorted, (GCompareDataFunc) nicklist_compare, (void *)nick_flags);
 
 	/* display the nicks */
-        if ((flags & CHANNEL_NICKLIST_FLAG_COUNT) == 0) {
+	if ((flags & CHANNEL_NICKLIST_FLAG_COUNT) == 0) {
 		printformat(channel->server, channel->visible_name,
 			    MSGLEVEL_CLIENTCRAP, TXT_NAMES,
 			    channel->visible_name,
@@ -526,9 +526,9 @@ static void cmd_names(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 {
 	CHANNEL_REC *chanrec;
 	GHashTable *optlist;
-        GString *unknowns;
+	GString *unknowns;
 	char *channel, **channels, **tmp;
-        int flags;
+	int flags;
 	void *free_arg;
 
 	g_return_if_fail(data != NULL);
@@ -541,7 +541,7 @@ static void cmd_names(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 
 	if (g_strcmp0(channel, "*") == 0 || *channel == '\0') {
 		if (!IS_CHANNEL(item))
-                        cmd_param_error(CMDERR_NOT_JOINED);
+			cmd_param_error(CMDERR_NOT_JOINED);
 
 		channel = CHANNEL(item)->name;
 	}
@@ -558,9 +558,9 @@ static void cmd_names(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 	if (g_hash_table_lookup(optlist, "count") != NULL)
 		flags |= CHANNEL_NICKLIST_FLAG_COUNT;
 
-        if (flags == 0) flags = CHANNEL_NICKLIST_FLAG_ALL;
+	if (flags == 0) flags = CHANNEL_NICKLIST_FLAG_ALL;
 
-        unknowns = g_string_new(NULL);
+	unknowns = g_string_new(NULL);
 
 	channels = g_strsplit(channel, ",", -1);
 	for (tmp = channels; *tmp != NULL; tmp++) {
@@ -575,11 +575,11 @@ static void cmd_names(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 	g_strfreev(channels);
 
 	if (unknowns->len > 1)
-                g_string_truncate(unknowns, unknowns->len-1);
+		g_string_truncate(unknowns, unknowns->len-1);
 
 	if (unknowns->len > 0 && g_strcmp0(channel, unknowns->str) != 0)
-                signal_emit("command names", 3, unknowns->str, server, item);
-        g_string_free(unknowns, TRUE);
+		signal_emit("command names", 3, unknowns->str, server, item);
+	g_string_free(unknowns, TRUE);
 
 	cmd_params_free(free_arg);
 }

@@ -14,7 +14,7 @@ struct _IGNORE_REC {
 	char **channels; /* ignore only in these channels */
 	char *pattern; /* text body must match this pattern */
 
-        time_t unignore_time; /* time in sec for temp ignores */
+	time_t unignore_time; /* time in sec for temp ignores */
 
 	unsigned int exception:1; /* *don't* ignore */
 	unsigned int regexp:1;
@@ -39,7 +39,7 @@ enum {
 };
 
 IGNORE_REC *ignore_find_full (const char *servertag, const char *mask, const char *pattern,
-                char **channels, const int flags);
+		char **channels, const int flags);
 
 // Convenience wrappers around ignore_find_full, for compatibility purpose
 

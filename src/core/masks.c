@@ -108,7 +108,7 @@ int masks_match(SERVER_REC *server, const char *masks,
 			     nick != NULL && address != NULL, FALSE);
 
 	if (*masks == '\0')
-                return FALSE;
+		return FALSE;
 
 	mask_match_func = server != NULL && server->mask_match_func != NULL ?
 		server->mask_match_func : match_wildcards;
@@ -118,7 +118,7 @@ int masks_match(SERVER_REC *server, const char *masks,
 	list = g_strsplit(masks, " ", -1);
 	for (tmp = list; *tmp != NULL; tmp++) {
 		if (g_ascii_strcasecmp(*tmp, nick) == 0) {
-                        found = TRUE;
+			found = TRUE;
 			break;
 		}
 

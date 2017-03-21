@@ -40,18 +40,18 @@ static int ret_texts[] = {
 	TXT_OPTION_MISSING_ARG,
 	TXT_COMMAND_UNKNOWN,
 	TXT_COMMAND_AMBIGUOUS,
-        -1,
+	-1,
 	TXT_NOT_ENOUGH_PARAMS,
 	TXT_NOT_CONNECTED,
 	TXT_NOT_JOINED,
 	TXT_CHAN_NOT_FOUND,
 	TXT_CHAN_NOT_SYNCED,
-        TXT_ILLEGAL_PROTO,
+	TXT_ILLEGAL_PROTO,
 	TXT_NOT_GOOD_IDEA,
-        TXT_INVALID_TIME,
-        TXT_INVALID_CHARSET,
-        TXT_EVAL_MAX_RECURSE,
-        TXT_PROGRAM_NOT_FOUND,
+	TXT_INVALID_TIME,
+	TXT_INVALID_CHARSET,
+	TXT_EVAL_MAX_RECURSE,
+	TXT_PROGRAM_NOT_FOUND,
 	TXT_NO_SERVER_DEFINED,
 };
 
@@ -68,7 +68,7 @@ static int last_command_cmd, command_cmd;
 /* SYNTAX: ECHO [-current] [-window <name>] [-level <level>] <text> */
 static void cmd_echo(const char *data, void *server, WI_ITEM_REC *item)
 {
-        WINDOW_REC *window;
+	WINDOW_REC *window;
 	GHashTable *optlist;
 	char *msg, *levelstr, *winname;
 	void *free_arg;
@@ -80,7 +80,7 @@ static void cmd_echo(const char *data, void *server, WI_ITEM_REC *item)
 			    PARAM_FLAG_GETREST, "echo", &optlist, &msg))
 		return;
 
-        levelstr = g_hash_table_lookup(optlist, "level");
+	levelstr = g_hash_table_lookup(optlist, "level");
 	level = levelstr == NULL ? 0 :
 		level2bits(g_hash_table_lookup(optlist, "level"), NULL);
 	if (level == 0) level = MSGLEVEL_CRAP;
@@ -104,7 +104,7 @@ static void cmd_version(char *data)
 	g_return_if_fail(data != NULL);
 
 	if (*data == '\0') {
-                g_snprintf(time, sizeof(time), "%04d", IRSSI_VERSION_TIME);
+		g_snprintf(time, sizeof(time), "%04d", IRSSI_VERSION_TIME);
 		printtext(NULL, NULL, MSGLEVEL_CLIENTNOTICE,
 			  "Client: "PACKAGE_TARNAME" " PACKAGE_VERSION" (%d %s)",
 			  IRSSI_VERSION_DATE, time);
@@ -126,7 +126,7 @@ static void cmd_cat(const char *data)
 
 	fname = convert_home(fname);
 	fpos = atoi(fposstr);
-        cmd_params_free(free_arg);
+	cmd_params_free(free_arg);
 
 	handle = g_io_channel_new_file(fname, "r", NULL);
 	g_free(fname);
@@ -154,7 +154,7 @@ static void cmd_cat(const char *data)
 /* SYNTAX: BEEP */
 static void cmd_beep(void)
 {
-        signal_emit("beep", 0);
+	signal_emit("beep", 0);
 }
 
 static void cmd_nick(const char *data, SERVER_REC *server)
@@ -198,7 +198,7 @@ static void event_command(const char *data)
 	/* save current command line */
 	current_cmdline = data;
 
-        /* for detecting if we're pasting text */
+	/* for detecting if we're pasting text */
 	time_command_last = time_command_now;
 	last_command_cmd = command_cmd;
 
@@ -273,39 +273,39 @@ static void event_cmderror(void *errorp, const char *arg)
 
 	error = GPOINTER_TO_INT(errorp);
 	if (error == CMDERR_ERRNO) {
-                /* errno is special */
+		/* errno is special */
 		printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, "%s", g_strerror(errno));
 	} else {
-                /* others */
+		/* others */
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR, ret_texts[error + -CMDERR_OPTION_UNKNOWN], arg);
 	}
 }
 
 static void event_list_subcommands(const char *command)
 {
-        GSList *tmp;
-        GString *str;
+	GSList *tmp;
+	GString *str;
 	int len;
 
 	str = g_string_new(NULL);
 
-        len = strlen(command);
+	len = strlen(command);
 	for (tmp = commands; tmp != NULL; tmp = tmp->next) {
 		COMMAND_REC *rec = tmp->data;
 
 		if (g_ascii_strncasecmp(rec->cmd, command, len) == 0 &&
 		    rec->cmd[len] == ' ' &&
 		    strchr(rec->cmd+len+1, ' ') == NULL) {
-                        g_string_append_printf(str, "%s ", rec->cmd+len+1);
+			g_string_append_printf(str, "%s ", rec->cmd+len+1);
 		}
 	}
 
 	if (str->len != 0) {
 		g_string_truncate(str, str->len-1);
-                printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, "%s", str->str);
+		printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, "%s", str->str);
 	}
 
-        g_string_free(str, TRUE);
+	g_string_free(str, TRUE);
 }
 
 void fe_core_commands_init(void)

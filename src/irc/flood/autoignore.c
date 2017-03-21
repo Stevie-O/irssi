@@ -64,7 +64,7 @@ static void sig_flood(IRC_SERVER_REC *server, const char *nick, const char *host
 	level = GPOINTER_TO_INT(levelp);
 	check_level = settings_get_level("autoignore_level");
 
-        mask = g_strdup_printf("%s!%s", nick, host);
+	mask = g_strdup_printf("%s!%s", nick, host);
 	if (level & check_level) {
 		rec = ignore_find_full(server->tag, mask, NULL, NULL, 0);
 		if (rec == NULL)
@@ -72,7 +72,7 @@ static void sig_flood(IRC_SERVER_REC *server, const char *nick, const char *host
 		else
 			autoignore_update(rec, level);
 	}
-        g_free(mask);
+	g_free(mask);
 }
 
 void autoignore_init(void)

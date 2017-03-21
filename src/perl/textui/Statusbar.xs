@@ -7,13 +7,13 @@ static int check_sbar_destroy(char *key, char *value, char *script)
 {
 	if (strncmp(value, script, strlen(script)) == 0 &&
 	    value[strlen(script)] == ':') {
-                statusbar_item_unregister(key);
+		statusbar_item_unregister(key);
 		g_free(key);
-                g_free(value);
+		g_free(value);
 		return TRUE;
 	}
 
-        return FALSE;
+	return FALSE;
 }
 
 static void script_unregister_statusbars(PERL_SCRIPT_REC *script)
@@ -34,7 +34,7 @@ static void statusbar_item_def_destroy(void *key, void *value)
 {
 	statusbar_item_unregister(key);
 	g_free(key);
-        g_free(value);
+	g_free(value);
 }
 
 void perl_statusbar_deinit(void)
@@ -51,13 +51,13 @@ static void perl_statusbar_event(char *function, SBAR_ITEM_REC *item,
 {
 	dSP;
 	SV *item_sv, **sv;
-        HV *hv;
+	HV *hv;
 
 	ENTER;
 	SAVETMPS;
 
 	PUSHMARK(SP);
-        item_sv = plain_bless(item, "Irssi::TextUI::StatusbarItem");
+	item_sv = plain_bless(item, "Irssi::TextUI::StatusbarItem");
 	XPUSHs(sv_2mortal(item_sv));
 	XPUSHs(sv_2mortal(newSViv(get_size_only)));
 	PUTBACK;
@@ -66,15 +66,15 @@ static void perl_statusbar_event(char *function, SBAR_ITEM_REC *item,
 	SPAGAIN;
 
 	if (SvTRUE(ERRSV)) {
-                PERL_SCRIPT_REC *script;
-                char *package;
+		PERL_SCRIPT_REC *script;
+		char *package;
 
-                package = perl_function_get_package(function);
-                script = perl_script_find_package(package);
-                g_free(package);
+		package = perl_function_get_package(function);
+		script = perl_script_find_package(package);
+		g_free(package);
 
 		if (script != NULL) {
-                        /* make sure we don't get back here */
+			/* make sure we don't get back here */
 			script_unregister_statusbars(script);
 		}
 
@@ -129,12 +129,12 @@ void
 statusbar_item_unregister(name)
 	char *name
 PREINIT:
-        gpointer key, value;
+	gpointer key, value;
 CODE:
 	if (g_hash_table_lookup_extended(perl_sbar_defs, name, &key, &value)) {
-                g_hash_table_remove(perl_sbar_defs, name);
+		g_hash_table_remove(perl_sbar_defs, name);
 		g_free(key);
-                g_free(value);
+		g_free(value);
 	}
 	statusbar_item_unregister(name);
 

@@ -118,7 +118,7 @@ static void last_msg_add(GSList **list, const char *nick, int own, int max)
 		if (own)
 			rec->own = max;
 		else if (rec->own)
-                        rec->own--;
+			rec->own--;
 	} else {
 		rec = g_new(LAST_MSG_REC, 1);
 		rec->nick = g_strdup(nick);
@@ -131,7 +131,7 @@ static void last_msg_add(GSList **list, const char *nick, int own, int max)
 	}
 	rec->time = time(NULL);
 
-        last_msg_dec_owns(*list);
+	last_msg_dec_owns(*list);
 
 	*list = g_slist_prepend(*list, rec);
 }
@@ -150,7 +150,7 @@ void completion_last_message_remove(const char *nick)
 	g_return_if_fail(nick != NULL);
 
 	rec = last_msg_find(global_lastmsgs, nick);
-        if (rec != NULL) last_msg_destroy(&global_lastmsgs, rec);
+	if (rec != NULL) last_msg_destroy(&global_lastmsgs, rec);
 }
 
 void completion_last_message_rename(const char *oldnick, const char *newnick)
@@ -163,7 +163,7 @@ void completion_last_message_rename(const char *oldnick, const char *newnick)
 	rec = last_msg_find(global_lastmsgs, oldnick);
 	if (rec != NULL) {
 		g_free(rec->nick);
-                rec->nick = g_strdup(newnick);
+		rec->nick = g_strdup(newnick);
 	}
 }
 
@@ -172,11 +172,11 @@ static void sig_message_public(SERVER_REC *server, const char *msg,
 			       const char *target)
 {
 	CHANNEL_REC *channel;
-        int own;
+	int own;
 
 	channel = channel_find(server, target);
 	if (channel != NULL) {
-                own = nick_match_msg(channel, msg, server->nick);
+		own = nick_match_msg(channel, msg, server->nick);
 		CHANNEL_LAST_MSG_ADD(channel, nick, own);
 	}
 }
@@ -209,9 +209,9 @@ static void sig_message_own_public(SERVER_REC *server, const char *msg,
 
 	g_return_if_fail(server != NULL);
 	g_return_if_fail(msg != NULL);
-        if (target == NULL) return;
+	if (target == NULL) return;
 
-        channel = channel_find(server, target);
+	channel = channel_find(server, target);
 	if (channel == NULL)
 		return;
 
@@ -227,7 +227,7 @@ static void sig_message_own_public(SERVER_REC *server, const char *msg,
 			msgnick[strlen(msgnick)-1] = '\0';
 			nick = nicklist_find(channel, msgnick);
 		}
-                g_free(msgnick);
+		g_free(msgnick);
 		if (nick != NULL && nick != channel->ownnick)
 			CHANNEL_LAST_MSG_ADD(channel, nick->nick, TRUE);
 	}
@@ -244,10 +244,10 @@ static void sig_message_own_private(SERVER_REC *server, const char *msg,
 
 static void sig_nick_removed(CHANNEL_REC *channel, NICK_REC *nick)
 {
-        MODULE_CHANNEL_REC *mchannel;
+	MODULE_CHANNEL_REC *mchannel;
 	LAST_MSG_REC *rec;
 
-        mchannel = MODULE_DATA(channel);
+	mchannel = MODULE_DATA(channel);
 	rec = last_msg_find(mchannel->lastmsgs, nick->nick);
 	if (rec != NULL) last_msg_destroy(&mchannel->lastmsgs, rec);
 }
@@ -255,10 +255,10 @@ static void sig_nick_removed(CHANNEL_REC *channel, NICK_REC *nick)
 static void sig_nick_changed(CHANNEL_REC *channel, NICK_REC *nick,
 			     const char *oldnick)
 {
-        MODULE_CHANNEL_REC *mchannel;
+	MODULE_CHANNEL_REC *mchannel;
 	LAST_MSG_REC *rec;
 
-        mchannel = MODULE_DATA(channel);
+	mchannel = MODULE_DATA(channel);
 	rec = last_msg_find(mchannel->lastmsgs, oldnick);
 	if (rec != NULL) {
 		g_free(rec->nick);
@@ -310,7 +310,7 @@ static GList *convert_msglist(GSList *msglist)
 	while (msglist != NULL) {
 		LAST_MSG_REC *rec = msglist->data;
 
-                list = g_list_append(list, rec->nick);
+		list = g_list_append(list, rec->nick);
 		msglist = g_slist_remove(msglist, rec);
 		g_free(rec);
 	}
@@ -358,17 +358,17 @@ static void complete_from_nicklist(GList **outlist, CHANNEL_REC *channel,
 				   const char *nick, const char *suffix,
 				   const int match_case)
 {
-        MODULE_CHANNEL_REC *mchannel;
+	MODULE_CHANNEL_REC *mchannel;
 	GSList *tmp;
-        GList *ownlist;
+	GList *ownlist;
 	char *str;
 	int len;
 
 	/* go through the last x nicks who have said something in the channel.
 	   nicks of all the "own messages" are placed before others */
-        ownlist = NULL;
+	ownlist = NULL;
 	len = strlen(nick);
-        mchannel = MODULE_DATA(channel);
+	mchannel = MODULE_DATA(channel);
 	for (tmp = mchannel->lastmsgs; tmp != NULL; tmp = tmp->next) {
 		LAST_MSG_REC *rec = tmp->data;
 
@@ -380,12 +380,12 @@ static void complete_from_nicklist(GList **outlist, CHANNEL_REC *channel,
 			if (completion_lowercase) ascii_strdown(str);
 			if (rec->own)
 				ownlist = g_list_append(ownlist, str);
-                        else
+			else
 				*outlist = g_list_append(*outlist, str);
 		}
 	}
 
-        *outlist = g_list_concat(ownlist, *outlist);
+	*outlist = g_list_concat(ownlist, *outlist);
 }
 
 static GList *completion_nicks_nonstrict(CHANNEL_REC *channel,
@@ -411,10 +411,10 @@ static GList *completion_nicks_nonstrict(CHANNEL_REC *channel,
 	for (tmp = nicks; tmp != NULL; tmp = tmp->next) {
 		NICK_REC *rec = tmp->data;
 
-                tmplen = strlen(rec->nick);
+		tmplen = strlen(rec->nick);
 		if (tmplen > str_len) {
-                        str_len = tmplen*2;
-                        str = g_realloc(str, str_len+1);
+			str_len = tmplen*2;
+			str = g_realloc(str, str_len+1);
 		}
 
 		/* remove non alnum chars from nick */
@@ -422,9 +422,9 @@ static GList *completion_nicks_nonstrict(CHANNEL_REC *channel,
 		while (*in != '\0') {
 			if (i_isalnum(*in))
 				*out++ = *in;
-                        in++;
+			in++;
 		}
-                *out = '\0';
+		*out = '\0';
 
 		/* add to list if 'cleaned' nick matches */
 		if ((match_case? strncmp(str, nick, len)
@@ -436,11 +436,11 @@ static GList *completion_nicks_nonstrict(CHANNEL_REC *channel,
 			if (glist_find_icase_string(list, tnick) == NULL)
 				list = g_list_append(list, tnick);
 			else
-                                g_free(tnick);
+				g_free(tnick);
 		}
 
 	}
-        g_free(str);
+	g_free(str);
 	g_slist_free(nicks);
 
 	return list;
@@ -480,10 +480,10 @@ static GList *completion_channel_nicks(CHANNEL_REC *channel, const char *nick,
 			str = g_strconcat(rec->nick, suffix, NULL);
 			if (completion_lowercase)
 				ascii_strdown(str);
-                        if (glist_find_icase_string(list, str) == NULL)
+			if (glist_find_icase_string(list, str) == NULL)
 				list = g_list_append(list, str);
 			else
-                                g_free(str);
+				g_free(str);
 		}
 	}
 	g_slist_free(nicks);
@@ -607,36 +607,36 @@ GList *completion_get_aliases(const char *word)
 }
 
 static void complete_window_nicks(GList **list, WINDOW_REC *window,
-                                  const char *word, const char *nicksuffix)
+				const char *word, const char *nicksuffix)
 {
-        CHANNEL_REC *channel;
-        GList *tmplist;
-        GSList *tmp;
+	CHANNEL_REC *channel;
+	GList *tmplist;
+	GSList *tmp;
 
-        channel = CHANNEL(window->active);
+	channel = CHANNEL(window->active);
 
-        /* first the active channel */
-        if (channel != NULL) {
-                tmplist = completion_channel_nicks(channel, word, nicksuffix);
-                *list = completion_joinlist(*list, tmplist);
-        }
+	/* first the active channel */
+	if (channel != NULL) {
+		tmplist = completion_channel_nicks(channel, word, nicksuffix);
+		*list = completion_joinlist(*list, tmplist);
+	}
 
-        if (nicksuffix != NULL) {
-                /* completing nick at the start of line - probably answering
-                   to some other nick, don't even try to complete from
-                   non-active channels */
-                return;
-        }
+	if (nicksuffix != NULL) {
+		/* completing nick at the start of line - probably answering
+		to some other nick, don't even try to complete from
+		non-active channels */
+		return;
+	}
 
-        /* then the rest */
-        for (tmp = window->items; tmp != NULL; tmp = tmp->next) {
-                channel = CHANNEL(tmp->data);
-                if (channel != NULL && tmp->data != window->active) {
-                        tmplist = completion_channel_nicks(channel, word,
-                                                           nicksuffix);
-                        *list = completion_joinlist(*list, tmplist);
-                }
-        }
+	/* then the rest */
+	for (tmp = window->items; tmp != NULL; tmp = tmp->next) {
+		channel = CHANNEL(tmp->data);
+		if (channel != NULL && tmp->data != window->active) {
+			tmplist = completion_channel_nicks(channel, word,
+							nicksuffix);
+			*list = completion_joinlist(*list, tmplist);
+		}
+	}
 }
 
 static void sig_complete_word(GList **list, WINDOW_REC *window,
@@ -661,7 +661,7 @@ static void sig_complete_word(GList **list, WINDOW_REC *window,
 		/* probably completing a channel name */
 		*list = completion_get_channels(window->active_server, word);
 		if (*list != NULL) signal_stop();
-                return;
+		return;
 	}
 
 	server = window->active_server;
@@ -672,7 +672,7 @@ static void sig_complete_word(GList **list, WINDOW_REC *window,
 		if (!completion_empty_line)
 			return;
 		/* pressed TAB at the start of line - add /MSG */
-                prefix = g_strdup_printf("%cmsg", *cmdchars);
+		prefix = g_strdup_printf("%cmsg", *cmdchars);
 		*list = completion_msg(server, NULL, "", prefix);
 		if (*list == NULL)
 			*list = g_list_append(*list, g_strdup(prefix));
@@ -687,7 +687,7 @@ static void sig_complete_word(GList **list, WINDOW_REC *window,
 	if (channel == NULL && query != NULL &&
 	    g_ascii_strncasecmp(word, query->name, strlen(word)) == 0) {
 		/* completion in query */
-                *list = g_list_append(*list, g_strdup(query->name));
+		*list = g_list_append(*list, g_strdup(query->name));
 	} else if (channel != NULL) {
 		/* nick completion .. we could also be completing a nick
 		   after /MSG from nicks in channel */
@@ -695,7 +695,7 @@ static void sig_complete_word(GList **list, WINDOW_REC *window,
 		complete_window_nicks(list, window, word, suffix);
 	} else if (window->level & MSGLEVEL_MSGS) {
 		/* msgs window, complete /MSG nicks */
-                *list = g_list_concat(completion_msg(server, NULL, word, NULL), *list);
+		*list = g_list_concat(completion_msg(server, NULL, word, NULL), *list);
 	}
 
 	if (*list != NULL) signal_stop();
@@ -746,19 +746,19 @@ static void sig_erase_complete_msg(WINDOW_REC *window, const char *word,
 {
 	SERVER_REC *server;
 	MODULE_SERVER_REC *mserver;
-        GSList *tmp;
+	GSList *tmp;
 
 	server = line_get_server(line);
 	if (server == NULL){
 		server = window->active_server;
 		if (server == NULL)
-                        return;
+			return;
 	}
 
 	if (*word == '\0')
 		return;
 
-        /* check from global list */
+	/* check from global list */
 	completion_last_message_remove(word);
 
 	/* check from server specific list */
@@ -769,7 +769,7 @@ static void sig_erase_complete_msg(WINDOW_REC *window, const char *word,
 
 			if (g_ascii_strcasecmp(rec->nick, word) == 0) {
 				last_msg_destroy(&mserver->lastmsgs, rec);
-                                break;
+				break;
 			}
 		}
 
@@ -884,7 +884,7 @@ static void sig_complete_topic(GList **list, WINDOW_REC *window,
 		topic = CHANNEL(window->active)->topic;
 		if (topic != NULL) {
 			*list = g_list_append(NULL, g_strdup(topic));
-                        signal_stop();
+			signal_stop();
 		}
 	}
 }
@@ -898,7 +898,7 @@ static void sig_complete_away(GList **list, WINDOW_REC *window,
 	g_return_if_fail(list != NULL);
 	g_return_if_fail(word != NULL);
 
-        *want_space = FALSE;
+	*want_space = FALSE;
 
 	if (*word == '\0' && window->active_server != NULL) {
 		reason = SERVER(window->active_server)->away_reason;
@@ -1016,7 +1016,7 @@ static char *expand_escapes(const char *line, SERVER_REC *server,
 			    WI_ITEM_REC *item)
 {
 	char *ptr, *ret;
-        int chr;
+	int chr;
 
 	ret = ptr = g_malloc(strlen(line)+1);
 	for (; *line != '\0'; line++) {
@@ -1042,10 +1042,10 @@ static char *expand_escapes(const char *line, SERVER_REC *server,
 				ptr = ret;
 			}
 		} else if (chr != -1) {
-                        /* escaping went ok */
+			/* escaping went ok */
 			*ptr++ = chr;
 		} else {
-                        /* unknown escape, add it as-is */
+			/* unknown escape, add it as-is */
 			*ptr++ = '\\';
 			*ptr++ = *line;
 		}
@@ -1059,17 +1059,17 @@ static char *auto_complete(CHANNEL_REC *channel, const char *line)
 {
 	GList *comp;
 	const char *p;
-        char *nick, *ret;
+	char *nick, *ret;
 
 	p = strstr(line, completion_char);
 	if (p == NULL)
 		return NULL;
 
-        nick = g_strndup(line, (int) (p-line));
+	nick = g_strndup(line, (int) (p-line));
 
-        ret = NULL;
+	ret = NULL;
 	if (nicklist_find(channel, nick) == NULL) {
-                /* not an exact match, use the first possible completion */
+		/* not an exact match, use the first possible completion */
 		comp = completion_channel_nicks(channel, nick, NULL);
 		if (comp != NULL) {
 			ret = g_strconcat(comp->data, p, NULL);
@@ -1080,7 +1080,7 @@ static char *auto_complete(CHANNEL_REC *channel, const char *line)
 
 	g_free(nick);
 
-        return ret;
+	return ret;
 }
 
 static void event_text(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
@@ -1094,7 +1094,7 @@ static void event_text(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 
 	if (*data == '\0') {
 		/* empty line, forget it. */
-                signal_stop();
+		signal_stop();
 		return;
 	}
 
@@ -1106,7 +1106,7 @@ static void event_text(const char *data, SERVER_REC *server, WI_ITEM_REC *item)
 		str = auto_complete(CHANNEL(item), line);
 		if (str != NULL) {
 			g_free(line);
-                        line = str;
+			line = str;
 		}
 	}
 
@@ -1133,9 +1133,9 @@ static void sig_server_disconnected(SERVER_REC *server)
 
 	g_return_if_fail(server != NULL);
 
-        mserver = MODULE_DATA(server);
+	mserver = MODULE_DATA(server);
 	while (mserver->lastmsgs)
-                last_msg_destroy(&mserver->lastmsgs, mserver->lastmsgs->data);
+		last_msg_destroy(&mserver->lastmsgs, mserver->lastmsgs->data);
 }
 
 static void sig_channel_destroyed(CHANNEL_REC *channel)
@@ -1144,7 +1144,7 @@ static void sig_channel_destroyed(CHANNEL_REC *channel)
 
 	g_return_if_fail(channel != NULL);
 
-        mchannel = MODULE_DATA(channel);
+	mchannel = MODULE_DATA(channel);
 	while (mchannel->lastmsgs != NULL) {
 		last_msg_destroy(&mchannel->lastmsgs,
 				 mchannel->lastmsgs->data);
@@ -1170,7 +1170,7 @@ static void read_settings(void)
 	cmdchars = g_strdup(settings_get_str("cmdchars"));
 
 	if (*completion_char == '\0') {
-                /* this would break.. */
+		/* this would break.. */
 		completion_auto = FALSE;
 	}
 }

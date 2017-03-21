@@ -33,10 +33,10 @@
 #define MAX_CHARS_IN_LINE 65536
 
 struct _LINEBUF_REC {
-        int len;
+	int len;
 	int alloc;
 	int remove;
-        char *str;
+	char *str;
 };
 
 static void linebuf_append(LINEBUF_REC *rec, const char *data, int len)
@@ -66,7 +66,7 @@ static int remove_newline(LINEBUF_REC *rec)
 			return 0;
 
 		/* line buffer is too big - force a newline. */
-                linebuf_append(rec, "\n", 1);
+		linebuf_append(rec, "\n", 1);
 		ptr = rec->str+rec->len-1;
 	}
 

@@ -61,7 +61,7 @@ static int knockout_tag;
 
 /* SYNTAX: NOTICE <targets> <message> */
 static void cmd_notice(const char *data, IRC_SERVER_REC *server,
-                       WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	const char *target, *msg;
 	char *recoded;
@@ -88,7 +88,7 @@ static void cmd_notice(const char *data, IRC_SERVER_REC *server,
 
 /* SYNTAX: CTCP <targets> <ctcp command> [<ctcp data>] */
 static void cmd_ctcp(const char *data, IRC_SERVER_REC *server,
-                     WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	const char *target;
 	char *ctcpcmd, *ctcpdata;
@@ -122,7 +122,7 @@ static void cmd_ctcp(const char *data, IRC_SERVER_REC *server,
 
 /* SYNTAX: NCTCP <targets> <ctcp command> [<ctcp data>] */
 static void cmd_nctcp(const char *data, IRC_SERVER_REC *server,
-                      WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	const char *target;
 	char *ctcpcmd, *ctcpdata, *recoded;
@@ -150,7 +150,7 @@ static void cmd_nctcp(const char *data, IRC_SERVER_REC *server,
 
 /* SYNTAX: PART [<channels>] [<message>] */
 static void cmd_part(const char *data, IRC_SERVER_REC *server,
-                     WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	char *channame, *msg;
 	char *recoded = NULL;
@@ -258,7 +258,7 @@ static void cmd_invite(const char *data, IRC_SERVER_REC *server, WI_ITEM_REC *it
 
 /* SYNTAX: LIST [-yes] [<channel>] */
 static void cmd_list(const char *data, IRC_SERVER_REC *server,
-                     WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	GHashTable *optlist;
 	char *str;
@@ -267,7 +267,7 @@ static void cmd_list(const char *data, IRC_SERVER_REC *server,
 	CMD_IRC_SERVER(server);
 
 	if (!cmd_get_params(data, &free_arg, 1 | PARAM_FLAG_OPTIONS |
-	                    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS, 
+	                    PARAM_FLAG_GETREST | PARAM_FLAG_STRIP_TRAILING_WS,
 	                    "list", &optlist, &str))
 		return;
 
@@ -282,14 +282,14 @@ static void cmd_list(const char *data, IRC_SERVER_REC *server,
 
 /* SYNTAX: WHO [<nicks> | <channels> | **] */
 static void cmd_who(const char *data, IRC_SERVER_REC *server,
-                    WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	char *channel, *rest;
 	void *free_arg;
 
 	CMD_IRC_SERVER(server);
 
-	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_GETREST | 
+	if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_GETREST |
 	                    PARAM_FLAG_STRIP_TRAILING_WS, &channel, &rest))
 		return;
 
@@ -313,7 +313,7 @@ static void cmd_who(const char *data, IRC_SERVER_REC *server,
 }
 
 static void cmd_names(const char *data, IRC_SERVER_REC *server,
-                      WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	GHashTable *optlist;
 	char *channel;
@@ -388,7 +388,7 @@ static char *get_redirect_nicklist(const char *nicks, int *free)
 
 /* SYNTAX: WHOIS [-<server tag>] [<server>] [<nicks>] */
 static void cmd_whois(const char *data, IRC_SERVER_REC *server,
-                      WI_ITEM_REC *item)
+		WI_ITEM_REC *item)
 {
 	GHashTable *optlist;
 	char *qserver, *query, *event_402, *str;
@@ -457,7 +457,7 @@ static void cmd_whois(const char *data, IRC_SERVER_REC *server,
 }
 
 static void event_whois(IRC_SERVER_REC *server, const char *data,
-                        const char *nick, const char *addr)
+			const char *nick, const char *addr)
 {
 	server->whois_found = TRUE;
 	signal_emit("event 311", 4, server, data, nick, addr);
@@ -482,14 +482,14 @@ static void sig_whois_try_whowas(IRC_SERVER_REC *server, const char *data)
 }
 
 static void event_end_of_whois(IRC_SERVER_REC *server, const char *data,
-                               const char *nick, const char *addr)
+			const char *nick, const char *addr)
 {
 	signal_emit("event 318", 4, server, data, nick, addr);
 	server->whois_found = FALSE;
 }
 
 static void event_whowas(IRC_SERVER_REC *server, const char *data,
-                         const char *nick, const char *addr)
+			const char *nick, const char *addr)
 {
 	server->whowas_found = TRUE;
 	signal_emit("event 314", 4, server, data, nick, addr);
@@ -680,7 +680,7 @@ static void cmd_wall(const char *data, IRC_SERVER_REC *server, WI_ITEM_REC *item
 
 /* SYNTAX: KICKBAN [<channel>] <nicks> <reason> */
 static void cmd_kickban(const char *data, IRC_SERVER_REC *server,
-                        WI_ITEM_REC *item)
+			WI_ITEM_REC *item)
 {
 	IRC_CHANNEL_REC *chanrec;
 	char *channel, *nicks, *reason, *kickcmd, *bancmd, *recoded;
@@ -763,7 +763,7 @@ static int knockout_timeout(void)
 
 /* SYNTAX: KNOCKOUT [<time>] <nicks> <reason> */
 static void cmd_knockout(const char *data, IRC_SERVER_REC *server,
-                         IRC_CHANNEL_REC *channel)
+			IRC_CHANNEL_REC *channel)
 {
 	KNOCKOUT_REC *rec;
 	char *nicks, *reason, *timeoutstr, *kickcmd, *bancmd, *recoded;
@@ -781,7 +781,7 @@ static void cmd_knockout(const char *data, IRC_SERVER_REC *server,
 		/* first argument is the timeout */
 		if (!cmd_get_params(data, &free_arg, 3 | PARAM_FLAG_GETREST,
 		                    &timeoutstr, &nicks, &reason))
-                        return;
+			return;
 
 		if (!parse_time_interval(timeoutstr, &timeleft))
 			cmd_param_error(CMDERR_INVALID_TIME);
@@ -789,7 +789,7 @@ static void cmd_knockout(const char *data, IRC_SERVER_REC *server,
 		if (!cmd_get_params(data, &free_arg, 2 | PARAM_FLAG_GETREST,
 		                    &nicks, &reason))
 			return;
-                timeleft = settings_get_time("knockout_time");
+		timeleft = settings_get_time("knockout_time");
 	}
 
 	if (*nicks == '\0') cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);

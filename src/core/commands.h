@@ -11,12 +11,12 @@ typedef struct {
 typedef struct {
 	char *name;
 	char *options;
-        int protocol; /* chat protocol required for this command */
-        GSList *callbacks;
+	int protocol; /* chat protocol required for this command */
+	GSList *callbacks;
 } COMMAND_MODULE_REC;
 
 typedef struct {
-        GSList *modules;
+	GSList *modules;
 	char *category;
 	char *cmd;
 	char **options; /* combined from modules[..]->options */
@@ -30,7 +30,7 @@ enum {
 	CMDERR_UNKNOWN, /* unknown command */
 	CMDERR_AMBIGUOUS, /* ambiguous command */
 
-        CMDERR_ERRNO, /* get the error from errno */
+	CMDERR_ERRNO, /* get the error from errno */
 	CMDERR_NOT_ENOUGH_PARAMS, /* not enough parameters given */
 	CMDERR_NOT_CONNECTED, /* not connected to server */
 	CMDERR_NOT_JOINED, /* not joined to any channels in this window */
@@ -109,7 +109,7 @@ int command_have_sub(const char *command);
    will be merged. If there's any conflicts with option types, the last
    call will override the previous */
 #define iscmdtype(c) \
-        ((c) == '!' || (c) == '-' || (c) == '+' || (c) == '@')
+	((c) == '!' || (c) == '-' || (c) == '+' || (c) == '@')
 void command_set_options_module(const char *module,
 				const char *cmd, const char *options);
 #define command_set_options(cmd, options) \
@@ -137,7 +137,7 @@ int command_have_option(const char *cmd, const char *option);
    GHashTable *optlist;
 
    cmd_get_params(data, &free_me, 1 | PARAM_FLAG_OPTIONS |
-                  PARAM_FLAG_GETREST, "mycmd", &optlist, &rest);
+		PARAM_FLAG_GETREST, "mycmd", &optlist, &rest);
 
    The optlist hash table is filled:
 

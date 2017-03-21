@@ -31,7 +31,7 @@ typedef struct {
 	int tag;
 
 	char *redirect_cmd;
-        int count;
+	int count;
 	int remote;
 	char *failure_signal;
 	GSList *redirects;
@@ -55,10 +55,10 @@ server_idle_create(const char *cmd, const char *redirect_cmd, int count,
 	rec->arg = g_strdup(arg);
 	rec->tag = ++idlepos;
 
-        rec->redirect_cmd = g_strdup(redirect_cmd);
+	rec->redirect_cmd = g_strdup(redirect_cmd);
 	rec->count = count;
 	rec->remote = remote;
-        rec->failure_signal = g_strdup(failure_signal);
+	rec->failure_signal = g_strdup(failure_signal);
 
 	while ((event = va_arg(va, const char *)) != NULL) {
 		signal = va_arg(va, const char *);
@@ -153,7 +153,7 @@ int server_idle_insert_redir(IRC_SERVER_REC *server, const char *cmd, int tag,
 
 	rec = server_idle_create(cmd, redirect_cmd, count, arg, remote,
 				 failure_signal, va);
-        server->idles = pos < 0 ?
+	server->idles = pos < 0 ?
 		g_slist_append(server->idles, rec) :
 		g_slist_insert(server->idles, rec, pos);
 	va_end(va);
@@ -167,12 +167,12 @@ static void server_idle_destroy(IRC_SERVER_REC *server, SERVER_IDLE_REC *rec)
 
 	server->idles = g_slist_remove(server->idles, rec);
 
-        g_slist_foreach(rec->redirects, (GFunc) g_free, NULL);
+	g_slist_foreach(rec->redirects, (GFunc) g_free, NULL);
 	g_slist_free(rec->redirects);
 
 	g_free_not_null(rec->arg);
-        g_free_not_null(rec->redirect_cmd);
-        g_free_not_null(rec->failure_signal);
+	g_free_not_null(rec->redirect_cmd);
+	g_free_not_null(rec->failure_signal);
 	g_free(rec->cmd);
 	g_free(rec);
 }

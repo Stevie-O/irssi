@@ -33,14 +33,14 @@
 static void cmd_script(const char *data, SERVER_REC *server, void *item)
 {
 	if (*data == '\0')
-                data = "list";
+		data = "list";
 
 	command_runsub("script", data, server, item);
 }
 
 static void cmd_script_exec(const char *data)
 {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 	GHashTable *optlist;
 	char *code;
 	void *free_arg;
@@ -50,14 +50,14 @@ static void cmd_script_exec(const char *data)
 			    "script exec", &optlist, &code))
 		return;
 
-        if (*code == '\0')
+	if (*code == '\0')
 		cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
 
-        script = perl_script_load_data(code);
+	script = perl_script_load_data(code);
 	if (script != NULL &&
 	    g_hash_table_lookup(optlist, "permanent") == NULL) {
 		/* not a permanent script, unload immediately */
-                perl_script_unload(script);
+		perl_script_unload(script);
 	}
 
 
@@ -66,20 +66,20 @@ static void cmd_script_exec(const char *data)
 
 static void cmd_script_load(const char *data)
 {
-        PERL_SCRIPT_REC *script;
+	PERL_SCRIPT_REC *script;
 	char *fname, *path;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1, &path))
 		return;
 
-        if (*path == '\0')
+	if (*path == '\0')
 		cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
 
 	fname = perl_script_get_path(path);
 	if (fname == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
-                            TXT_SCRIPT_NOT_FOUND, data);
+			TXT_SCRIPT_NOT_FOUND, data);
 	} else {
 		script = perl_script_load_file(fname);
 		if (script != NULL) {
@@ -95,20 +95,20 @@ static void cmd_script_load(const char *data)
 static void cmd_script_unload(const char *data)
 {
 	PERL_SCRIPT_REC *script;
-        char *name;
+	char *name;
 	void *free_arg;
 
 	if (!cmd_get_params(data, &free_arg, 1, &name))
 		return;
 
-        if (*name == '\0')
+	if (*name == '\0')
 		cmd_param_error(CMDERR_NOT_ENOUGH_PARAMS);
 
-        script_fix_name(name);
+	script_fix_name(name);
 	script = perl_script_find(name);
 	if (script == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
-                            TXT_SCRIPT_NOT_LOADED, name);
+			TXT_SCRIPT_NOT_LOADED, name);
 	} else {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTERROR,
 			    TXT_SCRIPT_UNLOADED, script->name);
@@ -138,12 +138,12 @@ static void cmd_script_reset(const char *data)
 static void cmd_script_list(void)
 {
 	GSList *tmp;
-        GString *data;
+	GString *data;
 
 	if (perl_scripts == NULL) {
 		printformat(NULL, NULL, MSGLEVEL_CLIENTNOTICE,
-                            TXT_NO_SCRIPTS_LOADED);
-                return;
+			TXT_NO_SCRIPTS_LOADED);
+		return;
 	}
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP,
@@ -153,20 +153,20 @@ static void cmd_script_list(void)
 	for (tmp = perl_scripts; tmp != NULL; tmp = tmp->next) {
 		PERL_SCRIPT_REC *rec = tmp->data;
 
-                if (rec->path != NULL)
+		if (rec->path != NULL)
 			g_string_assign(data, rec->path);
 		else {
 			g_string_assign(data, rec->data);
 			if (data->len > 50) {
 				g_string_truncate(data, 50);
-                                g_string_append(data, " ...");
+				g_string_append(data, " ...");
 			}
 		}
 
 		printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP,
 			    TXT_SCRIPT_LIST_LINE, rec->name, data->str);
 	}
-        g_string_free(data, TRUE);
+	g_string_free(data, TRUE);
 
 	printformat(NULL, NULL, MSGLEVEL_CLIENTCRAP,
 		    TXT_SCRIPT_LIST_FOOTER);
@@ -174,7 +174,7 @@ static void cmd_script_list(void)
 
 static void cmd_load(const char *data, SERVER_REC *server, void *item)
 {
-        char *rootmodule, *submodule;
+	char *rootmodule, *submodule;
 	void *free_arg;
 	size_t len;
 
@@ -203,7 +203,7 @@ static void sig_complete_load(GList **list, WINDOW_REC *window,
 			      const char *word, const char *line,
 			      int *want_space)
 {
-        char *user_dir;
+	char *user_dir;
 
 	if (*line != '\0')
 		return;
@@ -212,7 +212,7 @@ static void sig_complete_load(GList **list, WINDOW_REC *window,
 	user_dir = g_strdup_printf("%s/scripts", get_irssi_dir());
 	*list = filename_complete(word, user_dir);
 	*list = g_list_concat(*list, filename_complete(word, SCRIPTDIR));
-        g_free(user_dir);
+	g_free(user_dir);
 
 	if (*list != NULL) {
 		*want_space = FALSE;
@@ -223,19 +223,19 @@ static void sig_complete_load(GList **list, WINDOW_REC *window,
 static GList *script_complete(const char *name)
 {
 	GSList *tmp;
-        GList *list;
-        int len;
+	GList *list;
+	int len;
 
-        list = NULL;
-        len = strlen(name);
+	list = NULL;
+	len = strlen(name);
 	for (tmp = perl_scripts; tmp != NULL; tmp = tmp->next) {
 		PERL_SCRIPT_REC *rec = tmp->data;
 
 		if (strncmp(rec->name, name, len) == 0)
-                        list = g_list_append(list, g_strdup(rec->name));
+			list = g_list_append(list, g_strdup(rec->name));
 	}
 
-        return list;
+	return list;
 }
 
 static void sig_complete_unload(GList **list, WINDOW_REC *window,
@@ -265,11 +265,11 @@ void fe_perl_init(void)
 	command_set_options("script exec", "permanent");
 	command_set_options("script reset", "autorun");
 
-        signal_add("script error", (SIGNAL_FUNC) sig_script_error);
+	signal_add("script error", (SIGNAL_FUNC) sig_script_error);
 	signal_add("complete command script load", (SIGNAL_FUNC) sig_complete_load);
 	signal_add("complete command script unload", (SIGNAL_FUNC) sig_complete_unload);
 
-        perl_core_print_script_error(FALSE);
+	perl_core_print_script_error(FALSE);
 	module_register("perl", "fe");
 }
 
@@ -285,11 +285,11 @@ void fe_perl_deinit(void)
 	command_unbind("script list", (SIGNAL_FUNC) cmd_script_list);
 	command_unbind("load", (SIGNAL_FUNC) cmd_load);
 
-        signal_remove("script error", (SIGNAL_FUNC) sig_script_error);
+	signal_remove("script error", (SIGNAL_FUNC) sig_script_error);
 	signal_remove("complete command script load", (SIGNAL_FUNC) sig_complete_load);
 	signal_remove("complete command script unload", (SIGNAL_FUNC) sig_complete_unload);
 
-        perl_core_print_script_error(TRUE);
+	perl_core_print_script_error(TRUE);
 }
 
 void fe_perl_abicheck(int *version)

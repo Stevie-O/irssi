@@ -156,7 +156,7 @@ char *bits2level(int bits)
 				g_string_append_printf(str, "%s ", levels[n]);
 		}
 	}
-        if (str->len > 0)
+	if (str->len > 0)
 		g_string_truncate(str, str->len-1);
 
 	ret = str->str;
@@ -178,7 +178,7 @@ int combine_level(int dest, const char *src)
 		itemlevel = level_get(itemname);
 
 		if (g_strcmp0(itemname, "NONE") == 0)
-                        dest = 0;
+			dest = 0;
 		else if (**item == '-')
 			dest &= ~(itemlevel);
 		else

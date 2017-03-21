@@ -102,7 +102,7 @@ void irc_proxy_init(void)
 		proxy_listen_init();
 	}
 	settings_check();
-        module_register("proxy", "irc");
+	module_register("proxy", "irc");
 }
 
 void irc_proxy_deinit(void)

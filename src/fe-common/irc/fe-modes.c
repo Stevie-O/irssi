@@ -54,7 +54,7 @@ static MODE_REC *mode_find_channel(IRC_CHANNEL_REC *channel)
 		MODE_REC *rec = tmp->data;
 
 		if (rec->channel == channel)
-                        return rec;
+			return rec;
 	}
 
 	return NULL;
@@ -98,7 +98,7 @@ static void sig_print_starting(void)
 {
 	while (modes != NULL) {
 		print_mode(modes->data);
-                mode_destroy(modes->data);
+		mode_destroy(modes->data);
 	}
 
 	signal_remove("print starting", sig_print_starting);
@@ -143,7 +143,7 @@ static void msg_multi_mode(IRC_CHANNEL_REC *channel, const char *sender,
 	}
 
 	if (rec == NULL) {
-                /* no previous mode, create new */
+		/* no previous mode, create new */
 		rec = g_new0(MODE_REC, 1);
 		modes = g_slist_append(modes, rec);
 
@@ -198,7 +198,7 @@ static void read_settings(void)
 {
 	int old_group;
 
-        old_group = group_multi_mode;
+	old_group = group_multi_mode;
 	group_multi_mode = settings_get_bool("group_multi_mode");
 
 	if (old_group && !group_multi_mode) {
@@ -212,7 +212,7 @@ static void read_settings(void)
 void fe_modes_init(void)
 {
 	settings_add_bool("misc", "group_multi_mode", TRUE);
-        mode_tag = -1;
+	mode_tag = -1;
 
 	read_settings();
 	signal_add("message irc mode", (SIGNAL_FUNC) sig_message_mode);

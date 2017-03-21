@@ -115,7 +115,7 @@ const char *command_history_prev(WINDOW_REC *window, const char *text)
 	if (pos != NULL) {
 		history->pos = history->pos->prev;
 		if (history->pos == NULL)
-                        history->over_counter++;
+			history->over_counter++;
 	} else {
 		history->pos = g_list_last(history->list);
 	}
@@ -261,7 +261,7 @@ static char *special_history_func(const char *text, void *item, int *free_ret)
 	WINDOW_REC *window;
 	HISTORY_REC *history;
 	GList *tmp;
-        char *findtext, *ret;
+	char *findtext, *ret;
 
 	window = item == NULL ? active_win : window_item_window(item);
 
@@ -274,7 +274,7 @@ static char *special_history_func(const char *text, void *item, int *free_ret)
 
 		if (match_wildcards(findtext, line)) {
 			*free_ret = TRUE;
-                        ret = g_strdup(line);
+			ret = g_strdup(line);
 		}
 	}
 	g_free(findtext);

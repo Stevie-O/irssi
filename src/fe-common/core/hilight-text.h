@@ -14,7 +14,7 @@ struct _HILIGHT_REC {
 	int level; /* match only messages with this level, 0=default */
 	char *color; /* if starts with number, \003 is automatically
 	                inserted before it. */
-        char *act_color; /* color for window activity */
+	char *act_color; /* color for window activity */
 	int priority;
 
 	unsigned int nick:1; /* hilight only nick if possible */

@@ -85,7 +85,7 @@ static void netsplit_server_destroy(IRC_SERVER_REC *server,
 
 	signal_emit("netsplit server remove", 2, server, rec);
 
-        g_free(rec->server);
+	g_free(rec->server);
 	g_free(rec->destserver);
 	g_free(rec);
 }
@@ -222,7 +222,7 @@ NETSPLIT_CHAN_REC *netsplit_find_channel(IRC_SERVER_REC *server,
 int quitmsg_is_split(const char *msg)
 {
 	const char *host2, *p;
-        int prev, len, host1_dot, host2_dot;
+	int prev, len, host1_dot, host2_dot;
 
 	g_return_val_if_fail(msg != NULL, FALSE);
 
@@ -232,13 +232,13 @@ int quitmsg_is_split(const char *msg)
 	   looks like a netsplit message.
 
 	   So, the check is currently just:
-             - host1.domain1 host2.domain2
-             - top-level domains have to be 2+ characters long,
+	- host1.domain1 host2.domain2
+	- top-level domains have to be 2+ characters long,
 	       containing only alphabets
 	     - only 1 space
 	     - no double-dots (".." - probably useless check)
 	     - hosts/domains can't start or end with a dot
-             - the two hosts can't be identical (probably useless check)
+	- the two hosts can't be identical (probably useless check)
 	     - can't contain ':' or '/' chars (some servers allow URLs)
 	   */
 	host2 = NULL;
@@ -253,8 +253,8 @@ int quitmsg_is_split(const char *msg)
 			if (host2 != NULL)
 				return FALSE; /* only one space allowed */
 			if (!host1_dot)
-                                return FALSE; /* host1 didn't have domain */
-                        host2 = msg+1; len = -1;
+				return FALSE; /* host1 didn't have domain */
+			host2 = msg+1; len = -1;
 		} else if (*msg == '.') {
 			if (prev == '\0' || prev == ' ' || prev == '.') {
 				/* domains can't start with '.'
@@ -265,36 +265,36 @@ int quitmsg_is_split(const char *msg)
 			if (host2 != NULL)
 				host2_dot = TRUE;
 			else
-                                host1_dot = TRUE;
+				host1_dot = TRUE;
 		} else if (*msg == ':' || *msg == '/')
 			return FALSE;
 
 		prev = *msg;
-                msg++; len++;
+		msg++; len++;
 	}
 
 	if (!host2_dot || prev == '.')
-                return FALSE;
+		return FALSE;
 
-        /* top-domain1 must be 2+ chars long and contain only alphabets */
+	/* top-domain1 must be 2+ chars long and contain only alphabets */
 	p = host2-1;
 	while (p[-1] != '.') {
 		if (!i_isalpha(p[-1]))
-                        return FALSE;
+			return FALSE;
 		p--;
 	}
 	if (host2-p-1 < 2) return FALSE;
 
-        /* top-domain2 must be 2+ chars long and contain only alphabets */
+	/* top-domain2 must be 2+ chars long and contain only alphabets */
 	p = host2+strlen(host2);
 	while (p[-1] != '.') {
 		if (!i_isalpha(p[-1]))
-                        return FALSE;
+			return FALSE;
 		p--;
 	}
 	if (strlen(p) < 2) return FALSE;
 
-        return TRUE;
+	return TRUE;
 }
 
 static void split_set_timeout(void *key, NETSPLIT_REC *rec, NETSPLIT_REC *orig)
@@ -365,13 +365,13 @@ static void event_nick(IRC_SERVER_REC *server, const char *data)
 
 	/* remove nick from split list when somebody changed
 	   nick to this one during split */
-        rec = g_hash_table_lookup(server->splits, nick);
+	rec = g_hash_table_lookup(server->splits, nick);
 	if (rec != NULL) {
 	        g_hash_table_remove(server->splits, rec->nick);
 		netsplit_destroy(server, rec);
 	}
 
-        g_free(params);
+	g_free(params);
 }
 
 static void sig_disconnected(IRC_SERVER_REC *server)
@@ -384,7 +384,7 @@ static void sig_disconnected(IRC_SERVER_REC *server)
 	g_hash_table_foreach(server->splits,
 			     (GHFunc) netsplit_destroy_hash, server);
 	g_hash_table_destroy(server->splits);
-        server->splits = NULL;
+	server->splits = NULL;
 }
 
 static int split_server_check(void *key, NETSPLIT_REC *rec,

@@ -34,7 +34,7 @@
 static void sig_server_setup_fill_reconn(IRC_SERVER_CONNECT_REC *conn,
 					 IRC_SERVER_SETUP_REC *sserver)
 {
-        if (!IS_IRC_SERVER_CONNECT(conn) ||
+	if (!IS_IRC_SERVER_CONNECT(conn) ||
 	    !IS_IRC_SERVER_SETUP(sserver))
 		return;
 
@@ -116,7 +116,7 @@ static void init_userinfo(void)
 	const char *set, *nick, *user_name, *str;
 
 	/* check if nick/username/realname wasn't read from setup.. */
-        set = settings_get_str("real_name");
+	set = settings_get_str("real_name");
 	if (set == NULL || *set == '\0') {
 		str = g_getenv("IRCNAME");
 		settings_set_str("real_name",
@@ -124,7 +124,7 @@ static void init_userinfo(void)
 	}
 
 	/* username */
-        user_name = settings_get_str("user_name");
+	user_name = settings_get_str("user_name");
 	if (user_name == NULL || *user_name == '\0') {
 		str = g_getenv("IRCUSER");
 		settings_set_str("user_name",
@@ -134,7 +134,7 @@ static void init_userinfo(void)
 	}
 
 	/* nick */
-        nick = settings_get_str("nick");
+	nick = settings_get_str("nick");
 	if (nick == NULL || *nick == '\0') {
 		str = g_getenv("IRCNICK");
 		settings_set_str("nick", str != NULL ? str : user_name);
@@ -143,7 +143,7 @@ static void init_userinfo(void)
 	}
 
 	/* host name */
-        set = settings_get_str("hostname");
+	set = settings_get_str("hostname");
 	if (set == NULL || *set == '\0') {
 		str = g_getenv("IRCHOST");
 		if (str != NULL)

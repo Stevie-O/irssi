@@ -14,15 +14,15 @@ typedef struct {
 
 /* fully connected? */
 #define dcc_is_connected(dcc) \
-        ((dcc)->starttime != 0)
+	((dcc)->starttime != 0)
 
 /* not connected, we're waiting for other side to connect */
 #define dcc_is_listening(dcc) \
-        ((dcc)->handle != NULL && (dcc)->starttime == 0)
+	((dcc)->handle != NULL && (dcc)->starttime == 0)
 
 /* not connected, waiting for user to accept it */
 #define dcc_is_waiting_user(dcc) \
-        ((dcc)->handle == NULL)
+	((dcc)->handle == NULL)
 
 /* passive DCC */
 #define dcc_is_passive(dcc) \

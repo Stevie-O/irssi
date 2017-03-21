@@ -37,22 +37,22 @@ static void ctcp_default_msg(IRC_SERVER_REC *server, const char *data,
 			     const char *nick, const char *addr,
 			     const char *target)
 {
-        const char *p;
+	const char *p;
 	char *cmd;
 
 	p = strchr(data, ' ');
 	if (p == NULL) {
 		cmd = g_strdup(data);
-                data = "";
+		data = "";
 	} else {
 		cmd = g_strndup(data, (int) (p-data));
-                data = p+1;
+		data = p+1;
 	}
 
 	printformat(server, server_ischannel(SERVER(server), target) ? target : nick, MSGLEVEL_CTCPS,
 		    IRCTXT_CTCP_REQUESTED_UNKNOWN,
 		    nick, addr, cmd, data, target);
-        g_free(cmd);
+	g_free(cmd);
 }
 
 static void ctcp_ping_msg(IRC_SERVER_REC *server, const char *data,
@@ -129,16 +129,16 @@ static void ctcp_ping_reply(IRC_SERVER_REC *server, const char *data,
 	g_return_if_fail(data != NULL);
 
 	if (sscanf(data, "%ld %ld", &tv2.tv_sec, &tv2.tv_usec) < 1) {
-                char *tmp = g_strconcat("PING ", data, NULL);
+		char *tmp = g_strconcat("PING ", data, NULL);
 		ctcp_default_reply(server, tmp, nick, addr, target);
 		g_free(tmp);
 		return;
 	}
 
-        g_get_current_time(&tv);
+	g_get_current_time(&tv);
 	usecs = get_timeval_diff(&tv, &tv2);
-        printformat(server, server_ischannel(SERVER(server), target) ? target : nick, MSGLEVEL_CTCPS,
-                    IRCTXT_CTCP_PING_REPLY, nick, usecs/1000, usecs%1000);
+	printformat(server, server_ischannel(SERVER(server), target) ? target : nick, MSGLEVEL_CTCPS,
+		IRCTXT_CTCP_PING_REPLY, nick, usecs/1000, usecs%1000);
 }
 
 void fe_ctcp_init(void)

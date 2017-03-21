@@ -42,7 +42,7 @@ static int get_last_split(IRC_SERVER_REC *server)
 	GSList *tmp;
 	time_t last;
 
-        last = 0;
+	last = 0;
 	for (tmp = server->split_servers; tmp != NULL; tmp = tmp->next) {
 		NETSPLIT_SERVER_REC *rec = tmp->data;
 
@@ -59,7 +59,7 @@ typedef struct {
 } TEMP_SPLIT_CHAN_REC;
 
 typedef struct {
-        IRC_SERVER_REC *server_rec;
+	IRC_SERVER_REC *server_rec;
 	GSList *servers; /* if many servers splitted from the same one */
 	GSList *channels;
 } TEMP_SPLIT_REC;
@@ -137,7 +137,7 @@ static void get_server_splits(void *key, NETSPLIT_REC *split,
 			g_string_append_printf(chanrec->nicks, "%s, ", split->nick);
 
 			if (chanrec->nick_count == netsplit_max_nicks)
-                                chanrec->maxnickpos = chanrec->nicks->len;
+				chanrec->maxnickpos = chanrec->nicks->len;
 		}
 	}
 }
@@ -160,7 +160,7 @@ static void print_server_splits(IRC_SERVER_REC *server, TEMP_SPLIT_REC *rec, con
 		}
 	}
 	if (destservers->len == 0) {
-                /* no nicks to print in this server */
+		/* no nicks to print in this server */
 		g_string_free(destservers, TRUE);
 		return;
 	}
@@ -212,8 +212,8 @@ static void print_splits(IRC_SERVER_REC *server, const char *channel)
 
 		/* get all the splitted servers that have the same
 		   source server */
-                temp.servers = get_source_servers(sserver->server, &servers);
-                temp.server_rec = server;
+		temp.servers = get_source_servers(sserver->server, &servers);
+		temp.server_rec = server;
 		temp.channels = NULL;
 
 		g_hash_table_foreach(server->splits,
@@ -240,7 +240,7 @@ static int check_server_splits(IRC_SERVER_REC *server)
 		return FALSE;
 
 	print_splits(server, NULL);
-        return TRUE;
+	return TRUE;
 }
 
 /* something is going to be printed to screen, print our current netsplit
@@ -287,7 +287,7 @@ static int sig_check_splits(void)
 	if (stop) {
 		g_source_remove(split_tag);
 		signal_remove("print starting", (SIGNAL_FUNC) sig_print_starting);
-                split_tag = -1;
+		split_tag = -1;
 	}
 	return 1;
 }
@@ -304,7 +304,7 @@ static void sig_netsplit_servers(void)
 
 static int split_equal(NETSPLIT_REC *n1, NETSPLIT_REC *n2)
 {
-        return g_ascii_strcasecmp(n1->nick, n2->nick);
+	return g_ascii_strcasecmp(n1->nick, n2->nick);
 }
 
 static void split_get(void *key, NETSPLIT_REC *rec, GSList **list)
@@ -316,7 +316,7 @@ static void split_get(void *key, NETSPLIT_REC *rec, GSList **list)
 static void split_print(NETSPLIT_REC *rec, SERVER_REC *server)
 {
 	NETSPLIT_CHAN_REC *chan;
-        char *chanstr;
+	char *chanstr;
 
 	chan = rec->channels->data;
 	chanstr = chan == NULL ? "" :
@@ -335,7 +335,7 @@ static void cmd_netsplit(const char *data, IRC_SERVER_REC *server)
 {
 	GSList *list;
 
-        CMD_IRC_SERVER(server);
+	CMD_IRC_SERVER(server);
 
 	if (server->split_servers == NULL) {
 		printformat(server, NULL, MSGLEVEL_CLIENTNOTICE,
@@ -345,17 +345,17 @@ static void cmd_netsplit(const char *data, IRC_SERVER_REC *server)
 
 	printformat(server, NULL, MSGLEVEL_CLIENTCRAP, IRCTXT_NETSPLITS_HEADER);
 
-        list = NULL;
+	list = NULL;
 	g_hash_table_foreach(server->splits, (GHFunc) split_get, &list);
 	g_slist_foreach(list, (GFunc) split_print, server);
-        g_slist_free(list);
+	g_slist_free(list);
 
 	printformat(server, NULL, MSGLEVEL_CLIENTCRAP, IRCTXT_NETSPLITS_FOOTER);
 }
 
 static void read_settings(void)
 {
-        netsplit_max_nicks = settings_get_int("netsplit_max_nicks");
+	netsplit_max_nicks = settings_get_int("netsplit_max_nicks");
 	netsplit_nicks_hide_threshold =
 		settings_get_int("netsplit_nicks_hide_threshold");
 	if (netsplit_nicks_hide_threshold < netsplit_max_nicks)

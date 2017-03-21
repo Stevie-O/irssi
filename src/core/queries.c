@@ -39,9 +39,9 @@ void query_init(QUERY_REC *query, int automatic)
 
 	queries = g_slist_append(queries, query);
 
-        MODULE_DATA_INIT(query);
+	MODULE_DATA_INIT(query);
 	query->type = module_get_uniq_id_str("WINDOW ITEM TYPE", "QUERY");
-        query->destroy = (void (*) (WI_ITEM_REC *)) query_destroy;
+	query->destroy = (void (*) (WI_ITEM_REC *)) query_destroy;
 	query->get_target = query_get_target;
 	query->createtime = time(NULL);
 	query->last_unread_msg = time(NULL);
@@ -62,7 +62,7 @@ void query_destroy(QUERY_REC *query)
 {
 	g_return_if_fail(IS_QUERY(query));
 
-        if (query->destroying) return;
+	if (query->destroying) return;
 	query->destroying = TRUE;
 
 	queries = g_slist_remove(queries, query);
@@ -72,14 +72,14 @@ void query_destroy(QUERY_REC *query)
 	}
 	signal_emit("query destroyed", 1, query);
 
-        MODULE_DATA_DEINIT(query);
+	MODULE_DATA_DEINIT(query);
 	g_free_not_null(query->hilight_color);
-        g_free_not_null(query->server_tag);
-        g_free_not_null(query->address);
+	g_free_not_null(query->server_tag);
+	g_free_not_null(query->address);
 	g_free(query->visible_name);
 	g_free(query->name);
 
-        query->type = 0;
+	query->type = 0;
 	g_free(query);
 }
 
@@ -121,7 +121,7 @@ QUERY_REC *query_find(SERVER_REC *server, const char *nick)
 			return rec;
 	}
 
-        return NULL;
+	return NULL;
 }
 
 void query_change_nick(QUERY_REC *query, const char *nick)
@@ -130,7 +130,7 @@ void query_change_nick(QUERY_REC *query, const char *nick)
 
 	g_return_if_fail(IS_QUERY(query));
 
-        oldnick = query->name;
+	oldnick = query->name;
 	query->name = g_strdup(nick);
 
 	g_free(query->visible_name);
@@ -138,14 +138,14 @@ void query_change_nick(QUERY_REC *query, const char *nick)
 
 	signal_emit("query nick changed", 2, query, oldnick);
 	signal_emit("window item name changed", 1, query);
-        g_free(oldnick);
+	g_free(oldnick);
 }
 
 void query_change_address(QUERY_REC *query, const char *address)
 {
 	g_return_if_fail(IS_QUERY(query));
 
-        g_free_not_null(query->address);
+	g_free_not_null(query->address);
 	query->address = g_strdup(address);
 	signal_emit("query address changed", 1, query);
 }
@@ -156,10 +156,10 @@ void query_change_server(QUERY_REC *query, SERVER_REC *server)
 
 	if (query->server != NULL) {
 		query->server->queries =
-                        g_slist_remove(query->server->queries, query);
+			g_slist_remove(query->server->queries, query);
 	}
 	if (server != NULL)
-                server->queries = g_slist_append(server->queries, query);
+		server->queries = g_slist_append(server->queries, query);
 
 	query->server = server;
 	signal_emit("query server changed", 1, query);

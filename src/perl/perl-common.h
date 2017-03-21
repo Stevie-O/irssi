@@ -15,7 +15,7 @@ typedef void (*PERL_OBJECT_FUNC) (HV *hv, void *object);
 
 typedef struct {
 	char *name;
-        PERL_OBJECT_FUNC fill_func;
+	PERL_OBJECT_FUNC fill_func;
 } PLAIN_OBJECT_INIT_REC;
 
 /* Returns the package who called us */

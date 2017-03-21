@@ -121,7 +121,7 @@ static void config_parse_warn_missing(CONFIG_REC *rec, CONFIG_NODE *node,
 		return;
 	}
 
-        if (print_warning)
+	if (print_warning)
 		g_scanner_warn(rec->scanner, "Warning: missing '%c'", expected_token);
 }
 
@@ -147,7 +147,7 @@ static GTokenType config_parse_symbol(CONFIG_REC *rec, CONFIG_NODE *node)
 	    (rec->scanner->token == G_TOKEN_STRING)) {
 		key = g_strdup(rec->scanner->value.v_string);
 
-                config_parse_warn_missing(rec, node, '=', TRUE);
+		config_parse_warn_missing(rec, node, '=', TRUE);
 		config_parse_get_token(rec->scanner, node);
 	}
 
@@ -205,7 +205,7 @@ static GTokenType config_parse_symbol(CONFIG_REC *rec, CONFIG_NODE *node)
 		return G_TOKEN_STRING;
 	}
 
-        return G_TOKEN_NONE;
+	return G_TOKEN_NONE;
 }
 
 static void config_parse_loop(CONFIG_REC *rec, CONFIG_NODE *node, GTokenType expect)
@@ -240,7 +240,7 @@ static void config_parse_error_func(GScanner *scanner, char *message, int is_err
 					  scanner->input_name, scanner->line,
 					  is_error ? "error: " : "",
 					  message);
-        g_free_not_null(old);
+	g_free_not_null(old);
 }
 
 void config_parse_init(CONFIG_REC *rec, const char *name)

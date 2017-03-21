@@ -47,12 +47,12 @@ static int commands_equal(COMMAND_REC *rec, COMMAND_REC *rec2)
 
 static int get_cmd_length(void *data)
 {
-        return strlen(((COMMAND_REC *) data)->cmd);
+	return strlen(((COMMAND_REC *) data)->cmd);
 }
 
 static void help_category(GSList *cmdlist, int items)
 {
-        WINDOW_REC *window;
+	WINDOW_REC *window;
 	TEXT_DEST_REC dest;
 	GString *str;
 	GSList *tmp;
@@ -60,9 +60,9 @@ static void help_category(GSList *cmdlist, int items)
 	char *linebuf, *format, *stripped;
 
 	window = window_find_closest(NULL, NULL, MSGLEVEL_CLIENTCRAP);
-        max_width = window->width;
+	max_width = window->width;
 
-        /* remove width of timestamp from max_width */
+	/* remove width of timestamp from max_width */
 	format_create_dest(&dest, NULL, NULL, MSGLEVEL_CLIENTCRAP, NULL);
 	format = format_get_line_start(current_theme, &dest, time(NULL));
 	if (format != NULL) {
@@ -72,20 +72,20 @@ static void help_category(GSList *cmdlist, int items)
 		g_free(format);
 	}
 
-        /* calculate columns */
+	/* calculate columns */
 	cols = get_max_column_count(cmdlist, get_cmd_length,
 				    max_width, 6, 1, 3, &columns, &rows);
 	cmdlist = columns_sort_list(cmdlist, rows);
 
-        /* rows in last column */
+	/* rows in last column */
 	last_col_rows = rows-(cols*rows-g_slist_length(cmdlist));
 	if (last_col_rows == 0)
-                last_col_rows = rows;
+		last_col_rows = rows;
 
 	str = g_string_new(NULL);
 	linebuf = g_malloc(max_width+1);
 
-        col = 0; row = 0;
+	col = 0; row = 0;
 	for (tmp = cmdlist; tmp != NULL; tmp = tmp->next) {
 		COMMAND_REC *rec = tmp->data;
 
@@ -101,7 +101,7 @@ static void help_category(GSList *cmdlist, int items)
 			col = 0; row++;
 
 			if (row == last_col_rows)
-                                cols--;
+				cols--;
 		}
 	}
 	if (str->len != 0)
@@ -115,13 +115,13 @@ static void help_category(GSList *cmdlist, int items)
 
 static int show_help_file(const char *file)
 {
-        const char *helppath;
+	const char *helppath;
 	char *path, **paths, **tmp;
 	GIOChannel *handle;
 	GString *buf;
 	gsize tpos;
 
-        helppath = settings_get_str("help_path");
+	helppath = settings_get_str("help_path");
 
 	paths = g_strsplit(helppath, ":", -1);
 
@@ -253,12 +253,12 @@ static void cmd_help(const char *data)
 	cmd = g_ascii_strdown(data, -1);
 	g_strchomp(cmd);
 	show_help(cmd);
-        g_free(cmd);
+	g_free(cmd);
 }
 
 void fe_help_init(void)
 {
-        settings_add_str("misc", "help_path", HELPDIR);
+	settings_add_str("misc", "help_path", HELPDIR);
 	command_bind("help", NULL, (SIGNAL_FUNC) cmd_help);
 }
 

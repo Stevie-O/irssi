@@ -44,7 +44,7 @@ static void reset_level_cache(void)
 {
 	GSList *tmp;
 
-        never_hilight_level = MSGLEVEL_ALL & ~default_hilight_level;
+	never_hilight_level = MSGLEVEL_ALL & ~default_hilight_level;
 	for (tmp = hilights; tmp != NULL; tmp = tmp->next) {
 		HILIGHT_REC *rec = tmp->data;
 
@@ -191,7 +191,7 @@ static HILIGHT_REC *hilight_find(const char *text, char **channels)
 		/* check that channels match */
 		for (chan = channels; *chan != NULL; chan++) {
 			if (strarray_find(rec->channels, *chan) == -1)
-                                break;
+				break;
 		}
 
 		if (*chan == NULL)
@@ -265,10 +265,10 @@ static gboolean hilight_match_text(HILIGHT_REC *rec, const char *text,
 HILIGHT_REC *hilight_match(SERVER_REC *server, const char *channel,
 			   const char *nick, const char *address,
 			   int level, const char *str,
-                           int *match_beg, int *match_end)
+			int *match_beg, int *match_end)
 {
 	GSList *tmp;
-        CHANNEL_REC *chanrec;
+	CHANNEL_REC *chanrec;
 	NICK_REC *nickrec;
 
 	g_return_val_if_fail(str != NULL, NULL);
@@ -277,12 +277,12 @@ HILIGHT_REC *hilight_match(SERVER_REC *server, const char *channel,
 		return NULL;
 
 	if (nick != NULL) {
-                /* check nick mask hilights */
+		/* check nick mask hilights */
 		chanrec = channel_find(server, channel);
 		nickrec = chanrec == NULL ? NULL :
 			nicklist_find(chanrec, nick);
 		if (nickrec != NULL) {
-                        HILIGHT_REC *rec;
+			HILIGHT_REC *rec;
 
 			if (nickrec->host == NULL)
 				nicklist_set_host(chanrec, nickrec, address);
@@ -416,8 +416,8 @@ static void sig_print_text(TEXT_DEST_REC *dest, const char *text,
 					&color_pos, &color_len);
 		if (color_pos > 0)
 			g_string_append_len(tmp, text + color_pos, color_len);
-                else {
-                        /* no colors in line, change back to default */
+		else {
+			/* no colors in line, change back to default */
 			g_string_append_c(tmp, 4);
 			g_string_append_c(tmp, FORMAT_STYLE_DEFAULTS);
 		}
@@ -439,7 +439,7 @@ HILIGHT_REC *hilight_match_nick(SERVER_REC *server, const char *channel,
 			 const char *nick, const char *address,
 			 int level, const char *msg)
 {
-        HILIGHT_REC *rec;
+	HILIGHT_REC *rec;
 
 	rec = hilight_match(server, channel, nick, address,
 				level, msg, NULL, NULL);
@@ -457,7 +457,7 @@ static void read_hilight_config(void)
 
 	node = iconfig_node_traverse("hilights", FALSE);
 	if (node == NULL) {
-                reset_cache();
+		reset_cache();
 		return;
 	}
 
@@ -574,7 +574,7 @@ static void cmd_hilight_show(void)
 }
 
 /* SYNTAX: HILIGHT [-nick | -word | -line] [-mask | -full | -matchcase | -regexp]
-                   [-color <color>] [-actcolor <color>] [-level <level>]
+		[-color <color>] [-actcolor <color>] [-level <level>]
 		   [-network <network>] [-channels <channels>] <text> */
 static void cmd_hilight(const char *data)
 {

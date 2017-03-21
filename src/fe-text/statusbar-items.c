@@ -41,7 +41,7 @@ static void item_window_active(SBAR_ITEM_REC *item, int get_size_only)
 {
 	WINDOW_REC *window;
 
-        window = active_win;
+	window = active_win;
 	if (item->bar->parent_window != NULL)
 		window = item->bar->parent_window->active;
 
@@ -49,7 +49,7 @@ static void item_window_active(SBAR_ITEM_REC *item, int get_size_only)
 		statusbar_item_default_handler(item, get_size_only,
 					       NULL, "", TRUE);
 	} else if (get_size_only) {
-                item->min_size = item->max_size = 0;
+		item->min_size = item->max_size = 0;
 	}
 }
 
@@ -57,7 +57,7 @@ static void item_window_empty(SBAR_ITEM_REC *item, int get_size_only)
 {
 	WINDOW_REC *window;
 
-        window = active_win;
+	window = active_win;
 	if (item->bar->parent_window != NULL)
 		window = item->bar->parent_window->active;
 
@@ -65,18 +65,18 @@ static void item_window_empty(SBAR_ITEM_REC *item, int get_size_only)
 		statusbar_item_default_handler(item, get_size_only,
 					       NULL, "", TRUE);
 	} else if (get_size_only) {
-                item->min_size = item->max_size = 0;
+		item->min_size = item->max_size = 0;
 	}
 }
 
 static char *get_activity_list(MAIN_WINDOW_REC *window, int normal, int hilight)
 {
-        THEME_REC *theme;
+	THEME_REC *theme;
 	GString *str;
 	GString *format;
 	GList *tmp;
-        char *ret, *name, *value;
-        int is_det;
+	char *ret, *name, *value;
+	int is_det;
 	int add_name = settings_get_bool("actlist_names");
 
 	str = g_string_new(NULL);
@@ -91,9 +91,9 @@ static char *get_activity_list(MAIN_WINDOW_REC *window, int normal, int hilight)
 
 		is_det = window->data_level >= DATA_LEVEL_HILIGHT;
 		if ((!is_det && !normal) || (is_det && !hilight))
-                        continue;
+			continue;
 
-                /* comma separator */
+		/* comma separator */
 		if (str->len > 0) {
 			value = theme_format_expand(theme, "{sb_act_sep ,}");
 			g_string_append(str, value);
@@ -109,10 +109,10 @@ static char *get_activity_list(MAIN_WINDOW_REC *window, int normal, int hilight)
 			name = "{sb_act_msg %d";
 			break;
 		default:
-                        if (window->hilight_color == NULL)
+			if (window->hilight_color == NULL)
 				name = "{sb_act_hilight %d";
 			else
-                                name = NULL;
+				name = NULL;
 			break;
 		}
 
@@ -128,13 +128,13 @@ static char *get_activity_list(MAIN_WINDOW_REC *window, int normal, int hilight)
 
 		value = theme_format_expand(theme, format->str);
 		g_string_append(str, value);
-                g_free(value);
+		g_free(value);
 	}
 
 	ret = str->len == 0 ? NULL : str->str;
-        g_string_free(str, ret == NULL);
+	g_string_free(str, ret == NULL);
 	g_string_free(format, TRUE);
-        return ret;
+	return ret;
 }
 
 /* redraw activity, FIXME: if we didn't get enough size, this gets buggy.
@@ -280,11 +280,11 @@ static void sig_statusbar_activity_updated(void)
 
 static void item_more(SBAR_ITEM_REC *item, int get_size_only)
 {
-        MAIN_WINDOW_REC *mainwin;
+	MAIN_WINDOW_REC *mainwin;
 	int visible;
 
 	if (active_win == NULL) {
-                mainwin = NULL;
+		mainwin = NULL;
 		visible = FALSE;
 	} else {
 		mainwin = WINDOW_MAIN(active_win);
@@ -311,9 +311,9 @@ static void sig_statusbar_more_updated(void)
 	if (active_win == NULL)
 		return;
 
-        visible = g_slist_find(more_visible, WINDOW_MAIN(active_win)) != NULL;
+	visible = g_slist_find(more_visible, WINDOW_MAIN(active_win)) != NULL;
 	if (WINDOW_GUI(active_win)->view->more_text != visible)
-                statusbar_items_redraw("more");
+		statusbar_items_redraw("more");
 }
 
 /* Returns the lag in milliseconds. If we haven't been able to ask the lag
@@ -322,36 +322,36 @@ static int get_lag(SERVER_REC *server, int *unknown)
 {
 	long lag;
 
-        *unknown = FALSE;
+	*unknown = FALSE;
 
 	if (server == NULL || server->lag_last_check == 0) {
-                /* lag has not been asked even once yet */
+		/* lag has not been asked even once yet */
 		return 0;
 	}
 
 	if (server->lag_sent.tv_sec == 0) {
 		/* no lag queries going on currently */
-                return server->lag;
+		return server->lag;
 	}
 
-        /* we're not sure about our current lag.. */
+	/* we're not sure about our current lag.. */
 	*unknown = TRUE;
 
-        lag = (long) (time(NULL)-server->lag_sent.tv_sec);
+	lag = (long) (time(NULL)-server->lag_sent.tv_sec);
 	if (server->lag/1000 > lag) {
 		/* we've been waiting the lag reply less time than
 		   what last known lag was -> use the last known lag */
 		return server->lag;
 	}
 
-        /* return how long we have been waiting for lag reply */
-        return lag*1000;
+	/* return how long we have been waiting for lag reply */
+	return lag*1000;
 }
 
 static void item_lag(SBAR_ITEM_REC *item, int get_size_only)
 {
 	SERVER_REC *server;
-        char str[MAX_INT_STRLEN+10];
+	char str[MAX_INT_STRLEN+10];
 	int lag, lag_unknown;
 
 	server = active_win == NULL ? NULL : active_win->active_server;
@@ -397,19 +397,19 @@ static void lag_check_update(void)
 		lag /= 10;
 
 	if (lag != last_lag || (lag > 0 && lag_unknown != last_lag_unknown))
-                statusbar_items_redraw("lag");
+		statusbar_items_redraw("lag");
 }
 
 static void sig_server_lag_updated(SERVER_REC *server)
 {
 	if (active_win != NULL && active_win->active_server == server)
-                lag_check_update();
+		lag_check_update();
 }
 
 static int sig_lag_timeout(void)
 {
-        lag_check_update();
-        return 1;
+	lag_check_update();
+	return 1;
 }
 
 static void item_input(SBAR_ITEM_REC *item, int get_size_only)
@@ -427,8 +427,8 @@ static void item_input(SBAR_ITEM_REC *item, int get_size_only)
 
 	if (get_size_only) {
 		item->min_size = 2+term_width/10;
-                item->max_size = term_width;
-                return;
+		item->max_size = term_width;
+		return;
 	}
 
 	gui_entry_move(rec, item->xpos, item->bar->real_ypos,
@@ -473,61 +473,61 @@ void statusbar_items_init(void)
 	statusbar_item_register("more", NULL, item_more);
 	statusbar_item_register("input", NULL, item_input);
 
-        /* activity */
+	/* activity */
 	activity_list = NULL;
 	signal_add("window activity", (SIGNAL_FUNC) sig_statusbar_activity_hilight);
 	signal_add("window destroyed", (SIGNAL_FUNC) sig_statusbar_activity_window_destroyed);
 	signal_add("window refnum changed", (SIGNAL_FUNC) sig_statusbar_activity_updated);
 
-        /* more */
-        more_visible = NULL;
+	/* more */
+	more_visible = NULL;
 	signal_add("gui page scrolled", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_add("window changed", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_add_last("gui print text finished", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_add_last("command clear", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_add_last("command scrollback", (SIGNAL_FUNC) sig_statusbar_more_updated);
 
-        /* lag */
+	/* lag */
 	last_lag = 0; last_lag_unknown = FALSE;
 	signal_add("server lag", (SIGNAL_FUNC) sig_server_lag_updated);
 	signal_add("window changed", (SIGNAL_FUNC) lag_check_update);
 	signal_add("window server changed", (SIGNAL_FUNC) lag_check_update);
-        lag_timeout_tag = g_timeout_add(5000, (GSourceFunc) sig_lag_timeout, NULL);
+	lag_timeout_tag = g_timeout_add(5000, (GSourceFunc) sig_lag_timeout, NULL);
 
-        /* input */
+	/* input */
 	input_entries = g_hash_table_new((GHashFunc) g_str_hash,
 					 (GCompareFunc) g_str_equal);
 
 	read_settings();
-        signal_add_last("setup changed", (SIGNAL_FUNC) read_settings);
+	signal_add_last("setup changed", (SIGNAL_FUNC) read_settings);
 }
 
 void statusbar_items_deinit(void)
 {
-        /* activity */
+	/* activity */
 	signal_remove("window activity", (SIGNAL_FUNC) sig_statusbar_activity_hilight);
 	signal_remove("window destroyed", (SIGNAL_FUNC) sig_statusbar_activity_window_destroyed);
 	signal_remove("window refnum changed", (SIGNAL_FUNC) sig_statusbar_activity_updated);
 	g_list_free(activity_list);
-        activity_list = NULL;
+	activity_list = NULL;
 
-        /* more */
-        g_slist_free(more_visible);
+	/* more */
+	g_slist_free(more_visible);
 	signal_remove("gui page scrolled", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_remove("window changed", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_remove("gui print text finished", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_remove("command clear", (SIGNAL_FUNC) sig_statusbar_more_updated);
 	signal_remove("command scrollback", (SIGNAL_FUNC) sig_statusbar_more_updated);
 
-        /* lag */
+	/* lag */
 	signal_remove("server lag", (SIGNAL_FUNC) sig_server_lag_updated);
 	signal_remove("window changed", (SIGNAL_FUNC) lag_check_update);
 	signal_remove("window server changed", (SIGNAL_FUNC) lag_check_update);
-        g_source_remove(lag_timeout_tag);
+	g_source_remove(lag_timeout_tag);
 
-        /* input */
-        g_hash_table_foreach(input_entries, (GHFunc) g_free, NULL);
+	/* input */
+	g_hash_table_foreach(input_entries, (GHFunc) g_free, NULL);
 	g_hash_table_destroy(input_entries);
 
-        signal_remove("setup changed", (SIGNAL_FUNC) read_settings);
+	signal_remove("setup changed", (SIGNAL_FUNC) read_settings);
 }

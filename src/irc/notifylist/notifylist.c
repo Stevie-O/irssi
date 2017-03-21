@@ -42,14 +42,14 @@ NOTIFYLIST_REC *notifylist_add(const char *mask, const char *ircnets,
 	g_return_val_if_fail(mask != NULL, NULL);
 
 	rec = g_new0(NOTIFYLIST_REC, 1);
-        rec->mask = g_strdup(mask);
+	rec->mask = g_strdup(mask);
 	rec->ircnets = ircnets == NULL || *ircnets == '\0' ? NULL :
 		g_strsplit(ircnets, " ", -1);
 	rec->away_check = away_check;
 
-        notifylist_add_config(rec);
+	notifylist_add_config(rec);
 
-        notifies = g_slist_append(notifies, rec);
+	notifies = g_slist_append(notifies, rec);
 	signal_emit("notifylist new", 1, rec);
 	return rec;
 }
@@ -58,7 +58,7 @@ static void notify_destroy(NOTIFYLIST_REC *rec)
 {
 	if (rec->ircnets != NULL) g_strfreev(rec->ircnets);
 	g_free(rec->mask);
-        g_free(rec);
+	g_free(rec);
 }
 
 void notifylist_destroy_all(void)
@@ -82,7 +82,7 @@ void notifylist_remove(const char *mask)
 	notifies = g_slist_remove(notifies, rec);
 	signal_emit("notifylist remove", 1, rec);
 
-        notify_destroy(rec);
+	notify_destroy(rec);
 }
 
 int notifylist_ircnets_match(NOTIFYLIST_REC *rec, const char *ircnet)
@@ -320,7 +320,7 @@ static void sig_channel_wholist(IRC_CHANNEL_REC *channel)
 
 		notifylist_check_join(channel->server, rec->nick, rec->host, rec->realname, rec->gone);
 	}
-        g_slist_free(nicks);
+	g_slist_free(nicks);
 }
 
 void irc_notifylist_init(void)

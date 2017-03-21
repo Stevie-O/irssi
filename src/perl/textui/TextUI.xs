@@ -99,14 +99,14 @@ CODE:
 	perl_api_version_check("Irssi::TextUI");
 	initialized = TRUE;
 
-        irssi_add_plains(textui_plains);
-        perl_statusbar_init();
+	irssi_add_plains(textui_plains);
+	perl_statusbar_init();
 
 void
 deinit()
 CODE:
 	if (!initialized) return;
-        perl_statusbar_deinit();
+	perl_statusbar_deinit();
 	initialized = FALSE;
 
 MODULE = Irssi::TextUI PACKAGE = Irssi

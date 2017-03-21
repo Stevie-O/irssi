@@ -5,7 +5,7 @@ struct _RAWLOG_REC {
 	int logging;
 	int handle;
 
-        int nlines;
+	int nlines;
 	GSList *lines;
 };
 
